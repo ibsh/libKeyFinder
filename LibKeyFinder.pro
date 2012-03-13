@@ -21,7 +21,7 @@
 
 QT -= gui
 
-TARGET = LibKeyFinder
+TARGET = KeyFinder
 TEMPLATE = lib
 
 VERSION = 0.1.0
