@@ -5,7 +5,7 @@
 
 #include "_GLOBAL.h"
 
-#include "audiostream.h"
+#include "audiodata.h"
 #include "parameters.h"
 #include "spectrumanalyserfactory.h"
 #include "keyfinderresult.h"
@@ -16,7 +16,7 @@ namespace KeyFinder{
 
   class LIBKEYFINDERSHARED_EXPORT KeyFinder {
   public:
-    KeyDetectionResult findKey(AudioStream&, const Parameters&);
+    KeyDetectionResult findKey(AudioData&, const Parameters&);
   private:
     SpectrumAnalyserFactory saFactory;
   };

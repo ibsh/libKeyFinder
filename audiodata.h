@@ -31,23 +31,27 @@
 
 namespace KeyFinder{
 
-  class LIBKEYFINDERSHARED_EXPORT AudioStream{
+  class LIBKEYFINDERSHARED_EXPORT AudioData{
   public:
-    AudioStream();
+    AudioData();
+
     unsigned int getChannels() const;
     unsigned int getFrameRate() const;
     float getSample(unsigned int) const;
     unsigned int getSampleCount() const;
+    std::vector<float>& getSamples();
+
     void setChannels(unsigned int);
     void setFrameRate(unsigned int);
     void setSample(unsigned int, float);
     void addToSampleCount(unsigned int);
     void reduceToMono();
+
   private:
-    std::vector<float> stream;
+    std::vector<float> samples;
     unsigned int channels;
     unsigned int frameRate;
-    unsigned int samples;
+    unsigned int sampleCount;
   };
 
 } // namespace

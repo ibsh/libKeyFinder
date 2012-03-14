@@ -19,77 +19,81 @@
 
 *************************************************************************/
 
-#include "audiostream.h"
+#include "audiodata.h"
 
 namespace KeyFinder{
 
-  AudioStream::AudioStream():  stream(0), channels(0), frameRate(0),  samples(0){ }
+  AudioData::AudioData():  samples(0), channels(0), frameRate(0),  sampleCount(0){ }
 
-  unsigned int AudioStream::getChannels() const{
+  unsigned int AudioData::getChannels() const{
     return channels;
   }
 
-  void AudioStream::setChannels(unsigned int n){
+  void AudioData::setChannels(unsigned int n){
     if(n < 1)
       throw Exception("Channels must be > 0");
     channels = n;
   }
 
-  unsigned int AudioStream::getFrameRate() const{
+  unsigned int AudioData::getFrameRate() const{
     return frameRate;
   }
 
-  void AudioStream::setFrameRate(unsigned int n){
+  void AudioData::setFrameRate(unsigned int n){
     if(n < 1)
       throw Exception("Frame rate must be > 0");
     frameRate = n;
   }
 
-  float AudioStream::getSample(unsigned int n) const{
-    if(n >= samples){
-      std::ostringstream ss;
-      ss << "Cannot get out-of-bounds sample (" << n << "/" << samples << ")";
-      throw Exception(ss.str());
-    }
-    return stream[n];
-  }
-
-  void AudioStream::setSample(unsigned int n,float x){
-    if(n >= samples){
-      std::ostringstream ss;
-      ss << "Cannot set out-of-bounds sample (" << n << "/" << samples << ")";
-      throw Exception(ss.str());
-    }
-    stream[n] = x;
-  }
-
-  void AudioStream::addToSampleCount(unsigned int newSamples){
-    try{
-      stream.resize(samples + newSamples);
-      samples += newSamples;
-    }catch(...){
-      std::ostringstream ss;
-      ss << "Memory allocation failure adding " << newSamples << " samples to audio stream of size " << samples;
-      throw Exception(ss.str());
-    }
-  }
-
-  unsigned int AudioStream::getSampleCount() const{
+  std::vector<float>& AudioData::getSamples(){
     return samples;
   }
 
-  void AudioStream::reduceToMono(){
+  float AudioData::getSample(unsigned int n) const{
+    if(n >= sampleCount){
+      std::ostringstream ss;
+      ss << "Cannot get out-of-bounds sample (" << n << "/" << sampleCount << ")";
+      throw Exception(ss.str());
+    }
+    return samples[n];
+  }
+
+  void AudioData::setSample(unsigned int n,float x){
+    if(n >= sampleCount){
+      std::ostringstream ss;
+      ss << "Cannot set out-of-bounds sample (" << n << "/" << sampleCount << ")";
+      throw Exception(ss.str());
+    }
+    samples[n] = x;
+  }
+
+  void AudioData::addToSampleCount(unsigned int newSamples){
+    try{
+      samples.resize(sampleCount + newSamples);
+      sampleCount += newSamples;
+    }catch(...){
+      std::ostringstream ss;
+      ss << "Memory allocation failure adding " << newSamples << " samples to audio stream of size " << sampleCount;
+      throw Exception(ss.str());
+    }
+  }
+
+  unsigned int AudioData::getSampleCount() const{
+    return sampleCount;
+  }
+
+  void AudioData::reduceToMono(){
     if(channels == 1) return;
-    std::vector<float> newStream(samples / channels);
-    for (unsigned int i = 0; i < samples; i += channels){
+    std::vector<float> newStream(sampleCount / channels);
+    for (unsigned int i = 0; i < sampleCount; i += channels){
       float mono = 0.0;
       for (unsigned int j = 0; j < channels; j++)
-        mono += stream[i + j];
+        mono += samples[i + j];
       mono /= channels;
       newStream[i/channels] = mono;
     }
-    stream = newStream;
-    samples /= channels;
+    samples = newStream;
+    sampleCount /= channels;
     channels = 1;
     return;
   }

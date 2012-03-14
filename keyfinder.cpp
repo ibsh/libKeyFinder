@@ -2,18 +2,18 @@
 
 namespace KeyFinder{
 
-  KeyDetectionResult KeyFinder::findKey(AudioStream& stream, const Parameters& params){
+  KeyDetectionResult KeyFinder::findKey(AudioData& audio, const Parameters& params){
 
     KeyDetectionResult result;
 
     // make audio stream monaural
-    stream.reduceToMono();
+    audio.reduceToMono();
 
     // get spectrum analyser
-    SpectrumAnalyser* sa = saFactory.getSpectrumAnalyser(stream.getFrameRate(), params);
+    SpectrumAnalyser* sa = saFactory.getSpectrumAnalyser(audio.getFrameRate(), params);
 
     // run spectrum analysis
-    Chromagram* ch = sa->chromagram(stream);
+    Chromagram* ch = sa->chromagram(audio);
 
     // reduce chromagram
     ch->reduceTuningBins(params);

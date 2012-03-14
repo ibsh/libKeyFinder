@@ -25,7 +25,7 @@
 #include <QMutexLocker>
 
 #include "chromagram.h"
-#include "audiostream.h"
+#include "audiodata.h"
 #include "parameters.h"
 
 namespace KeyFinder{
@@ -33,7 +33,7 @@ namespace KeyFinder{
   class SpectrumAnalyser{
   public:
     SpectrumAnalyser(unsigned int, const Parameters&);
-    virtual Chromagram* chromagram(const AudioStream&) = 0;
+    virtual Chromagram* chromagram(const AudioData&) = 0;
     virtual ~SpectrumAnalyser();
   protected:
     mutable QMutex analyserMutex; // used to make chromagram generation thread-safe

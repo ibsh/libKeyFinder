@@ -47,8 +47,8 @@ HEADERS += \
     spectrumanalyserfftw.h \
     fftpp.h \
     segarbitrary.h \
-    audiostream.h \
-    keyfinderresult.h
+    keyfinderresult.h \
+    audiodata.h
 
 SOURCES += \
     keyfinder.cpp \
@@ -67,8 +67,8 @@ SOURCES += \
     fftppdirectsk.cpp \
     spectrumanalyserfftw.cpp \
     segarbitrary.cpp \
-    audiostream.cpp \
-    exception.cpp
+    exception.cpp \
+    audiodata.cpp
 
 OTHER_FILES += README
 
@@ -110,4 +110,8 @@ unix:!symbian {
     }
     INSTALLS += target
 }
+
+
+
+
 

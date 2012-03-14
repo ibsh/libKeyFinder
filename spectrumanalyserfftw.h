@@ -34,7 +34,7 @@ namespace KeyFinder{
   public:
     FftwAnalyser(unsigned int, const Parameters&);
     ~FftwAnalyser();
-    virtual Chromagram* chromagram(const AudioStream&);
+    virtual Chromagram* chromagram(const AudioData&);
   private:
     unsigned int fftFrameSize;
     FftPostProcessor* pp;
