@@ -23,13 +23,13 @@
 
 namespace KeyFinder{
 
-  DirectSkPostProc::DirectSkPostProc(unsigned int frameRate, const Parameters& prefs) : FftPostProcessor(frameRate, prefs) {
+  DirectSkPostProc::DirectSkPostProc(unsigned int fr, const Parameters& params) : FftPostProcessor(fr, params) {
     pi = (4 * atan(1.0));
     binOffsets = std::vector<unsigned int>(bins);
     mySpecKernel = std::vector<std::vector<float> >(bins,std::vector<float>(0));
-    float myQFactor = prefs.getDirectSkStretch() * (pow(2,(1.0 / prefs.getBpo()))-1);
-    for (unsigned int i=0; i<bins; i++){
-      float centreOfWindow = prefs.getBinFreq(i) * fftFrameSize / frameRate;
+    float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBpo()))-1);
+    for (unsigned int i = 0; i < bins; i++){
+      float centreOfWindow = params.getBinFreq(i) * fftFrameSize / fr;
       float widthOfWindow = centreOfWindow * myQFactor;
       float beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
       float endOfWindow = beginningOfWindow + widthOfWindow;
@@ -47,13 +47,13 @@ namespace KeyFinder{
       }
       // normalisation by sum of coefficients and frequency of bin; models CQT very closely
       for (unsigned int j = 0; j < mySpecKernel[i].size(); j++)
-        mySpecKernel[i][j] = mySpecKernel[i][j] / sumOfCoefficients * prefs.getBinFreq(i);
+        mySpecKernel[i][j] = mySpecKernel[i][j] / sumOfCoefficients * params.getBinFreq(i);
     }
   }
 
   std::vector<float> DirectSkPostProc::chromaVector(fftw_complex* fftResult)const{
     std::vector<float> cv(bins);
-    for (unsigned int i=0; i<bins; i++){
+    for (unsigned int i = 0; i < bins; i++){
       float sum = 0.0;
       for (unsigned int j = 0; j < mySpecKernel[i].size(); j++){
         unsigned int binNum = binOffsets[i]+j;

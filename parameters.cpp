@@ -111,37 +111,69 @@ namespace KeyFinder{
   float                Parameters::getDetunedBandWeight()         const { return detunedBandWeight; }
   std::vector<float>   Parameters::getCustomToneProfile()         const { return customToneProfile; }
 
-  void Parameters::setOffsetToC(bool off)                            { offsetToC = off; }
-  void Parameters::setTemporalWindow(temporal_window_t window)       { temporalWindow = window; }
-  void Parameters::setSegmentation(segmentation_t f)                 { segmentation = f; }
-  void Parameters::setSimilarityMeasure(similarity_measure_t msr)    { similarityMeasure = msr; }
-  void Parameters::setHopSize(unsigned int size)                     { hopSize = size; }
-  void Parameters::setFftFrameSize(unsigned int framesize)           { fftFrameSize = framesize; }
-  void Parameters::setOctaves(unsigned int oct)                      { octaves = oct; }
-  void Parameters::setBps(unsigned int bands)                        { bps = bands; }
-  void Parameters::setToneProfile(tone_profile_t profile)            { toneProfile = profile; }
-  void Parameters::setHcdfPeakPickingNeighbours(unsigned int n)      { hcdfPeakPickingNeighbours = n; }
-  void Parameters::setHcdfArbitrarySegments(unsigned int s)          { hcdfArbitrarySegments = s; }
-  void Parameters::setHcdfGaussianSize(unsigned int size)            { hcdfGaussianSize = size; }
-  void Parameters::setTuningMethod(tuning_method_t tune)             { tuningMethod = tune; }
-  void Parameters::setHcdfGaussianSigma(float sigma)                 { hcdfGaussianSigma = sigma; }
-  void Parameters::setStartingFreqA(float a)                         { stFreq = a; }
-  void Parameters::setDirectSkStretch(float stretch)                 { directSkStretch = stretch; }
-  void Parameters::setDetunedBandWeight(float weight)                { detunedBandWeight = weight; }
-  void Parameters::setCustomToneProfile(const std::vector<float>& v) { customToneProfile = v; }
+  // basic mutators
+  void Parameters::setOffsetToC(bool off)                         { offsetToC = off; }
+  void Parameters::setTemporalWindow(temporal_window_t window)    { temporalWindow = window; }
+  void Parameters::setSegmentation(segmentation_t f)              { segmentation = f; }
+  void Parameters::setSimilarityMeasure(similarity_measure_t msr) { similarityMeasure = msr; }
+  void Parameters::setToneProfile(tone_profile_t profile)         { toneProfile = profile; }
+  void Parameters::setHcdfPeakPickingNeighbours(unsigned int n)   { hcdfPeakPickingNeighbours = n; }
+  void Parameters::setTuningMethod(tuning_method_t tune)          { tuningMethod = tune; }
 
-  float Parameters::getBinFreq(unsigned int n)const{
-    if(n >= octaves*12*bps){
-      std::cerr << "Attempt to get out-of-bounds frequency index (" << n << "/" << octaves*12*bps << ")" << std::endl;
-      return 0;
-    }
-    return binFreqs[n];
+  // mutators requiring validation
+  void Parameters::setHopSize(unsigned int size){
+    if(size < 1) throw Exception("Hop size must be > 0");
+    hopSize = size;
+  }
+  void Parameters::setFftFrameSize(unsigned int framesize){
+    if(framesize < 1) throw Exception("Hop size must be > 0");
+    fftFrameSize = framesize;
+  }
+  void Parameters::setOctaves(unsigned int oct){
+    if(oct < 1) throw Exception("Octaves must be > 0");
+    octaves = oct;
+  }
+  void Parameters::setBps(unsigned int bands){
+    if(bands < 1) throw Exception("Octaves must be > 0");
+    bps = bands;
+  }
+  void Parameters::setHcdfArbitrarySegments(unsigned int s){
+    if(s < 1) throw Exception("Arbitrary segments must be > 0");
+    hcdfArbitrarySegments = s;
+  }
+  void Parameters::setHcdfGaussianSize(unsigned int size){
+    if(size < 1) throw Exception("Gaussian size must be > 0");
+    hcdfGaussianSize = size;
+  }
+  void Parameters::setHcdfGaussianSigma(float sigma){
+    if(sigma <= 0) throw Exception("Gaussian sigma must be > 0");
+    hcdfGaussianSigma = sigma;
+  }
+  void Parameters::setStartingFreqA(float a){
+    if(a <= 27.5) throw Exception("Starting frequency must be >= 27.5 Hz");
+    if(
+      a != 27.5 && a != 55.0 && a != 110.0 && a != 220.0 &&
+      a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
+    ) throw Exception("Starting frequency must be an A (2^n * 27.5 Hz)");
+    stFreq = a;
+  }
+  void Parameters::setDirectSkStretch(float stretch){
+    if(stretch <= 0) throw Exception("Spectral kernel stretch must be > 0");
+    directSkStretch = stretch;
+  }
+  void Parameters::setDetunedBandWeight(float weight){
+    if(weight < 0) throw Exception("Detuned band weighting must be >= 0");
+    detunedBandWeight = weight;
+  }
+  void Parameters::setCustomToneProfile(const std::vector<float>& v){
+    if(v.size() != 24) throw Exception("Custom tone profile must have 24 elements");
+    for(unsigned int i = 0; i < 24; i++)
+      if(v[i] < 0)
+        throw Exception("Custom tone profile elements must be >= 0");
+    customToneProfile = v;
   }
 
-  float Parameters::getLastFreq() const{
-    return binFreqs[binFreqs.size()-1];
-  }
-
+  // TODO check that last frequency doesn't go over Nyquist, and maybe some other stuff (low end resolution?).
   void Parameters::generateBinFreqs(){
     unsigned int bpo = bps * 12;
     binFreqs.clear();
@@ -165,6 +197,20 @@ namespace KeyFinder{
       }
       octFreq *= 2;
     }
+  }
+
+  float Parameters::getBinFreq(unsigned int n)const{
+    unsigned int max = octaves * 12 * bps;
+    if(n >= max){
+      std::ostringstream ss;
+      ss << "Cannot get out-of-bounds frequency index (" << n << "/" << max << ")";
+      throw Exception(ss.str());
+    }
+    return binFreqs[n];
+  }
+
+  float Parameters::getLastFreq() const{
+    return binFreqs[binFreqs.size()-1];
   }
 
 } // namespace

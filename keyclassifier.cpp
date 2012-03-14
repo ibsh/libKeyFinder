@@ -23,12 +23,12 @@
 
 namespace KeyFinder{
 
-  KeyClassifier::KeyClassifier(const Parameters& prefs){
+  KeyClassifier::KeyClassifier(const Parameters& params){
     // Profiles
-    major = new ToneProfile(prefs.getToneProfile(), true, prefs);
-    minor = new ToneProfile(prefs.getToneProfile(), false, prefs);
-    silence = new ToneProfile(TONE_PROFILE_SILENT, true, prefs);
-    similarityMeasure = prefs.getSimilarityMeasure();
+    major = new ToneProfile(params.getToneProfile(), true, params);
+    minor = new ToneProfile(params.getToneProfile(), false, params);
+    silence = new ToneProfile(TONE_PROFILE_SILENT, true, params);
+    similarityMeasure = params.getSimilarityMeasure();
   }
 
   KeyClassifier::~KeyClassifier(){
@@ -40,8 +40,7 @@ namespace KeyFinder{
   key_t KeyClassifier::classify(const std::vector<float>& chroma){
     std::vector<float> scores(24);
     float bestScore = 0.0;
-    if(similarityMeasure == 'k'){
-      // Correlation measure
+    if(similarityMeasure == SIMILARITY_CORRELATION){
       float chromaMean = 0.0;
       for (unsigned int i=0; i<chroma.size(); i++)
         chromaMean += chroma[i];

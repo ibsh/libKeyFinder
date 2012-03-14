@@ -30,6 +30,8 @@
 #include <vector>
 #include <cstring>
 
+#include "exception.h"
+
 namespace KeyFinder{
 
   enum key_t{

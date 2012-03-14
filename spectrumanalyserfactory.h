@@ -54,7 +54,7 @@ namespace KeyFinder{
     SpectrumAnalyser* getSpectrumAnalyser(unsigned int, const Parameters&);
   private:
     std::vector<SpectrumAnalyserWrapper*> analysers;
-    mutable QMutex mutex; // for thread safety
+    mutable QMutex factoryMutex; // for thread safety
   };
 
 } // namespace

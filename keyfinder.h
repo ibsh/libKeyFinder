@@ -1,6 +1,8 @@
 #ifndef KEYFINDER_H
 #define KEYFINDER_H
 
+#include <map>
+
 #include "_GLOBAL.h"
 
 #include "audiostream.h"

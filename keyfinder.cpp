@@ -32,16 +32,14 @@ namespace KeyFinder{
 
     // get key estimates for each segment
     KeyClassifier hc(params);
-    std::vector<float> keyWeights(24); // TODO: maybe a map instead?
-    for (int s = 0; s < (signed)segmentBoundaries.size()-1; s++){
+    std::vector<float> keyWeights(24); // TODO: not ideal using int cast of key_t enum
 
+    for (int s = 0; s < (signed)segmentBoundaries.size()-1; s++){
       KeyDetectionSegment segment;
       segment.firstWindow = segmentBoundaries[s];
       segment.lastWindow = segmentBoundaries[s+1] - 1;
-
       // collapse segment's time dimension, for a single chroma vector and a single energy value
       std::vector<float> segmentChroma(ch->getBins());
-
       // for each relevant hop of the chromagram
       for (unsigned int hop = segment.firstWindow; hop <= segment.lastWindow; hop++) {
         // for each bin

@@ -48,12 +48,12 @@ namespace KeyFinder{
     }
   }
 
-  std::vector<float> HarteHcdf::getRateOfChange(const Chromagram& ch, const Parameters& prefs){
+  std::vector<float> HarteHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params){
     unsigned int bpo = 12; // note this function must always be applied *after* decomposition to 1 bps. TODO add validation.
     unsigned int hops = ch.getHops();
     unsigned int dims = 6;
-    unsigned int gaussianSize = prefs.getHcdfGaussianSize();
-    float gaussianSigma = prefs.getHcdfGaussianSigma();
+    unsigned int gaussianSize = params.getHcdfGaussianSize();
+    float gaussianSigma = params.getHcdfGaussianSigma();
     // build vector for movement in six dimensions
     // zero pad end of vector by half width of smoothing Gaussian? Haven't done that.
     unsigned int padding = 0; // as opposed to gaussianSize/2
@@ -112,10 +112,10 @@ namespace KeyFinder{
     return rateOfChange;
   }
 
-  std::vector<unsigned int> HarteHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& prefs){
+  std::vector<unsigned int> HarteHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& params){
     // Pick peaks
     std::vector<unsigned int> changes(1); // start vector with a 0 to enable first classification
-    unsigned int neighbours = prefs.getHcdfPeakPickingNeighbours();
+    unsigned int neighbours = params.getHcdfPeakPickingNeighbours();
     for (unsigned int hop=0; hop<rateOfChange.size(); hop++){
       bool peak = true;
       for (int i =- (signed)neighbours; i <= (signed)neighbours; i++)

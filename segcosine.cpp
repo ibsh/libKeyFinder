@@ -27,11 +27,11 @@ namespace KeyFinder{
     pi = (4 * atan(1.0));
   }
 
-  std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& prefs){
+  std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params){
     unsigned int hops = ch.getHops();
     unsigned int bins = ch.getBins();
-    unsigned int gaussianSize = prefs.getHcdfGaussianSize();
-    float gaussianSigma = prefs.getHcdfGaussianSigma();
+    unsigned int gaussianSize = params.getHcdfGaussianSize();
+    float gaussianSigma = params.getHcdfGaussianSigma();
     unsigned int padding = 0; // as opposed to gaussianSize/2
     std::vector<float> cosine(hops+padding);
     for (unsigned int hop = 0; hop < hops; hop++){
@@ -78,10 +78,10 @@ namespace KeyFinder{
     return rateOfChange;
   }
 
-  std::vector<unsigned int> CosineHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& prefs){
+  std::vector<unsigned int> CosineHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& params){
     // Pick peaks
     std::vector<unsigned int> changes(1); // start vector with a 0 to enable first classification
-    unsigned int neighbours = prefs.getHcdfPeakPickingNeighbours();
+    unsigned int neighbours = params.getHcdfPeakPickingNeighbours();
     for (unsigned int hop = 0; hop < rateOfChange.size(); hop++){
       bool peak = true;
       for (int i = -neighbours; i <= (signed)neighbours; i++)

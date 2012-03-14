@@ -24,7 +24,7 @@ QT -= gui
 TARGET = KeyFinder
 TEMPLATE = lib
 
-VERSION = 0.1.0
+VERSION = 0.1.1
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -67,7 +67,8 @@ SOURCES += \
     fftppdirectsk.cpp \
     spectrumanalyserfftw.cpp \
     segarbitrary.cpp \
-    audiostream.cpp
+    audiostream.cpp \
+    exception.cpp
 
 OTHER_FILES += README
 
@@ -109,3 +110,4 @@ unix:!symbian {
     }
     INSTALLS += target
 }
+

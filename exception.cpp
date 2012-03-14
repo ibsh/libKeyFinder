@@ -19,18 +19,17 @@
 
 *************************************************************************/
 
-#include "segnone.h"
+#include "exception.h"
 
 namespace KeyFinder{
 
-  std::vector<float> NoSeg::getRateOfChange(const Chromagram& ch, const Parameters& /*params*/){
-    std::vector<float> NoChange(ch.getHops());
-    return NoChange;
+  Exception::Exception(const std::string& m){
+    msg = m;
   }
 
-  std::vector<unsigned int> NoSeg::getSegments(const std::vector<float>& /*rateOfChange*/, const Parameters& /*params*/){
-    std::vector<unsigned int> noChanges(1);
-    return noChanges;
+  std::string Exception::what() const{
+    return msg;
   }
 
 } // namespace
+

@@ -25,14 +25,16 @@
 
 namespace KeyFinder{
 
-  FftPostProcessor* FftPostProcessor::getFftPostProcessor(unsigned int fr, const Parameters& prefs){
-    return new DirectSkPostProc(fr, prefs);
+  FftPostProcessor* FftPostProcessor::getFftPostProcessor(unsigned int fr, const Parameters& params){
+    return new DirectSkPostProc(fr, params);
   }
 
-  FftPostProcessor::FftPostProcessor(unsigned int f, const Parameters& prefs){
-    frameRate = f;
-    bins = prefs.getOctaves() * prefs.getBpo();
-    fftFrameSize = prefs.getFftFrameSize();
+  FftPostProcessor::FftPostProcessor(unsigned int fr, const Parameters& params){
+    if(fr < 1)
+      throw Exception("Frame rate must be > 0");
+    frameRate = fr;
+    bins = params.getOctaves() * params.getBpo();
+    fftFrameSize = params.getFftFrameSize();
   }
 
   FftPostProcessor::~FftPostProcessor(){ }

@@ -36,7 +36,7 @@ namespace KeyFinder{
     virtual Chromagram* chromagram(const AudioStream&) = 0;
     virtual ~SpectrumAnalyser();
   protected:
-    mutable QMutex mutex; // used to make chromagram generation thread-safe
+    mutable QMutex analyserMutex; // used to make chromagram generation thread-safe
     unsigned int bins;
     unsigned int hopSize;
     unsigned int frameRate;

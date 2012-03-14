@@ -41,7 +41,7 @@ namespace KeyFinder{
     ToneProfile* major;
     ToneProfile* minor;
     ToneProfile* silence;
-    char similarityMeasure;
+    similarity_measure_t similarityMeasure;
   };
 
 } // namespace

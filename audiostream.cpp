@@ -30,6 +30,8 @@ namespace KeyFinder{
   }
 
   void AudioStream::setChannels(unsigned int n){
+    if(n < 1)
+      throw Exception("Channels must be > 0");
     channels = n;
   }
 
@@ -38,23 +40,27 @@ namespace KeyFinder{
   }
 
   void AudioStream::setFrameRate(unsigned int n){
+    if(n < 1)
+      throw Exception("Frame rate must be > 0");
     frameRate = n;
   }
 
   float AudioStream::getSample(unsigned int n) const{
-    if(n < samples){
-      return stream[n];
-    }else{
-      qDebug("Attempt to get out-of-bounds sample (%d/%d)",n,samples);
-      return 0;
+    if(n >= samples){
+      std::ostringstream ss;
+      ss << "Cannot get out-of-bounds sample (" << n << "/" << samples << ")";
+      throw Exception(ss.str());
     }
+    return stream[n];
   }
 
   void AudioStream::setSample(unsigned int n,float x){
-    if(n < samples)
-      stream[n] = x;
-    else
-      qDebug("Attempt to set out-of-bounds sample (%d/%d)",n,samples);
+    if(n >= samples){
+      std::ostringstream ss;
+      ss << "Cannot set out-of-bounds sample (" << n << "/" << samples << ")";
+      throw Exception(ss.str());
+    }
+    stream[n] = x;
   }
 
   void AudioStream::addToSampleCount(unsigned int newSamples){
@@ -62,8 +68,9 @@ namespace KeyFinder{
       stream.resize(samples + newSamples);
       samples += newSamples;
     }catch(...){
-      qCritical("Memory allocation failure adding %d samples to audio stream of size %d", newSamples, samples);
-      throw Exception();
+      std::ostringstream ss;
+      ss << "Memory allocation failure adding " << newSamples << " samples to audio stream of size " << samples;
+      throw Exception(ss.str());
     }
   }
 

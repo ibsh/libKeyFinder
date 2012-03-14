@@ -36,48 +36,52 @@ namespace KeyFinder{
   }
 
   float Chromagram::getMagnitude(unsigned int h, unsigned int b) const{
-    if(h > hops){
-      std::cerr << "Attempt to get magnitude of out-of-bounds hop (" << h << "/" << hops << ")" << std::endl;
-      return 0;
+    if(h >= hops){
+      std::ostringstream ss;
+      ss << "Cannot get magnitude of out-of-bounds hop (" << h << "/" << hops << ")";
+      throw Exception(ss.str());
     }
-    if(b > bins){
-      std::cerr << "Attempt to get magnitude of out-of-bounds bin (" << b << "/" << bins << ")" << std::endl;
-      return 0;
+    if(b >= bins){
+      std::ostringstream ss;
+      ss << "Cannot get magnitude of out-of-bounds bin (" << b << "/" << bins << ")";
+      throw Exception(ss.str());
     }
     return chromaData[h][b];
   }
 
   void Chromagram::setMagnitude(unsigned int h, unsigned int b, float val){
-    if(h > hops){
-      std::cerr << "Attempt to set magnitude of out-of-bounds hop (" << h << "/" << hops << ")" << std::endl;
-      return;
+    if(h >= hops){
+      std::ostringstream ss;
+      ss << "Cannot set magnitude of out-of-bounds hop (" << h << "/" << hops << ")";
+      throw Exception(ss.str());
     }
-    if(b > bins){
-      std::cerr << "Attempt to set magnitude of out-of-bounds bin (" << b << "/" << bins << ")" << std::endl;
-      return;
+    if(b >= bins){
+      std::ostringstream ss;
+      ss << "Cannot set magnitude of out-of-bounds bin (" << b << "/" << bins << ")";
+      throw Exception(ss.str());
     }
     chromaData[h][b] = val;
   }
 
-  void Chromagram::reduceTuningBins(const Parameters& prefs){
-    unsigned int oct = prefs.getOctaves();
+  void Chromagram::reduceTuningBins(const Parameters& params){
+    unsigned int oct = params.getOctaves();
     if(bins == 12 * oct)
       return;
-    if (prefs.getTuningMethod()==1){
-      tuningBinAdaptive(prefs);
+    if (params.getTuningMethod() == TUNING_BIN_ADAPTIVE){
+      tuningBinAdaptive(params);
     }else{
-      tuningHarte(prefs);
+      tuningHarte(params);
     }
   }
 
-  void Chromagram::tuningHarte(const Parameters& prefs){
-    /*
-  This is quite involved, and it's only an approximation of Harte's method
-  based on his thesis rather than a port of his code, but it works well for
-  e.g. Strawberry Fields Forever and other recordings he mentioned as being
-  difficult from a tuning perspective.
-  */
-    unsigned int oct = prefs.getOctaves();
+  void Chromagram::tuningHarte(const Parameters& params){
+  /*
+   * This is quite involved, and it's only an approximation of Harte's method
+   * based on his thesis rather than a port of his code, but it works well for
+   * e.g. Strawberry Fields Forever and other recordings he mentioned as being
+   * difficult from a tuning perspective.
+   */
+    unsigned int oct = params.getOctaves();
     unsigned int bps = (bins/oct)/12;
     // find peaks; anything that's higher energy than the mean for this hop and higher energy than its neighbours.
     std::vector<std::vector<float> > peakLocations;
@@ -98,7 +102,7 @@ namespace KeyFinder{
           peakBins.push_back(bin);
         }
       }
-      // quadratic unsigned interpolation to find a more precise peak position and magnitude.
+      // quadratic interpolation to find a more precise peak position and magnitude.
       std::vector<float> peakLocationsRow;
       std::vector<float> peakMagnitudesRow;
       for (unsigned int peak=0; peak<peakBins.size(); peak++){
@@ -161,13 +165,13 @@ namespace KeyFinder{
     bins = 12 * oct;
   }
 
-  void Chromagram::tuningBinAdaptive(const Parameters& prefs){
-    /*
-  This is designed to tune for each semitone bin rather than for the whole
-  recording; aimed at dance music with individually detuned elements, rather
-  than music that is unsigned internally consistent but off concert pitch.
-  */
-    unsigned int oct = prefs.getOctaves();
+  void Chromagram::tuningBinAdaptive(const Parameters& params){
+  /*
+   * This is designed to tune for each semitone bin rather than for the whole
+   * recording; aimed at dance music with individually detuned elements, rather
+   * than music that is unsigned internally consistent but off concert pitch.
+   */
+    unsigned int oct = params.getOctaves();
     unsigned int bps = (bins/oct)/12;
     std::vector<std::vector<float> > twelveBpoChroma(hops,std::vector<float>(12*oct));
     for (unsigned int st = 0; st < 12*oct; st++){
@@ -187,7 +191,7 @@ namespace KeyFinder{
       for (unsigned int h = 0; h < hops; h++){
         float weighted = 0.0;
         for (unsigned int b = 0; b < bps; b++)
-          weighted += (chromaData[h][st*bps+b] * (b == whichBin ? 1.0 : prefs.getDetunedBandWeight()));
+          weighted += (chromaData[h][st*bps+b] * (b == whichBin ? 1.0 : params.getDetunedBandWeight()));
         twelveBpoChroma[h][st] = weighted;
       }
     }
@@ -195,8 +199,8 @@ namespace KeyFinder{
     bins = 12 * oct;
   }
 
-  void Chromagram::reduceToOneOctave(const Parameters& prefs){
-    unsigned int oct = prefs.getOctaves();
+  void Chromagram::reduceToOneOctave(const Parameters& params){
+    unsigned int oct = params.getOctaves();
     unsigned int bpo = bins/oct;
     if(bpo == bins)
       return;

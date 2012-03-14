@@ -22,9 +22,18 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
+#include <string>
+#include <sstream>
+
 namespace KeyFinder{
 
-  class Exception{ };
+  class Exception{
+  public:
+    Exception(const std::string&);
+    std::string what() const;
+  private:
+    std::string msg;
+  };
 
 } // namespace
 
