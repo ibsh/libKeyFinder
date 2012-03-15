@@ -155,7 +155,7 @@ namespace KeyFinder{
     hcdfGaussianSigma = sigma;
   }
   void Parameters::setStartingFreqA(float a){
-    if(a <= 27.5) throw Exception("Starting frequency must be >= 27.5 Hz");
+    if(a < 27.5) throw Exception("Starting frequency must be >= 27.5 Hz");
     if(
       a != 27.5 && a != 55.0 && a != 110.0 && a != 220.0 &&
       a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
