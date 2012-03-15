@@ -2,3 +2,21 @@ libKeyFinder can be used to estimate the musical key of digital recordings.
 
 It is the basis of the KeyFinder GUI app, which is available as a binary download
 for Mac OSX and Windows at www.ibrahimshaath.co.uk/keyfinder
+
+For the most basic use case:
+
+  static KeyFinder::KeyFinder kf;                                      // static because it retains useful resources between uses
+
+  KeyFinder::Parameters params;                                        // usually best to leave it at its defaults.
+
+  KeyFinder::AudioData audio;                                          // empty audio object
+  audio.setFrameRate(yourAudioBuffer.framerate);                       // for best results downsample your audio to 4410 Hz
+  audio.setChannels(x);                                                // KF will reduce to mono if you don't
+  audio.addToSampleCount(yourAudioBuffer.length);                      // prepare sufficient space in audio object
+  while (int i = 0; i < z; i++){
+    audio.setSample(yourAudioBuffer[i]);                               // copy your audio into the object
+  }
+
+  KeyFinder::KeyDetectionResult result =  kf.findKey(audio, params);   // run analysis
+
+  return result.globalKeyEstimate;                                     // get result!
