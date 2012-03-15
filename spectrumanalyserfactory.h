@@ -22,7 +22,7 @@
 #ifndef SPECTRUMANALYSERFACTORY_H
 #define SPECTRUMANALYSERFACTORY_H
 
-#include <QMutexLocker>
+#include <boost/thread/mutex.hpp>
 
 #include "spectrumanalyser.h"
 #include "spectrumanalyserfftw.h"
@@ -54,7 +54,7 @@ namespace KeyFinder{
     SpectrumAnalyser* getSpectrumAnalyser(unsigned int, const Parameters&);
   private:
     std::vector<SpectrumAnalyserWrapper*> analysers;
-    mutable QMutex factoryMutex; // for thread safety
+    boost::mutex factoryMutex;
   };
 
 } // namespace

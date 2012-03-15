@@ -39,7 +39,7 @@ namespace KeyFinder{
     hcdfGaussianSize = 35;
     hcdfGaussianSigma = 8.0;
     hcdfPeakPickingNeighbours = 4;
-    hcdfArbitrarySegments = 3;
+    arbitrarySegments = 3;
     toneProfile = TONE_PROFILE_SHAATH;
     similarityMeasure = SIMILARITY_COSINE;
     float custom[24] = {1,0,1,0,1,1,0,1,0,1,0,1, 1,0,1,1,0,1,0,1,1,0,1,0}; // major, minor
@@ -60,7 +60,7 @@ namespace KeyFinder{
       toneProfile = that.toneProfile;
       similarityMeasure = that.similarityMeasure;
       hcdfPeakPickingNeighbours = that.hcdfPeakPickingNeighbours;
-      hcdfArbitrarySegments = that.hcdfArbitrarySegments;
+      arbitrarySegments = that.arbitrarySegments;
       hcdfGaussianSize = that.hcdfGaussianSize;
       tuningMethod = that.tuningMethod;
       hcdfGaussianSigma = that.hcdfGaussianSigma;
@@ -103,7 +103,7 @@ namespace KeyFinder{
   tone_profile_t       Parameters::getToneProfile()               const { return toneProfile; }
   tuning_method_t      Parameters::getTuningMethod()              const { return tuningMethod; }
   unsigned int         Parameters::getHcdfPeakPickingNeighbours() const { return hcdfPeakPickingNeighbours; }
-  unsigned int         Parameters::getHcdfArbitrarySegments()     const { return hcdfArbitrarySegments; }
+  unsigned int         Parameters::getArbitrarySegments()         const { return arbitrarySegments; }
   unsigned int         Parameters::getHcdfGaussianSize()          const { return hcdfGaussianSize; }
   float                Parameters::getHcdfGaussianSigma()         const { return hcdfGaussianSigma; }
   float                Parameters::getStartingFreqA()             const { return stFreq; }
@@ -112,7 +112,6 @@ namespace KeyFinder{
   std::vector<float>   Parameters::getCustomToneProfile()         const { return customToneProfile; }
 
   // basic mutators
-  void Parameters::setOffsetToC(bool off)                         { offsetToC = off; }
   void Parameters::setTemporalWindow(temporal_window_t window)    { temporalWindow = window; }
   void Parameters::setSegmentation(segmentation_t f)              { segmentation = f; }
   void Parameters::setSimilarityMeasure(similarity_measure_t msr) { similarityMeasure = msr; }
@@ -120,7 +119,11 @@ namespace KeyFinder{
   void Parameters::setHcdfPeakPickingNeighbours(unsigned int n)   { hcdfPeakPickingNeighbours = n; }
   void Parameters::setTuningMethod(tuning_method_t tune)          { tuningMethod = tune; }
 
-  // mutators requiring validation
+  // mutators requiring validation or further work
+  void Parameters::setOffsetToC(bool off){
+    offsetToC = off;
+    generateBinFreqs();
+  }
   void Parameters::setHopSize(unsigned int size){
     if(size < 1) throw Exception("Hop size must be > 0");
     hopSize = size;
@@ -132,14 +135,16 @@ namespace KeyFinder{
   void Parameters::setOctaves(unsigned int oct){
     if(oct < 1) throw Exception("Octaves must be > 0");
     octaves = oct;
+    generateBinFreqs();
   }
   void Parameters::setBps(unsigned int bands){
     if(bands < 1) throw Exception("Octaves must be > 0");
     bps = bands;
+    generateBinFreqs();
   }
-  void Parameters::setHcdfArbitrarySegments(unsigned int s){
+  void Parameters::setArbitrarySegments(unsigned int s){
     if(s < 1) throw Exception("Arbitrary segments must be > 0");
-    hcdfArbitrarySegments = s;
+    arbitrarySegments = s;
   }
   void Parameters::setHcdfGaussianSize(unsigned int size){
     if(size < 1) throw Exception("Gaussian size must be > 0");
@@ -156,6 +161,7 @@ namespace KeyFinder{
       a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
     ) throw Exception("Starting frequency must be an A (2^n * 27.5 Hz)");
     stFreq = a;
+    generateBinFreqs();
   }
   void Parameters::setDirectSkStretch(float stretch){
     if(stretch <= 0) throw Exception("Spectral kernel stretch must be > 0");
@@ -173,7 +179,7 @@ namespace KeyFinder{
     customToneProfile = v;
   }
 
-  // TODO check that last frequency doesn't go over Nyquist, and maybe some other stuff (low end resolution?).
+  // TODO check that last frequency doesn't go over Nyquist, and sufficient low end resolution.
   void Parameters::generateBinFreqs(){
     unsigned int bpo = bps * 12;
     binFreqs.clear();

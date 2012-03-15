@@ -22,12 +22,11 @@
 #ifndef KEYDETECTIONRESULT_H
 #define KEYDETECTIONRESULT_H
 
-#include "_GLOBAL.h"
 #include "chromagram.h"
 
 namespace KeyFinder{
 
-  class LIBKEYFINDERSHARED_EXPORT KeyDetectionSegment{
+  class KeyDetectionSegment{
   public:
     key_t key;
     unsigned int firstWindow;
@@ -36,7 +35,7 @@ namespace KeyFinder{
     float energy;
   };
 
-  class LIBKEYFINDERSHARED_EXPORT KeyDetectionResult{
+  class KeyDetectionResult{
   public:
     Chromagram fullChromagram;
     Chromagram oneOctaveChromagram;

@@ -30,7 +30,7 @@ namespace KeyFinder{
 
   std::vector<unsigned int> ArbitrarySeg::getSegments(const std::vector<float>& rateOfChange, const Parameters& params){
     // Divide by arbitrary number of segments
-    unsigned int segments = params.getHcdfArbitrarySegments();
+    unsigned int segments = params.getArbitrarySegments();
     std::vector<unsigned int> changes(1); // start vector with a 0 to enable first classification
     if(rateOfChange.size() <= segments){
       return changes;

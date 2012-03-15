@@ -22,8 +22,6 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 
-// #include <QtGlobal>
-
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
@@ -95,8 +93,8 @@ namespace KeyFinder{
     unsigned int getFftFrameSize() const;
     unsigned int getOctaves() const;
     unsigned int getBpo() const;
+    unsigned int getArbitrarySegments() const;
     unsigned int getHcdfPeakPickingNeighbours() const;
-    unsigned int getHcdfArbitrarySegments() const;
     unsigned int getHcdfGaussianSize() const;
     float getHcdfGaussianSigma() const;
     float getStartingFreqA() const;
@@ -117,8 +115,8 @@ namespace KeyFinder{
     void setFftFrameSize(unsigned int);
     void setOctaves(unsigned int);
     void setBps(unsigned int);
+    void setArbitrarySegments(unsigned int);
     void setHcdfPeakPickingNeighbours(unsigned int);
-    void setHcdfArbitrarySegments(unsigned int);
     void setHcdfGaussianSize(unsigned int);
     void setHcdfGaussianSigma(float);
     void setStartingFreqA(float);
@@ -137,8 +135,8 @@ namespace KeyFinder{
     unsigned int fftFrameSize;
     unsigned int octaves;
     unsigned int bps;
+    unsigned int arbitrarySegments;
     unsigned int hcdfPeakPickingNeighbours;
-    unsigned int hcdfArbitrarySegments;
     unsigned int hcdfGaussianSize;
     float hcdfGaussianSigma;
     float stFreq;

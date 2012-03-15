@@ -26,12 +26,11 @@
 #include <iostream>
 #include <vector>
 
-#include "_GLOBAL.h"
 #include "exception.h"
 
 namespace KeyFinder{
 
-  class LIBKEYFINDERSHARED_EXPORT AudioData{
+  class AudioData{
   public:
     AudioData();
 

@@ -1,10 +1,6 @@
 #ifndef KEYFINDER_H
 #define KEYFINDER_H
 
-#include <map>
-
-#include "_GLOBAL.h"
-
 #include "audiodata.h"
 #include "parameters.h"
 #include "spectrumanalyserfactory.h"
@@ -14,7 +10,7 @@
 
 namespace KeyFinder{
 
-  class LIBKEYFINDERSHARED_EXPORT KeyFinder {
+  class KeyFinder {
   public:
     KeyDetectionResult findKey(AudioData&, const Parameters&);
   private:

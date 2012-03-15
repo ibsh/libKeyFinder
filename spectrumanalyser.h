@@ -22,7 +22,7 @@
 #ifndef SPECTRUMANALYSER_H
 #define SPECTRUMANALYSER_H
 
-#include <QMutexLocker>
+#include <boost/thread/mutex.hpp>
 
 #include "chromagram.h"
 #include "audiodata.h"
@@ -36,10 +36,10 @@ namespace KeyFinder{
     virtual Chromagram* chromagram(const AudioData&) = 0;
     virtual ~SpectrumAnalyser();
   protected:
-    mutable QMutex analyserMutex; // used to make chromagram generation thread-safe
     unsigned int bins;
     unsigned int hopSize;
     unsigned int frameRate;
+    boost::mutex analyserMutex;
   };
 
 } // namespace

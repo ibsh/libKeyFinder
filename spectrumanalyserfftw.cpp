@@ -47,7 +47,7 @@ namespace KeyFinder{
   }
 
   Chromagram* FftwAnalyser::chromagram(const AudioData& audio){
-    QMutexLocker locker(&analyserMutex); // Mutex this function
+    boost::mutex::scoped_lock lock(analyserMutex);
     Chromagram* ch = new Chromagram((audio.getSampleCount()/hopSize) + 1,bins);
     for (unsigned int i = 0; i < audio.getSampleCount(); i += hopSize){
       for (unsigned int j = 0; j < fftFrameSize; j++){

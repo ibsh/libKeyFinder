@@ -20,16 +20,16 @@
 #*************************************************************************
 
 QT -= gui
+CONFIG -= qt
 
-TARGET = KeyFinder
+TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.1.1
+VERSION = 0.1.3
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
 HEADERS += \
-    _GLOBAL.h \
     keyfinder.h \
     chromagram.h \
     windowfunctions.h \
@@ -81,6 +81,8 @@ macx{
   INCLUDEPATH += /usr/local/include
   CONFIG -= ppc ppc64
   CONFIG += x86 x86_64
+  target.path = /usr/local/lib
+  INSTALLS += target
 }
 
 win32{
@@ -110,8 +112,3 @@ unix:!symbian {
     }
     INSTALLS += target
 }
-
-
-
-
-

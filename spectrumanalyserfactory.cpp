@@ -55,7 +55,7 @@ namespace KeyFinder{
   }
 
   SpectrumAnalyser* SpectrumAnalyserFactory::getSpectrumAnalyser(unsigned int f, const Parameters& p){
-    QMutexLocker locker(&factoryMutex); // This function should be accessed by only one thread at a time
+    boost::mutex::scoped_lock lock(factoryMutex);
     for (unsigned int i=0; i<analysers.size(); i++)
       if(analysers[i]->chkFrameRate() == f && p.equivalentForSpectralAnalysis(analysers[i]->chkParams()))
         return analysers[i]->getSpectrumAnalyser();
