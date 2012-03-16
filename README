@@ -1,22 +1,24 @@
 libKeyFinder can be used to estimate the musical key of digital recordings.
 
-It is the basis of the KeyFinder GUI app, which is available as a binary download
-for Mac OSX and Windows at www.ibrahimshaath.co.uk/keyfinder
+It is the basis of the KeyFinder GUI app, which is available as a binary download for Mac OSX and Windows at www.ibrahimshaath.co.uk/keyfinder
 
-For the most basic use case:
+For the most basic use case, do something like this:
 
-  static KeyFinder::KeyFinder kf;                                      // static because it retains useful resources between uses
+static KeyFinder::KeyFinder k;                         // static because it retains useful resources
 
-  KeyFinder::Parameters params;                                        // usually best to leave it at its defaults.
+KeyFinder::Parameters p;                               // it's usually best to use the default parameters
+p.setHopSize(8192);                                    // but you can change stuff if you want
 
-  KeyFinder::AudioData audio;                                          // empty audio object
-  audio.setFrameRate(yourAudioBuffer.framerate);                       // for best results downsample your audio to 4410 Hz
-  audio.setChannels(x);                                                // KF will reduce to mono if you don't
-  audio.addToSampleCount(yourAudioBuffer.length);                      // prepare sufficient space in audio object
-  while (int i = 0; i < z; i++){
-    audio.setSample(yourAudioBuffer[i]);                               // copy your audio into the object
-  }
+KeyFinder::AudioData a;                                // build an empty audio object
 
-  KeyFinder::KeyDetectionResult result =  kf.findKey(audio, params);   // run analysis
+a.setFrameRate(yourAudioBuffer.framerate);             // for best results downsample your audio to 4410 Hz
+a.setChannels(yourAudioBuffer.channels);               // KF will reduce to mono if you don't
+a.addToSampleCount(yourAudioBuffer.length);            // prepare sufficient space in the audio object
 
-  return result.globalKeyEstimate;                                     // get result!
+while (int i = 0; i < yourAudioBuffer.length; i++) {
+  a.setSample(i, yourAudioBuffer[i]);                  // copy your audio into the object
+}
+
+KeyFinder::KeyDetectionResult r =  k.findKey(a, p);    // run the analysis
+
+doSomethingWith(r.globalKeyEstimate);                  // and do something with the result!

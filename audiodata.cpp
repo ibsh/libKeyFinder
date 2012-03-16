@@ -58,7 +58,7 @@ namespace KeyFinder{
     return samples[n];
   }
 
-  void AudioData::setSample(unsigned int n,float x){
+  void AudioData::setSample(unsigned int n, float x){
     if(n >= sampleCount){
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << n << "/" << sampleCount << ")";
