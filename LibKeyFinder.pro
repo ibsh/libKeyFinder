@@ -25,7 +25,7 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.1.3
+VERSION = 0.1.4
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -81,8 +81,11 @@ macx{
   INCLUDEPATH += /usr/local/include
   CONFIG -= ppc ppc64
   CONFIG += x86 x86_64
-  target.path = /usr/local/lib
-  INSTALLS += target
+# installs
+  QMAKE_LFLAGS_SONAME  = -Wl,-install_name,/usr/local/lib/
+  headers.path = /usr/local/include/$$TARGET
+  headers.files = $$HEADERS
+  INSTALLS += headers
 }
 
 win32{
@@ -108,7 +111,7 @@ unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
     } else {
-        target.path = /usr/lib
+        target.path = /usr/local/lib
     }
     INSTALLS += target
 }

@@ -42,7 +42,10 @@ namespace KeyFinder{
     arbitrarySegments = 3;
     toneProfile = TONE_PROFILE_SHAATH;
     similarityMeasure = SIMILARITY_COSINE;
-    float custom[24] = {1,0,1,0,1,1,0,1,0,1,0,1, 1,0,1,1,0,1,0,1,1,0,1,0}; // major, minor
+    float custom[24] = {
+      1,0,1,0,1,1,0,1,0,1,0,1, // major
+      1,0,1,1,0,1,0,1,1,0,1,0  // minor
+    };
     customToneProfile = std::vector<float> (&custom[0], &custom[24]);
     // and other prep
     generateBinFreqs();
@@ -176,10 +179,16 @@ namespace KeyFinder{
     for(unsigned int i = 0; i < 24; i++)
       if(v[i] < 0)
         throw Exception("Custom tone profile elements must be >= 0");
-    customToneProfile = v;
+    // Exception handling for occasional problem on OSX Leopard.
+    try{
+      customToneProfile = v;
+    }catch(const std::exception& e){
+      throw Exception(e.what());
+    }catch(...){
+      throw Exception("Unknown exception setting custom tone profile");
+    }
   }
 
-  // TODO check that last frequency doesn't go over Nyquist, and sufficient low end resolution.
   void Parameters::generateBinFreqs(){
     unsigned int bpo = bps * 12;
     binFreqs.clear();

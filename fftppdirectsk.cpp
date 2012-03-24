@@ -24,6 +24,7 @@
 namespace KeyFinder{
 
   DirectSkPostProc::DirectSkPostProc(unsigned int fr, const Parameters& params) : FftPostProcessor(fr, params) {
+    // TODO check that last frequency doesn't go over Nyquist, and for sufficient low end resolution.
     pi = (4 * atan(1.0));
     binOffsets = std::vector<unsigned int>(bins);
     mySpecKernel = std::vector<std::vector<float> >(bins,std::vector<float>(0));
