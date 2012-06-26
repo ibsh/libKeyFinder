@@ -169,7 +169,7 @@ namespace KeyFinder{
   /*
    * This is designed to tune for each semitone bin rather than for the whole
    * recording; aimed at dance music with individually detuned elements, rather
-   * than music that is unsigned internally consistent but off concert pitch.
+   * than music that is internally consistent but off concert pitch.
    */
     unsigned int oct = params.getOctaves();
     unsigned int bps = (bins/oct)/12;
