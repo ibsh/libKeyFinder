@@ -22,11 +22,11 @@
 #ifndef FFTWANALYSER_H
 #define FFTWANALYSER_H
 
+#include <fftw3.h>
 #include "spectrumanalyser.h"
 #include "fftpp.h"
 #include "fftppdirectsk.h"
 #include "windowfunctions.h"
-#include <fftw3.h>
 
 namespace KeyFinder{
 

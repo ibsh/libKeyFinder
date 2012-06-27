@@ -23,7 +23,6 @@
 #define SPECTRUMANALYSER_H
 
 #include <boost/thread/mutex.hpp>
-
 #include "chromagram.h"
 #include "audiodata.h"
 #include "parameters.h"

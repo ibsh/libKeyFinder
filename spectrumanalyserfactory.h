@@ -23,12 +23,10 @@
 #define SPECTRUMANALYSERFACTORY_H
 
 #include <boost/thread/mutex.hpp>
-
+#include <vector>
 #include "spectrumanalyser.h"
 #include "spectrumanalyserfftw.h"
 #include "parameters.h"
-
-#include <vector>
 
 namespace KeyFinder{
 

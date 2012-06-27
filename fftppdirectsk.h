@@ -22,13 +22,11 @@
 #ifndef DIRECTSKPOSTPROC_H
 #define DIRECTSKPOSTPROC_H
 
+#include <math.h>
+#include <vector>
 #include "fftpp.h"
 #include "parameters.h"
 #include "windowfunctions.h"
-#include <math.h>
-#include <iomanip>
-#include <stdlib.h>
-#include <vector>
 
 namespace KeyFinder{
 

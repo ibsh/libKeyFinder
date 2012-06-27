@@ -25,13 +25,12 @@ namespace KeyFinder{
 
   WindowFunction::WindowFunction(){
     pi = (4 * atan(1.0));
-    //pi = 3.14159265358979323846264338327950288419717;
   }
 
-  WindowFunction* WindowFunction::getWindowFunction(char c){
-    if(c == 'n'){
+  WindowFunction* WindowFunction::getWindowFunction(temporal_window_t w){
+    if(w == WINDOW_HANN){
       return new HannWindow();
-    }else if(c == 'b'){
+    }else if(w == WINDOW_BLACKMAN){
       return new BlackmanWindow();
     }else{
       return new HammingWindow();

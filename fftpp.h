@@ -22,8 +22,8 @@
 #ifndef FFTPOSTPROCESSOR_H
 #define FFTPOSTPROCESSOR_H
 
-#include "parameters.h"
 #include <fftw3.h>
+#include "parameters.h"
 
 namespace KeyFinder{
 

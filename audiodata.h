@@ -22,10 +22,8 @@
 #ifndef AUDIOSTREAM_H
 #define AUDIOSTREAM_H
 
-// #include <QtGlobal>
-#include <iostream>
+#include <sstream>
 #include <vector>
-
 #include "exception.h"
 
 namespace KeyFinder{

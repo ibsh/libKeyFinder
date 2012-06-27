@@ -22,10 +22,9 @@
 #ifndef CHROMAGRAM_H
 #define CHROMAGRAM_H
 
-#include "parameters.h"
 #include <vector>
 #include <math.h>
-#include <stdlib.h>
+#include "parameters.h"
 
 namespace KeyFinder{
 

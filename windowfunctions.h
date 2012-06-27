@@ -22,16 +22,15 @@
 #ifndef WINDOWFUNCTIONS_H
 #define WINDOWFUNCTIONS_H
 
-#include "parameters.h"
 #include <math.h>
-#include <stdlib.h>
+#include "parameters.h"
 
 namespace KeyFinder{
 
   class WindowFunction{
   public:
     WindowFunction();
-    static WindowFunction* getWindowFunction(char);
+    static WindowFunction* getWindowFunction(temporal_window_t);
     virtual float window(int, int) const = 0;
   protected:
     float pi;

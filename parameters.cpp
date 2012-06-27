@@ -76,7 +76,6 @@ namespace KeyFinder{
     return *this;
   }
 
-
   bool Parameters::equivalentForSpectralAnalysis(const Parameters& that) const{
     if(temporalWindow != that.temporalWindow)
       return false;
@@ -132,7 +131,7 @@ namespace KeyFinder{
     hopSize = size;
   }
   void Parameters::setFftFrameSize(unsigned int framesize){
-    if(framesize < 1) throw Exception("Hop size must be > 0");
+    if(framesize < 1) throw Exception("FFT frame size must be > 0");
     fftFrameSize = framesize;
   }
   void Parameters::setOctaves(unsigned int oct){
@@ -141,7 +140,7 @@ namespace KeyFinder{
     generateBinFreqs();
   }
   void Parameters::setBps(unsigned int bands){
-    if(bands < 1) throw Exception("Octaves must be > 0");
+    if(bands < 1) throw Exception("Bands per semitone must be > 0");
     bps = bands;
     generateBinFreqs();
   }

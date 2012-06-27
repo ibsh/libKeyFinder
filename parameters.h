@@ -23,11 +23,8 @@
 #define PARAMETERS_H
 
 #include <math.h>
-#include <iostream>
-#include <stdlib.h>
+#include <sstream>
 #include <vector>
-#include <cstring>
-
 #include "exception.h"
 
 namespace KeyFinder{

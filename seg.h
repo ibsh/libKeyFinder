@@ -22,13 +22,6 @@
 #ifndef HDCF_H
 #define HDCF_H
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <vector>
-#include <cmath>
-#include <math.h>
-#include <stdlib.h>
 #include "chromagram.h"
 #include "parameters.h"
 
