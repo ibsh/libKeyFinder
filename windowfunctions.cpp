@@ -30,10 +30,10 @@ namespace KeyFinder{
   WindowFunction* WindowFunction::getWindowFunction(temporal_window_t w){
     if(w == WINDOW_HANN){
       return new HannWindow();
-    }else if(w == WINDOW_BLACKMAN){
-      return new BlackmanWindow();
-    }else{
+    }else if(w == WINDOW_HAMMING){
       return new HammingWindow();
+    }else{
+      return new BlackmanWindow();
     }
   }
 

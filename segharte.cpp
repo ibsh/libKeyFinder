@@ -61,7 +61,7 @@ namespace KeyFinder{
     for (unsigned int hop=0; hop<hops; hop++){
       float taxicabNorm = 0.0;
       for (unsigned int bin=0; bin<bpo; bin++){
-        taxicabNorm += abs((float)ch.getMagnitude(hop,bin));
+        taxicabNorm += (float)fabs(ch.getMagnitude(hop,bin));
       }
       for (unsigned int d=0; d<dims; d++){
         float sum = 0.0;
