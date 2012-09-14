@@ -85,13 +85,9 @@ namespace KeyFinder{
   void AudioData::reduceToMono(){
     if(channels == 1) return;
     std::vector<float> newStream(sampleCount / channels);
-    for (unsigned int i = 0; i < sampleCount; i += channels){
-      float mono = 0.0;
+    for (unsigned int i = 0; i < sampleCount; i += channels)
       for (unsigned int j = 0; j < channels; j++)
-        mono += samples[i + j];
-      mono /= channels;
-      newStream[i/channels] = mono;
-    }
+        newStream[i/channels] += samples[i + j] / channels;
     samples = newStream;
     sampleCount /= channels;
     channels = 1;
