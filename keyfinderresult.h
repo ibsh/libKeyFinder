@@ -44,6 +44,6 @@ namespace KeyFinder{
     key_t globalKeyEstimate;
   };
 
-} // namespace
+}
 
-#endif // KEYDETECTIONRESULT_H
+#endif

@@ -31,5 +31,4 @@ namespace KeyFinder{
     return msg;
   }
 
-} // namespace
-
+}

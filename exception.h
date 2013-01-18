@@ -34,6 +34,6 @@ namespace KeyFinder{
     std::string msg;
   };
 
-} // namespace
+}
 
 #endif

@@ -25,57 +25,10 @@
 #include <math.h>
 #include <sstream>
 #include <vector>
+#include "constants.h"
 #include "exception.h"
 
 namespace KeyFinder{
-
-  enum key_t{
-    A_MAJOR,       A_MINOR,
-    B_FLAT_MAJOR,	 B_FLAT_MINOR,
-    B_MAJOR,       B_MINOR,
-    C_MAJOR,       C_MINOR,
-    D_FLAT_MAJOR,	 D_FLAT_MINOR,
-    D_MAJOR,       D_MINOR,
-    E_FLAT_MAJOR,	 E_FLAT_MINOR,
-    E_MAJOR,       E_MINOR,
-    F_MAJOR,       F_MINOR,
-    G_FLAT_MAJOR,	 G_FLAT_MINOR,
-    G_MAJOR,       G_MINOR,
-    A_FLAT_MAJOR,	 A_FLAT_MINOR,
-    SILENCE
-  };
-
-  enum temporal_window_t{
-    WINDOW_BLACKMAN,
-    WINDOW_HANN,
-    WINDOW_HAMMING
-  };
-
-  enum segmentation_t{
-    SEGMENTATION_NONE,
-    SEGMENTATION_ARBITRARY,
-    SEGMENTATION_COSINE,
-    SEGMENTATION_HARTE
-  };
-
-  enum similarity_measure_t{
-    SIMILARITY_COSINE,
-    SIMILARITY_CORRELATION
-  };
-
-  enum tone_profile_t{
-    TONE_PROFILE_SILENT,
-    TONE_PROFILE_KRUMHANSL,
-    TONE_PROFILE_TEMPERLEY,
-    TONE_PROFILE_GOMEZ,
-    TONE_PROFILE_SHAATH,
-    TONE_PROFILE_CUSTOM
-  };
-
-  enum tuning_method_t{
-    TUNING_HARTE,
-    TUNING_BIN_ADAPTIVE
-  };
 
   class Parameters{
   public:
@@ -86,8 +39,9 @@ namespace KeyFinder{
 
     // getters
     bool getOffsetToC() const;
-    unsigned int getHopSize() const;
     unsigned int getFftFrameSize() const;
+    unsigned int getHopsPerFrame() const;
+    unsigned int getHopSize() const;
     unsigned int getOctaves() const;
     unsigned int getBpo() const;
     unsigned int getArbitrarySegments() const;
@@ -108,8 +62,8 @@ namespace KeyFinder{
 
     // setters
     void setOffsetToC(bool);
-    void setHopSize(unsigned int);
     void setFftFrameSize(unsigned int);
+    void setHopsPerFrame(unsigned int);
     void setOctaves(unsigned int);
     void setBps(unsigned int);
     void setArbitrarySegments(unsigned int);
@@ -128,8 +82,8 @@ namespace KeyFinder{
 
   private:
     bool offsetToC;
-    unsigned int hopSize;
     unsigned int fftFrameSize;
+    unsigned int hopsPerFrame;
     unsigned int octaves;
     unsigned int bps;
     unsigned int arbitrarySegments;
@@ -150,6 +104,6 @@ namespace KeyFinder{
     void generateBinFreqs();
   };
 
-} // namespace
+}
 
 #endif

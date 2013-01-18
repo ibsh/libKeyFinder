@@ -25,7 +25,6 @@ namespace KeyFinder{
 
   DirectSkPostProc::DirectSkPostProc(unsigned int fr, const Parameters& params) : FftPostProcessor(fr, params) {
     // TODO check that last frequency doesn't go over Nyquist, and for sufficient low end resolution.
-    pi = (4 * atan(1.0));
     binOffsets = std::vector<unsigned int>(bins);
     mySpecKernel = std::vector<std::vector<float> >(bins,std::vector<float>(0));
     float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBpo()))-1);
@@ -70,7 +69,7 @@ namespace KeyFinder{
 
   float DirectSkPostProc::kernelWindow(float n, float N)const{
     // discretely sampled continuous function, but different to other window functions
-    return 1.0 - cos((2 * pi * n)/N); // based on Hann; no need to halve since we normalise later
+    return 1.0 - cos((2 * PI * n)/N); // based on Hann; no need to halve since we normalise later
   }
 
-} // namespace
+}

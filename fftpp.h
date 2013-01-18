@@ -39,6 +39,6 @@ namespace KeyFinder{
     unsigned int frameRate;
   };
 
-} // namespace
+}
 
 #endif

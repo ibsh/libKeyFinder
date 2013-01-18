@@ -46,6 +46,6 @@ namespace KeyFinder{
     void tuningBinAdaptive(const Parameters&);
   };
 
-} // namespace
+}
 
 #endif

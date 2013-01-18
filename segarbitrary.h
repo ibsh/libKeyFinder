@@ -32,6 +32,6 @@ namespace KeyFinder{
     virtual std::vector<unsigned int> getSegments(const std::vector<float>&, const Parameters&);
   };
 
-} // namespace
+}
 
-#endif // HCDFARBITRARY_H
+#endif

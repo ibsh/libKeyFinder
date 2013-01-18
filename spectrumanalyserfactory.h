@@ -52,9 +52,9 @@ namespace KeyFinder{
     SpectrumAnalyser* getSpectrumAnalyser(unsigned int, const Parameters&);
   private:
     std::vector<SpectrumAnalyserWrapper*> analysers;
-    boost::mutex factoryMutex;
+    boost::mutex spectrumAnalyserFactoryMutex;
   };
 
-} // namespace
+}
 
-#endif // SPECTRUMANALYSERFACTORY_H
+#endif

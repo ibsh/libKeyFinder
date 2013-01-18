@@ -38,9 +38,8 @@ namespace KeyFinder{
     std::vector<std::vector<float> > mySpecKernel; // ragged 2D array; narrow for bass, wide for treble.
     std::vector<unsigned int> binOffsets; // which fft bin to multiply by first coefficient.
     float kernelWindow(float,float)const;
-    float pi;
   };
 
-} // namespace
+}
 
 #endif

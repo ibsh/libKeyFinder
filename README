@@ -4,21 +4,33 @@ It is the basis of the KeyFinder GUI app, which is available as a binary downloa
 
 For the most basic use case, do something like this:
 
-static KeyFinder::KeyFinder k;                         // static because it retains useful resources
 
-KeyFinder::Parameters p;                               // it's usually best to use the default parameters
-p.setHopSize(8192);                                    // but you can change stuff if you want
 
-KeyFinder::AudioData a;                                // build an empty audio object
+// Static because it retains useful resources for repeat use
+static KeyFinder::KeyFinder k;
 
-a.setFrameRate(yourAudioBuffer.framerate);             // for best results downsample your audio to 4410 Hz
-a.setChannels(yourAudioBuffer.channels);               // KF will reduce to mono if you don't
-a.addToSampleCount(yourAudioBuffer.length);            // prepare sufficient space in the audio object
+// Prepare the default set of parameters
+KeyFinder::Parameters p;
 
-while (int i = 0; i < yourAudioBuffer.length; i++) {
-  a.setSample(i, yourAudioBuffer[i]);                  // copy your audio into the object
+// Build an empty audio object
+KeyFinder::AudioData a;
+
+// Prepare the object for your audio stream
+a.setFrameRate(yourAudioStream.framerate);
+a.setChannels(yourAudioStream.channels);
+a.addToSampleCount(yourAudioStream.length);
+
+// Copy your audio into the object
+while (int i = 0; i < yourAudioStream.length; i++) {
+  a.setSample(i, yourAudioStream[i]);
 }
 
-KeyFinder::KeyDetectionResult r =  k.findKey(a, p);    // run the analysis
+// Run the analysis
+KeyFinder::KeyDetectionResult r =  k.findKey(a, p);
 
-doSomethingWith(r.globalKeyEstimate);                  // and do something with the result!
+// And do something with the result!
+doSomethingWith(r.globalKeyEstimate);
+
+
+
+The low pass filter implementation is based on the work of Tony Fisher as shown at http://www-users.cs.york.ac.uk/~fisher/mkfilter/

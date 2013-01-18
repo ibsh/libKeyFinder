@@ -1,6 +1,6 @@
 #*************************************************************************
 #
-# Copyright 2012 Ibrahim Sha'ath
+# Copyright 2013 Ibrahim Sha'ath
 #
 # This file is part of LibKeyFinder.
 #
@@ -25,7 +25,7 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.1.6
+VERSION = 0.2.0
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -48,7 +48,12 @@ HEADERS += \
     fftpp.h \
     segarbitrary.h \
     keyfinderresult.h \
-    audiodata.h
+    audiodata.h \
+    lowpassfilterfactory.h \
+    lowpassfilter.h \
+    downsampler.h \
+    binode.h \
+    constants.h
 
 SOURCES += \
     keyfinder.cpp \
@@ -68,7 +73,10 @@ SOURCES += \
     spectrumanalyserfftw.cpp \
     segarbitrary.cpp \
     exception.cpp \
-    audiodata.cpp
+    audiodata.cpp \
+    lowpassfilterfactory.cpp \
+    lowpassfilter.cpp \
+    downsampler.cpp
 
 OTHER_FILES += README
 

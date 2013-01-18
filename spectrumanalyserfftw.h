@@ -34,7 +34,7 @@ namespace KeyFinder{
   public:
     FftwAnalyser(unsigned int, const Parameters&);
     ~FftwAnalyser();
-    virtual Chromagram* chromagram(const AudioData&);
+    virtual Chromagram* chromagram(AudioData*);
   private:
     unsigned int fftFrameSize;
     FftPostProcessor* pp;
@@ -44,6 +44,6 @@ namespace KeyFinder{
     std::vector<float> window;
   };
 
-} // namespace
+}
 
 #endif

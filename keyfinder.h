@@ -3,6 +3,8 @@
 
 #include "audiodata.h"
 #include "parameters.h"
+#include "lowpassfilterfactory.h"
+#include "downsampler.h"
 #include "spectrumanalyserfactory.h"
 #include "keyfinderresult.h"
 #include "seg.h"
@@ -12,11 +14,12 @@ namespace KeyFinder{
 
   class KeyFinder {
   public:
-    KeyDetectionResult findKey(AudioData&, const Parameters&);
+    KeyDetectionResult findKey(const AudioData&, const Parameters&);
   private:
+    LowPassFilterFactory    lpfFactory;
     SpectrumAnalyserFactory saFactory;
   };
 
-} // namespace
+}
 
-#endif // KEYFINDER_H
+#endif

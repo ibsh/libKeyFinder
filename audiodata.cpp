@@ -45,10 +45,6 @@ namespace KeyFinder{
     frameRate = n;
   }
 
-  std::vector<float>& AudioData::getSamples(){
-    return samples;
-  }
-
   float AudioData::getSample(unsigned int n) const{
     if(n >= sampleCount){
       std::ostringstream ss;
@@ -94,4 +90,4 @@ namespace KeyFinder{
     return;
   }
 
-} // namespace
+}

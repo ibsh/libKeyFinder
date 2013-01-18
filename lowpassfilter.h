@@ -19,27 +19,23 @@
 
 *************************************************************************/
 
-#include "segarbitrary.h"
+#ifndef LOWPASSFILTER_H
+#define LOWPASSFILTER_H
+
+#include <cmath>
+#include <fftw3.h>
+#include <vector>
+#include "windowfunctions.h"
 
 namespace KeyFinder{
 
-  std::vector<float> ArbitrarySeg::getRateOfChange(const Chromagram& ch, const Parameters& /*params*/){
-    std::vector<float> NoChange(ch.getHops());
-    return NoChange;
-  }
-
-  std::vector<unsigned int> ArbitrarySeg::getSegments(const std::vector<float>& rateOfChange, const Parameters& params){
-    // Divide by arbitrary number of segments
-    unsigned int segments = params.getArbitrarySegments();
-    std::vector<unsigned int> changes(1); // start vector with a 0 to enable first classification
-    if(rateOfChange.size() <= segments){
-      return changes;
-    }
-    float interval = rateOfChange.size() / segments;
-    for (unsigned int i = 1; i < segments; i++){
-      changes.push_back((unsigned int)(interval * i + 0.5));
-    }
-    return changes;
-  }
+  class LowPassFilter{
+  public:
+    LowPassFilter(unsigned int, unsigned int, float, unsigned int);
+    float gain;
+    std::vector<float> coefficients;
+  };
 
 }
+
+#endif

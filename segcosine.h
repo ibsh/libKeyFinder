@@ -28,13 +28,10 @@ namespace KeyFinder{
 
   class CosineHcdf : public Segmentation{
   public:
-    CosineHcdf();
     virtual std::vector<float> getRateOfChange(const Chromagram&, const Parameters&);
     virtual std::vector<unsigned int> getSegments(const std::vector<float>&, const Parameters&);
-  private:
-    double pi;
   };
 
-} // namespace
+}
 
-#endif // HCDFCOSINE_H
+#endif

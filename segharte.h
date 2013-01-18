@@ -28,14 +28,12 @@ namespace KeyFinder{
 
   class HarteHcdf : public Segmentation{
   public:
-    HarteHcdf();
     virtual std::vector<float> getRateOfChange(const Chromagram&, const Parameters&);
     virtual std::vector<unsigned int> getSegments(const std::vector<float>&, const Parameters&);
   private:
     float phi(int, int);
-    float pi;
   };
 
-} // namespace
+}
 
-#endif // HCDFHARTE_H
+#endif

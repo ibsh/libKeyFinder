@@ -46,16 +46,16 @@ namespace KeyFinder{
     fftw_free(fftResult);
   }
 
-  Chromagram* FftwAnalyser::chromagram(const AudioData& audio){
+  Chromagram* FftwAnalyser::chromagram(AudioData* audio){
     boost::mutex::scoped_lock lock(analyserMutex);
-    Chromagram* ch = new Chromagram((audio.getSampleCount()/hopSize) + 1,bins);
-    for (unsigned int i = 0; i < audio.getSampleCount(); i += hopSize){
+    Chromagram* ch = new Chromagram((audio->getSampleCount()/hopSize) + 1,bins);
+    for (unsigned int i = 0; i < audio->getSampleCount(); i += hopSize){
       for (unsigned int j = 0; j < fftFrameSize; j++){
-        if(i+j < audio.getSampleCount())
-          fftInput[j][0] = audio.getSample(i+j) * window[j]; // real part, windowed
+        if(i+j < audio->getSampleCount())
+          fftInput[j][0] = audio->getSample(i+j) * window[j]; // real part, windowed
         else
           fftInput[j][0] = 0.0; // zero-pad if no PCM data remaining
-        fftInput[j][1] = 0.0; // zero out imaginary part
+        fftInput[j][1] = 0.0;   // zero out imaginary part
       }
       fftw_execute(fftPlan);
       std::vector<float> cv = pp->chromaVector(fftResult);
@@ -65,4 +65,4 @@ namespace KeyFinder{
     return ch;
   }
 
-} // namespace
+}

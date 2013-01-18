@@ -23,10 +23,6 @@
 
 namespace KeyFinder{
 
-  CosineHcdf::CosineHcdf(){
-    pi = (4 * atan(1.0));
-  }
-
   std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params){
     unsigned int hops = ch.getHops();
     unsigned int bins = ch.getBins();
@@ -94,4 +90,4 @@ namespace KeyFinder{
     return changes;
   }
 
-} // namespace
+}

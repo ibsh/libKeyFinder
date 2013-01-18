@@ -31,4 +31,4 @@ namespace KeyFinder{
 
   SpectrumAnalyser::~SpectrumAnalyser(){ }
 
-} // namespace
+}

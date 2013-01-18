@@ -41,4 +41,4 @@ namespace KeyFinder{
 
   Segmentation::~Segmentation(){ }
 
-} // namespace
+}

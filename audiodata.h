@@ -36,7 +36,6 @@ namespace KeyFinder{
     unsigned int getFrameRate() const;
     float getSample(unsigned int) const;
     unsigned int getSampleCount() const;
-    std::vector<float>& getSamples();
 
     void setChannels(unsigned int);
     void setFrameRate(unsigned int);
@@ -51,6 +50,6 @@ namespace KeyFinder{
     unsigned int sampleCount;
   };
 
-} // namespace
+}
 
 #endif

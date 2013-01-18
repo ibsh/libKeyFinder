@@ -31,7 +31,7 @@ namespace KeyFinder{
     bps = 1;
     temporalWindow = WINDOW_BLACKMAN;
     fftFrameSize = 16384;
-    hopSize = fftFrameSize / 4;
+    hopsPerFrame = 4;
     directSkStretch = 0.8;
     tuningMethod = TUNING_HARTE;
     detunedBandWeight = 0.2;
@@ -55,8 +55,8 @@ namespace KeyFinder{
     if(this != &that){
       temporalWindow = that.temporalWindow;
       segmentation = that.segmentation;
-      hopSize = that.hopSize;
       fftFrameSize = that.fftFrameSize;
+      hopsPerFrame = that.hopsPerFrame;
       octaves = that.octaves;
       bps = that.bps;
       offsetToC = that.offsetToC;
@@ -98,8 +98,9 @@ namespace KeyFinder{
   temporal_window_t    Parameters::getTemporalWindow()            const { return temporalWindow; }
   segmentation_t       Parameters::getSegmentation()              const { return segmentation; }
   similarity_measure_t Parameters::getSimilarityMeasure()         const { return similarityMeasure; }
-  unsigned int         Parameters::getHopSize()                   const { return hopSize; }
   unsigned int         Parameters::getFftFrameSize()              const { return fftFrameSize; }
+  unsigned int         Parameters::getHopsPerFrame()              const { return hopsPerFrame; }
+  unsigned int         Parameters::getHopSize()                   const { return fftFrameSize / hopsPerFrame; }
   unsigned int         Parameters::getOctaves()                   const { return octaves; }
   unsigned int         Parameters::getBpo()                       const { return bps * 12; }
   tone_profile_t       Parameters::getToneProfile()               const { return toneProfile; }
@@ -126,13 +127,13 @@ namespace KeyFinder{
     offsetToC = off;
     generateBinFreqs();
   }
-  void Parameters::setHopSize(unsigned int size){
-    if(size < 1) throw Exception("Hop size must be > 0");
-    hopSize = size;
-  }
   void Parameters::setFftFrameSize(unsigned int framesize){
     if(framesize < 1) throw Exception("FFT frame size must be > 0");
     fftFrameSize = framesize;
+  }
+  void Parameters::setHopsPerFrame(unsigned int hpf){
+    if(hpf < 1) throw Exception("Hops per frame must be > 0");
+    hopsPerFrame = hpf;
   }
   void Parameters::setOctaves(unsigned int oct){
     if(oct < 1) throw Exception("Octaves must be > 0");
@@ -157,9 +158,8 @@ namespace KeyFinder{
     hcdfGaussianSigma = sigma;
   }
   void Parameters::setStartingFreqA(float a){
-    if(a < 27.5) throw Exception("Starting frequency must be >= 27.5 Hz");
     if(
-      a != 27.5 && a != 55.0 && a != 110.0 && a != 220.0 &&
+      a != 27.5  && a != 55.0  && a != 110.0  && a != 220.0  &&
       a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
     ) throw Exception("Starting frequency must be an A (2^n * 27.5 Hz)");
     stFreq = a;
@@ -227,4 +227,4 @@ namespace KeyFinder{
     return binFreqs[binFreqs.size()-1];
   }
 
-} // namespace
+}

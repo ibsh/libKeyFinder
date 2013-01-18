@@ -23,6 +23,7 @@
 #define TONEPROFILES_H
 
 #include "parameters.h"
+#include "binode.h"
 
 namespace KeyFinder{
 
@@ -34,18 +35,10 @@ namespace KeyFinder{
     float correlation(const std::vector<float>&, float, int) const;
   private:
     void free();
-    class Binode;
     Binode* tonic;
     float profileMean;
   };
 
-  class ToneProfile::Binode{
-  public:
-    Binode(float x): n(x), l(NULL), r(NULL){}
-    float n;
-    Binode *l, *r;
-  };
-
-} // namespace
+}
 
 #endif

@@ -32,7 +32,7 @@ namespace KeyFinder{
   class SpectrumAnalyser{
   public:
     SpectrumAnalyser(unsigned int, const Parameters&);
-    virtual Chromagram* chromagram(const AudioData&) = 0;
+    virtual Chromagram* chromagram(AudioData*) = 0;
     virtual ~SpectrumAnalyser();
   protected:
     unsigned int bins;
@@ -41,6 +41,6 @@ namespace KeyFinder{
     boost::mutex analyserMutex;
   };
 
-} // namespace
+}
 
 #endif

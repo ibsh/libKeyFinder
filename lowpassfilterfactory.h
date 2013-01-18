@@ -19,33 +19,41 @@
 
 *************************************************************************/
 
-#ifndef WINDOWFUNCTIONS_H
-#define WINDOWFUNCTIONS_H
+#ifndef LOWPASSFILTERFACTORY_H
+#define LOWPASSFILTERFACTORY_H
 
-#include <math.h>
+#include <boost/thread/mutex.hpp>
+#include <vector>
+#include "lowpassfilter.h"
 #include "parameters.h"
 
 namespace KeyFinder{
 
-  class WindowFunction{
+  class LowPassFilterWrapper{
   public:
-    static WindowFunction* getWindowFunction(temporal_window_t);
-    virtual float window(int, int) const = 0;
+    LowPassFilterWrapper(unsigned int, unsigned int, float, unsigned int, LowPassFilter*);
+    ~LowPassFilterWrapper();
+    LowPassFilter* getLowPassFilter() const;
+    unsigned int chkCoefficientCount() const;
+    unsigned int chkFrameRate() const;
+    float chkCornerFrequency() const;
+    unsigned int chkFftFrameSize() const;
+  private:
+    unsigned int coefficientCount;
+    unsigned int frameRate;
+    float cornerFrequency;
+    unsigned int fftFrameSize;
+    LowPassFilter* lpf;
   };
 
-  class HannWindow : public WindowFunction{
+  class LowPassFilterFactory{
   public:
-    virtual float window(int, int) const;
-  };
-
-  class HammingWindow : public WindowFunction{
-  public:
-    virtual float window(int, int) const;
-  };
-
-  class BlackmanWindow : public WindowFunction{
-  public:
-    virtual float window(int, int) const;
+    LowPassFilterFactory();
+    ~LowPassFilterFactory();
+    LowPassFilter* getLowPassFilter(unsigned int, unsigned int, float, unsigned int);
+  private:
+    std::vector<LowPassFilterWrapper*> filters;
+    boost::mutex LowPassFilterFactoryMutex;
   };
 
 }

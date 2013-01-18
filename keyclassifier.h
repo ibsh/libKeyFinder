@@ -40,6 +40,6 @@ namespace KeyFinder{
     similarity_measure_t similarityMeasure;
   };
 
-} // namespace
+}
 
 #endif

@@ -23,13 +23,9 @@
 
 namespace KeyFinder{
 
-  HarteHcdf::HarteHcdf(){
-    pi = (4 * atan(1.0));
-  }
-
   float HarteHcdf::phi(int d, int l){
     unsigned int circle = d/2;
-    float result = l * pi;
+    float result = l * PI;
     float radius = 0.0;
     if(circle == 0){
       result *= (7.0/6.0);
@@ -128,4 +124,4 @@ namespace KeyFinder{
     return changes;
   }
 
-} // namespace
+}

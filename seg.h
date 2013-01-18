@@ -35,6 +35,6 @@ namespace KeyFinder{
     virtual ~Segmentation();
   };
 
-} // namespace
+}
 
 #endif

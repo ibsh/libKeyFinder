@@ -39,4 +39,4 @@ namespace KeyFinder{
 
   FftPostProcessor::~FftPostProcessor(){ }
 
-} // namespace
+}
