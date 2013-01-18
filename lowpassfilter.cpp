@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2012 Ibrahim Sha'ath
+  Copyright 2011-2013 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -16,6 +16,13 @@
 
   You should have received a copy of the GNU General Public License
   along with LibKeyFinder.  If not, see <http://www.gnu.org/licenses/>.
+
+*************************************************************************/
+
+/*************************************************************************
+
+  The low pass filter implementation is based on the work of Tony Fisher,
+  as shown at http://www-users.cs.york.ac.uk/~fisher/mkfilter/
 
 *************************************************************************/
 
