@@ -19,25 +19,39 @@
 
 *************************************************************************/
 
-#ifndef DIRECTSKPOSTPROC_H
-#define DIRECTSKPOSTPROC_H
+#ifndef CHROMATRANSFORMFACTORY_H
+#define CHROMATRANSFORMFACTORY_H
 
-#include <math.h>
+#include <boost/thread/mutex.hpp>
 #include <vector>
-#include "fftpp.h"
+#include "chromatransform.h"
 #include "parameters.h"
-#include "windowfunctions.h"
 
 namespace KeyFinder{
 
-  class DirectSkPostProc : public FftPostProcessor{
+  // Keeps a reference to a spectrum analyser with distinguishing information
+  class ChromaTransformWrapper{
   public:
-    DirectSkPostProc(unsigned int, const Parameters&);
-    virtual std::vector<float> chromaVector(fftw_complex*)const;
+    ChromaTransformWrapper(unsigned int, const Parameters&, ChromaTransform*);
+    ~ChromaTransformWrapper();
+    ChromaTransform* getChromaTransform() const;
+    Parameters chkParams() const;
+    unsigned int chkFrameRate() const;
   private:
-    std::vector<std::vector<float> > mySpecKernel; // ragged 2D array; narrow for bass, wide for treble.
-    std::vector<unsigned int> binOffsets; // which fft bin to multiply by first coefficient.
-    float kernelWindow(float,float)const;
+    unsigned int frate;
+    Parameters params;
+    ChromaTransform* ct;
+  };
+
+  // Singleton. It holds all analysers generated in a session, to cut down on prep time.
+  class ChromaTransformFactory{
+  public:
+    ChromaTransformFactory();
+    ~ChromaTransformFactory();
+    ChromaTransform* getChromaTransform(unsigned int, const Parameters&);
+  private:
+    std::vector<ChromaTransformWrapper*> chromaTransforms;
+    boost::mutex chromaTransformFactoryMutex;
   };
 
 }

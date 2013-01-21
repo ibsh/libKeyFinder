@@ -53,10 +53,10 @@ namespace KeyFinder{
     unsigned int filterOrder = 160;
     unsigned int filterDelay = filterOrder/2;
     // create circular buffer for filter delay
-    Binode* p = new Binode(); // first node
-    Binode* q = p;
+    Binode<float>* p = new Binode<float>(); // first node
+    Binode<float>* q = p;
     for (unsigned int i=0; i<filterOrder; i++){
-      q->r = new Binode(); // subsequent nodes
+      q->r = new Binode<float>(); // subsequent nodes
       q->r->l = q;
       q = q->r;
     }
@@ -72,7 +72,7 @@ namespace KeyFinder{
       q = p;
       // clear delay buffer
       for (unsigned int k = 0; k <= filterOrder; k++){
-        q->n = 0.0;
+        q->data = 0.0;
         q = q->r;
       }
       // for each frame (running off the end of the sample stream by filterDelay)
@@ -83,15 +83,15 @@ namespace KeyFinder{
 
         // load new sample into delay buffer
         if (j < (signed)audioIn->getSampleCount())
-          p->l->n = audioIn->getSample(j) / lpf->gain;
+          p->l->data = audioIn->getSample(j) / lpf->gain;
         else
-          p->l->n = 0.0; // zero pad once we're into the delay at the end of the file
+          p->l->data = 0.0; // zero pad once we're into the delay at the end of the file
 
         if ((j % (downsampleFactor * c)) < c){ // only do the maths for the useful samples
           float sum = 0.0;
           q = p;
           for (unsigned int k = 0; k <= filterOrder; k++){
-            sum += lpf->coefficients[k] * q->n;
+            sum += lpf->coefficients[k] * q->data;
             q = q->r;
           }
           // don't try and set samples during the warm-up, only once we've passed filterDelay samples

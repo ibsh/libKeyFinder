@@ -62,7 +62,7 @@ namespace KeyFinder{
       }
       bestScore = silence->cosine(chroma, 0);
     }
-    // find best match, starting with silence
+    // find best match, defaulting to silence
     key_t bestMatch = SILENCE;
     for (unsigned int i=0; i<24; i++){
       if(scores[i] > bestScore){

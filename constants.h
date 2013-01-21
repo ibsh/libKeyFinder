@@ -52,8 +52,7 @@ namespace KeyFinder{
   enum segmentation_t{
     SEGMENTATION_NONE,
     SEGMENTATION_ARBITRARY,
-    SEGMENTATION_COSINE,
-    SEGMENTATION_HARTE
+    SEGMENTATION_COSINE
   };
 
   enum similarity_measure_t{

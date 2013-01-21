@@ -19,29 +19,27 @@
 
 *************************************************************************/
 
-#ifndef FFTWANALYSER_H
-#define FFTWANALYSER_H
+#ifndef CHROMATRANSFORM_H
+#define CHROMATRANSFORM_H
 
 #include <fftw3.h>
-#include "spectrumanalyser.h"
-#include "fftpp.h"
-#include "fftppdirectsk.h"
-#include "windowfunctions.h"
+#include "parameters.h"
 
 namespace KeyFinder{
 
-  class FftwAnalyser : public SpectrumAnalyser{
+  class ChromaTransform{
   public:
-    FftwAnalyser(unsigned int, const Parameters&);
-    ~FftwAnalyser();
-    virtual Chromagram* chromagram(AudioData*);
-  private:
+    ChromaTransform(unsigned int, const Parameters&);
+    std::vector<float> chromaVector(fftw_complex*) const;
+  protected:
+    unsigned int bins;
     unsigned int fftFrameSize;
-    FftPostProcessor* pp;
-    fftw_complex* fftInput;
-    fftw_complex* fftResult;
-    fftw_plan fftPlan;
-    std::vector<float> window;
+    unsigned int frameRate;
+    // ragged 2D array; narrow for bass, wide for treble.
+    std::vector<std::vector<float> > directSpectralKernel;
+    // which fft bin to multiply by first coefficient.
+    std::vector<unsigned int> binOffsets;
+    float kernelWindow(float,float)const;
   };
 
 }

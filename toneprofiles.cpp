@@ -117,10 +117,10 @@ namespace KeyFinder{
     }
 
     // copy into doubly-linked circular list
-    tonic = new Binode(p[0]);
-    Binode *q = tonic;
+    tonic = new Binode<float>(p[0]);
+    Binode<float> *q = tonic;
     for (unsigned int i=1; i<12; i++){
-      q->r = new Binode(p[i]);
+      q->r = new Binode<float>(p[i]);
       q->r->l = q;
       q = q->r;
     }
@@ -143,9 +143,9 @@ namespace KeyFinder{
   }
 
   void ToneProfile::free(){
-    Binode* p = tonic;
+    Binode<float>* p = tonic;
     do{
-      Binode* zap = p;
+      Binode<float>* zap = p;
       p = p->r;
       delete zap;
     }while(p!=tonic);
@@ -159,15 +159,15 @@ namespace KeyFinder{
   float ToneProfile::cosine(const std::vector<float>& input, int offset) const{
     // Rotate starting pointer left for offset. Each step shifts the position
     // of the tonic one step further right of the starting pointer (or one semitone up).
-    Binode* p = tonic;
+    Binode<float>* p = tonic;
     for (int i=0; i<offset; i++)
       p = p->l;
     float intersection = 0.0;
     float profileNorm = 0.0;
     float inputNorm = 0.0;
     for (int i=0; i<12; i++){
-      intersection += input[i] * p->n;
-      profileNorm += pow((p->n),2);
+      intersection += input[i] * p->data;
+      profileNorm += pow((p->data),2);
       inputNorm += pow((input[i]),2);
       p = p->r;
     }
@@ -183,14 +183,14 @@ namespace KeyFinder{
   offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
   */
   float ToneProfile::correlation(const std::vector<float>& input, float inputMean, int offset) const{
-    Binode* p = tonic;
+    Binode<float>* p = tonic;
     for (int i=0; i<offset; i++)
       p = p->l;
     float sumTop = 0.0;
     float sumBottomLeft = 0.0;
     float sumBottomRight = 0.0;
     for (int i=0; i<12; i++){
-      float xMinusXBar = p->n - profileMean;
+      float xMinusXBar = p->data - profileMean;
       float yMinusYBar = input[i] - inputMean;
       sumTop += xMinusXBar * yMinusYBar;
       sumBottomLeft += pow(xMinusXBar,2);

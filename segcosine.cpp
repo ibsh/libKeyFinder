@@ -26,8 +26,8 @@ namespace KeyFinder{
   std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params){
     unsigned int hops = ch.getHops();
     unsigned int bins = ch.getBins();
-    unsigned int gaussianSize = params.getHcdfGaussianSize();
-    float gaussianSigma = params.getHcdfGaussianSigma();
+    unsigned int gaussianSize = params.getSegGaussianSize();
+    float gaussianSigma = params.getSegGaussianSigma();
     unsigned int padding = 0; // as opposed to gaussianSize/2
     std::vector<float> cosine(hops+padding);
     for (unsigned int hop = 0; hop < hops; hop++){
@@ -66,7 +66,7 @@ namespace KeyFinder{
     for (unsigned int hop=1; hop<hops; hop++){
       float change = (smoothed[hop] - smoothed[hop-1]) / 90.0;
       change = (change >= 0 ? change : change * -1.0);
-      change = change / 0.16; // very cheeky magic number; for display purposes in KeyFinder GUI app
+      change /= 0.16; // very cheeky magic number; for display purposes in KeyFinder GUI app
       rateOfChange[hop] = change;
     }
     // fudge first
@@ -77,7 +77,7 @@ namespace KeyFinder{
   std::vector<unsigned int> CosineHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& params){
     // Pick peaks
     std::vector<unsigned int> changes(1); // start vector with a 0 to enable first classification
-    unsigned int neighbours = params.getHcdfPeakPickingNeighbours();
+    unsigned int neighbours = params.getSegPeakPickingNeighbours();
     for (unsigned int hop = 0; hop < rateOfChange.size(); hop++){
       bool peak = true;
       for (int i = -neighbours; i <= (signed)neighbours; i++)

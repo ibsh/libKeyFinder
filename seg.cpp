@@ -21,7 +21,6 @@
 
 #include "seg.h"
 
-#include "segharte.h"
 #include "segcosine.h"
 #include "segnone.h"
 #include "segarbitrary.h"
@@ -31,8 +30,6 @@ namespace KeyFinder{
   Segmentation* Segmentation::getSegmentation(const Parameters& params){
     if(params.getSegmentation() == SEGMENTATION_COSINE)
       return new CosineHcdf();
-    else if(params.getSegmentation() == SEGMENTATION_HARTE)
-      return new HarteHcdf();
     else if(params.getSegmentation() == SEGMENTATION_ARBITRARY)
       return new ArbitrarySeg();
     else

@@ -25,20 +25,27 @@
 #include <boost/thread/mutex.hpp>
 #include "chromagram.h"
 #include "audiodata.h"
+#include "chromatransformfactory.h"
 #include "parameters.h"
+#include "windowfunctions.h"
 
 namespace KeyFinder{
 
   class SpectrumAnalyser{
   public:
-    SpectrumAnalyser(unsigned int, const Parameters&);
-    virtual Chromagram* chromagram(AudioData*) = 0;
-    virtual ~SpectrumAnalyser();
+    SpectrumAnalyser(unsigned int, const Parameters&, ChromaTransformFactory*);
+    Chromagram* chromagram(AudioData*);
+    ~SpectrumAnalyser();
   protected:
     unsigned int bins;
     unsigned int hopSize;
     unsigned int frameRate;
-    boost::mutex analyserMutex;
+    unsigned int fftFrameSize;
+    ChromaTransform* ct;
+    fftw_complex* fftInput;
+    fftw_complex* fftOutput;
+    fftw_plan fftPlan;
+    WindowFunction* wf;
   };
 
 }

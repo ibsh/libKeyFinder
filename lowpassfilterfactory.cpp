@@ -66,7 +66,7 @@ namespace KeyFinder{
 
   LowPassFilter* LowPassFilterFactory::getLowPassFilter(unsigned int cc, unsigned int fr, float cf, unsigned int fs){
     boost::mutex::scoped_lock lock(LowPassFilterFactoryMutex);
-    for (unsigned int i=0; i<filters.size(); i++)
+    for (unsigned int i=0; i<filters.size(); i++){
       if(
         filters[i]->chkCoefficientCount() == cc &&
         filters[i]->chkFrameRate() == fr &&
@@ -75,7 +75,7 @@ namespace KeyFinder{
       ){
         return filters[i]->getLowPassFilter();
       }
-    // no match found, build a new low pass filter
+    }
     filters.push_back(
       new LowPassFilterWrapper(
         cc, fr, cf, fs, new LowPassFilter(cc, fr, cf, fs)

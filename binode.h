@@ -24,11 +24,12 @@
 
 namespace KeyFinder{
 
+  template <class T>
   class Binode{
   public:
-    Binode(float x = 0): l(NULL), r(NULL), n(x){}
+    Binode(T x = 0): l(NULL), r(NULL), data(x){}
     Binode* l, *r;
-    float n;
+    T data;
   };
 
 }

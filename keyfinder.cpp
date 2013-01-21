@@ -13,12 +13,13 @@ namespace KeyFinder{
     Downsampler ds;
     ds.downsample(workingAudio, params.getLastFreq(), &lpfFactory);
 
-    SpectrumAnalyser* sa = saFactory.getSpectrumAnalyser(workingAudio->getFrameRate(), params);
+    SpectrumAnalyser* sa = new SpectrumAnalyser(workingAudio->getFrameRate(), params, &ctFactory);
 
     // run spectral analysis
     Chromagram* ch = sa->chromagram(workingAudio);
 
     delete workingAudio;
+    delete sa;
 
     // reduce chromagram
     ch->reduceTuningBins(params);
@@ -37,7 +38,7 @@ namespace KeyFinder{
 
     // get key estimates for each segment
     KeyClassifier hc(params);
-    std::vector<float> keyWeights(24); // TODO: not ideal using int cast of key_t enum
+    std::vector<float> keyWeights(24); // TODO: not ideal using int cast of key_t enum. Hash?
 
     for (int s = 0; s < (signed)segmentBoundaries.size()-1; s++){
       KeyDetectionSegment segment;

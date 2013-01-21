@@ -35,7 +35,7 @@ namespace KeyFinder{
 
     Parameters();
     Parameters& operator=(const Parameters&);
-    bool equivalentForSpectralAnalysis(const Parameters&) const;
+    bool equivalentSpectralKernels(const Parameters&) const;
 
     // getters
     bool getOffsetToC() const;
@@ -45,9 +45,9 @@ namespace KeyFinder{
     unsigned int getOctaves() const;
     unsigned int getBpo() const;
     unsigned int getArbitrarySegments() const;
-    unsigned int getHcdfPeakPickingNeighbours() const;
-    unsigned int getHcdfGaussianSize() const;
-    float getHcdfGaussianSigma() const;
+    unsigned int getSegPeakPickingNeighbours() const;
+    unsigned int getSegGaussianSize() const;
+    float getSegGaussianSigma() const;
     float getStartingFreqA() const;
     float getBinFreq(unsigned int) const;
     float getLastFreq() const;
@@ -67,9 +67,9 @@ namespace KeyFinder{
     void setOctaves(unsigned int);
     void setBps(unsigned int);
     void setArbitrarySegments(unsigned int);
-    void setHcdfPeakPickingNeighbours(unsigned int);
-    void setHcdfGaussianSize(unsigned int);
-    void setHcdfGaussianSigma(float);
+    void setSegPeakPickingNeighbours(unsigned int);
+    void setSegGaussianSize(unsigned int);
+    void setSegGaussianSigma(float);
     void setStartingFreqA(float);
     void setDirectSkStretch(float);
     void setDetunedBandWeight(float);
@@ -87,9 +87,9 @@ namespace KeyFinder{
     unsigned int octaves;
     unsigned int bps;
     unsigned int arbitrarySegments;
-    unsigned int hcdfPeakPickingNeighbours;
-    unsigned int hcdfGaussianSize;
-    float hcdfGaussianSigma;
+    unsigned int segPeakPickingNeighbours;
+    unsigned int segGaussianSize;
+    float segGaussianSigma;
     float stFreq;
     float directSkStretch;
     float detunedBandWeight;

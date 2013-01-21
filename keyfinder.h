@@ -5,7 +5,7 @@
 #include "parameters.h"
 #include "lowpassfilterfactory.h"
 #include "downsampler.h"
-#include "spectrumanalyserfactory.h"
+#include "spectrumanalyser.h"
 #include "keyfinderresult.h"
 #include "seg.h"
 #include "keyclassifier.h"
@@ -16,8 +16,8 @@ namespace KeyFinder{
   public:
     KeyDetectionResult findKey(const AudioData&, const Parameters&);
   private:
-    LowPassFilterFactory    lpfFactory;
-    SpectrumAnalyserFactory saFactory;
+    LowPassFilterFactory   lpfFactory;
+    ChromaTransformFactory ctFactory;
   };
 
 }

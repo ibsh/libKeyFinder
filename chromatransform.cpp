@@ -19,14 +19,23 @@
 
 *************************************************************************/
 
-#include "fftppdirectsk.h"
+#include "chromatransform.h"
 
 namespace KeyFinder{
 
-  DirectSkPostProc::DirectSkPostProc(unsigned int fr, const Parameters& params) : FftPostProcessor(fr, params) {
-    // TODO check that last frequency doesn't go over Nyquist, and for sufficient low end resolution.
-    binOffsets = std::vector<unsigned int>(bins);
-    mySpecKernel = std::vector<std::vector<float> >(bins,std::vector<float>(0));
+  ChromaTransform::ChromaTransform(unsigned int fr, const Parameters& params){
+    frameRate = fr;
+    bins = params.getOctaves() * params.getBpo();
+    fftFrameSize = params.getFftFrameSize();
+    // TODO check for sufficient low end resolution.
+    if(frameRate < 1){
+      throw Exception("Frame rate must be > 0");
+    }
+    if(params.getLastFreq() > frameRate / 2.0){
+      throw Exception("Analysis frequencies specified over Nyquist");
+    }
+    binOffsets.resize(bins);
+    directSpectralKernel.resize(bins);
     float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBpo()))-1);
     for (unsigned int i = 0; i < bins; i++){
       float centreOfWindow = params.getBinFreq(i) * fftFrameSize / fr;
@@ -34,42 +43,41 @@ namespace KeyFinder{
       float beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
       float endOfWindow = beginningOfWindow + widthOfWindow;
       float sumOfCoefficients = 0.0;
-      for (unsigned int thisFftBin = 0; thisFftBin < fftFrameSize; thisFftBin++){
-        if((float)thisFftBin < beginningOfWindow)
-          continue; // haven't got to useful fft bins yet
-        if((float)thisFftBin > endOfWindow)
-          break; // finished with useful fft bins
-        if(binOffsets[i] == 0)
-          binOffsets[i] = thisFftBin; // first useful fft bin
-        float coefficient = kernelWindow(thisFftBin-beginningOfWindow,widthOfWindow);
+      binOffsets[i] = ceil(beginningOfWindow); // first useful fft bin
+      for (
+        unsigned int thisFftBin = ceil(beginningOfWindow);
+        thisFftBin <= floor(endOfWindow);
+        thisFftBin++
+      ){
+        float coefficient = kernelWindow(thisFftBin - beginningOfWindow, widthOfWindow);
         sumOfCoefficients += coefficient;
-        mySpecKernel[i].push_back(coefficient);
+        directSpectralKernel[i].push_back(coefficient);
       }
       // normalisation by sum of coefficients and frequency of bin; models CQT very closely
-      for (unsigned int j = 0; j < mySpecKernel[i].size(); j++)
-        mySpecKernel[i][j] = mySpecKernel[i][j] / sumOfCoefficients * params.getBinFreq(i);
+      for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++)
+        directSpectralKernel[i][j] = directSpectralKernel[i][j] / sumOfCoefficients * params.getBinFreq(i);
     }
   }
 
-  std::vector<float> DirectSkPostProc::chromaVector(fftw_complex* fftResult)const{
+  float ChromaTransform::kernelWindow(float n, float N)const{
+    // discretely sampled continuous function, but different to other window functions
+    return 1.0 - cos((2 * PI * n)/N); // based on Hann; no need to halve since we normalise later
+  }
+
+  std::vector<float> ChromaTransform::chromaVector(fftw_complex* fftResult) const{
     std::vector<float> cv(bins);
     for (unsigned int i = 0; i < bins; i++){
       float sum = 0.0;
-      for (unsigned int j = 0; j < mySpecKernel[i].size(); j++){
+      for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++){
         unsigned int binNum = binOffsets[i]+j;
         float real = fftResult[binNum][0];
         float imag = fftResult[binNum][1];
         float magnitude = sqrt((real*real)+(imag*imag));
-        sum += (magnitude * mySpecKernel[i][j]);
+        sum += (magnitude * directSpectralKernel[i][j]);
       }
       cv[i] = sum;
     }
     return cv;
-  }
-
-  float DirectSkPostProc::kernelWindow(float n, float N)const{
-    // discretely sampled continuous function, but different to other window functions
-    return 1.0 - cos((2 * PI * n)/N); // based on Hann; no need to halve since we normalise later
   }
 
 }

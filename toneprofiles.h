@@ -35,7 +35,7 @@ namespace KeyFinder{
     float correlation(const std::vector<float>&, float, int) const;
   private:
     void free();
-    Binode* tonic;
+    Binode<float>* tonic;
     float profileMean;
   };
 

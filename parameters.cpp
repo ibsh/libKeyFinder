@@ -36,9 +36,9 @@ namespace KeyFinder{
     tuningMethod = TUNING_HARTE;
     detunedBandWeight = 0.2;
     segmentation = SEGMENTATION_NONE;
-    hcdfGaussianSize = 35;
-    hcdfGaussianSigma = 8.0;
-    hcdfPeakPickingNeighbours = 4;
+    segGaussianSize = 35;
+    segGaussianSigma = 8.0;
+    segPeakPickingNeighbours = 4;
     arbitrarySegments = 3;
     toneProfile = TONE_PROFILE_SHAATH;
     similarityMeasure = SIMILARITY_COSINE;
@@ -62,11 +62,11 @@ namespace KeyFinder{
       offsetToC = that.offsetToC;
       toneProfile = that.toneProfile;
       similarityMeasure = that.similarityMeasure;
-      hcdfPeakPickingNeighbours = that.hcdfPeakPickingNeighbours;
+      segPeakPickingNeighbours = that.segPeakPickingNeighbours;
       arbitrarySegments = that.arbitrarySegments;
-      hcdfGaussianSize = that.hcdfGaussianSize;
+      segGaussianSize = that.segGaussianSize;
       tuningMethod = that.tuningMethod;
-      hcdfGaussianSigma = that.hcdfGaussianSigma;
+      segGaussianSigma = that.segGaussianSigma;
       stFreq = that.stFreq;
       directSkStretch = that.directSkStretch;
       detunedBandWeight = that.detunedBandWeight;
@@ -76,12 +76,10 @@ namespace KeyFinder{
     return *this;
   }
 
-  bool Parameters::equivalentForSpectralAnalysis(const Parameters& that) const{
-    if(temporalWindow != that.temporalWindow)
+  bool Parameters::equivalentSpectralKernels(const Parameters& that) const{
+    if(stFreq != that.stFreq)
       return false;
     if(bps != that.bps)
-      return false;
-    if(stFreq != that.stFreq)
       return false;
     if(octaves != that.octaves)
       return false;
@@ -105,10 +103,10 @@ namespace KeyFinder{
   unsigned int         Parameters::getBpo()                       const { return bps * 12; }
   tone_profile_t       Parameters::getToneProfile()               const { return toneProfile; }
   tuning_method_t      Parameters::getTuningMethod()              const { return tuningMethod; }
-  unsigned int         Parameters::getHcdfPeakPickingNeighbours() const { return hcdfPeakPickingNeighbours; }
+  unsigned int         Parameters::getSegPeakPickingNeighbours() const { return segPeakPickingNeighbours; }
   unsigned int         Parameters::getArbitrarySegments()         const { return arbitrarySegments; }
-  unsigned int         Parameters::getHcdfGaussianSize()          const { return hcdfGaussianSize; }
-  float                Parameters::getHcdfGaussianSigma()         const { return hcdfGaussianSigma; }
+  unsigned int         Parameters::getSegGaussianSize()          const { return segGaussianSize; }
+  float                Parameters::getSegGaussianSigma()         const { return segGaussianSigma; }
   float                Parameters::getStartingFreqA()             const { return stFreq; }
   float                Parameters::getDirectSkStretch()           const { return directSkStretch; }
   float                Parameters::getDetunedBandWeight()         const { return detunedBandWeight; }
@@ -119,7 +117,7 @@ namespace KeyFinder{
   void Parameters::setSegmentation(segmentation_t f)              { segmentation = f; }
   void Parameters::setSimilarityMeasure(similarity_measure_t msr) { similarityMeasure = msr; }
   void Parameters::setToneProfile(tone_profile_t profile)         { toneProfile = profile; }
-  void Parameters::setHcdfPeakPickingNeighbours(unsigned int n)   { hcdfPeakPickingNeighbours = n; }
+  void Parameters::setSegPeakPickingNeighbours(unsigned int n)   { segPeakPickingNeighbours = n; }
   void Parameters::setTuningMethod(tuning_method_t tune)          { tuningMethod = tune; }
 
   // mutators requiring validation or further work
@@ -149,13 +147,13 @@ namespace KeyFinder{
     if(s < 1) throw Exception("Arbitrary segments must be > 0");
     arbitrarySegments = s;
   }
-  void Parameters::setHcdfGaussianSize(unsigned int size){
+  void Parameters::setSegGaussianSize(unsigned int size){
     if(size < 1) throw Exception("Gaussian size must be > 0");
-    hcdfGaussianSize = size;
+    segGaussianSize = size;
   }
-  void Parameters::setHcdfGaussianSigma(float sigma){
+  void Parameters::setSegGaussianSigma(float sigma){
     if(sigma <= 0) throw Exception("Gaussian sigma must be > 0");
-    hcdfGaussianSigma = sigma;
+    segGaussianSigma = sigma;
   }
   void Parameters::setStartingFreqA(float a){
     if(

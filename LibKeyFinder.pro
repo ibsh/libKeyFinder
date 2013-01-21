@@ -25,7 +25,7 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.2.0
+VERSION = 0.2.1
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -36,16 +36,11 @@ HEADERS += \
     toneprofiles.h \
     spectrumanalyser.h \
     parameters.h \
-    spectrumanalyserfactory.h \
     exception.h \
     seg.h \
     keyclassifier.h \
-    segharte.h \
     segcosine.h \
     segnone.h \
-    fftppdirectsk.h \
-    spectrumanalyserfftw.h \
-    fftpp.h \
     segarbitrary.h \
     keyfinderresult.h \
     audiodata.h \
@@ -53,7 +48,9 @@ HEADERS += \
     lowpassfilter.h \
     downsampler.h \
     binode.h \
-    constants.h
+    constants.h \
+    chromatransform.h \
+    chromatransformfactory.h
 
 SOURCES += \
     keyfinder.cpp \
@@ -62,21 +59,18 @@ SOURCES += \
     toneprofiles.cpp \
     spectrumanalyser.cpp \
     parameters.cpp \
-    spectrumanalyserfactory.cpp \
     keyclassifier.cpp \
     seg.cpp \
-    segharte.cpp \
     segcosine.cpp \
     segnone.cpp \
-    fftpp.cpp \
-    fftppdirectsk.cpp \
-    spectrumanalyserfftw.cpp \
     segarbitrary.cpp \
     exception.cpp \
     audiodata.cpp \
     lowpassfilterfactory.cpp \
     lowpassfilter.cpp \
-    downsampler.cpp
+    downsampler.cpp \
+    chromatransform.cpp \
+    chromatransformfactory.cpp
 
 OTHER_FILES += README
 
