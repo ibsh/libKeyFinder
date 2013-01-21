@@ -27,12 +27,14 @@ namespace KeyFinder{
     frameRate = fr;
     bins = params.getOctaves() * params.getBpo();
     fftFrameSize = params.getFftFrameSize();
-    // TODO check for sufficient low end resolution.
     if(frameRate < 1){
       throw Exception("Frame rate must be > 0");
     }
     if(params.getLastFreq() > frameRate / 2.0){
-      throw Exception("Analysis frequencies specified over Nyquist");
+      throw Exception("Analysis frequencies over Nyquist");
+    }
+    if(frameRate / (float)fftFrameSize > (params.getBinFreq(1) - params.getBinFreq(0))){
+      throw Exception("Insufficient resolution");
     }
     binOffsets.resize(bins);
     directSpectralKernel.resize(bins);
