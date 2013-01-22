@@ -64,7 +64,6 @@ SOURCES += \
     segcosine.cpp \
     segnone.cpp \
     segarbitrary.cpp \
-    exception.cpp \
     audiodata.cpp \
     lowpassfilterfactory.cpp \
     lowpassfilter.cpp \

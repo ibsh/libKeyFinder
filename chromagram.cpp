@@ -39,12 +39,12 @@ namespace KeyFinder{
     if(h >= hops){
       std::ostringstream ss;
       ss << "Cannot get magnitude of out-of-bounds hop (" << h << "/" << hops << ")";
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
     if(b >= bins){
       std::ostringstream ss;
       ss << "Cannot get magnitude of out-of-bounds bin (" << b << "/" << bins << ")";
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
     return chromaData[h][b];
   }
@@ -53,12 +53,12 @@ namespace KeyFinder{
     if(h >= hops){
       std::ostringstream ss;
       ss << "Cannot set magnitude of out-of-bounds hop (" << h << "/" << hops << ")";
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
     if(b >= bins){
       std::ostringstream ss;
       ss << "Cannot set magnitude of out-of-bounds bin (" << b << "/" << bins << ")";
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
     chromaData[h][b] = val;
   }

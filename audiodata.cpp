@@ -30,8 +30,7 @@ namespace KeyFinder{
   }
 
   void AudioData::setChannels(unsigned int n){
-    if(n < 1)
-      throw Exception("Channels must be > 0");
+    if(n < 1) throw Exception("Channels must be > 0");
     channels = n;
   }
 
@@ -40,8 +39,7 @@ namespace KeyFinder{
   }
 
   void AudioData::setFrameRate(unsigned int n){
-    if(n < 1)
-      throw Exception("Frame rate must be > 0");
+    if(n < 1) throw Exception("Frame rate must be > 0");
     frameRate = n;
   }
 
@@ -49,7 +47,7 @@ namespace KeyFinder{
     if(n >= sampleCount){
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << n << "/" << sampleCount << ")";
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
     return samples[n];
   }
@@ -58,7 +56,7 @@ namespace KeyFinder{
     if(n >= sampleCount){
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << n << "/" << sampleCount << ")";
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
     samples[n] = x;
   }
@@ -70,7 +68,7 @@ namespace KeyFinder{
     }catch(...){
       std::ostringstream ss;
       ss << "Memory allocation failure adding " << newSamples << " samples to audio stream of size " << sampleCount;
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
   }
 
@@ -81,9 +79,11 @@ namespace KeyFinder{
   void AudioData::reduceToMono(){
     if(channels == 1) return;
     std::vector<float> newStream(sampleCount / channels);
-    for (unsigned int i = 0; i < sampleCount; i += channels)
-      for (unsigned int j = 0; j < channels; j++)
+    for (unsigned int i = 0; i < sampleCount; i += channels){
+      for (unsigned int j = 0; j < channels; j++){
         newStream[i/channels] += samples[i + j] / channels;
+      }
+    }
     samples = newStream;
     sampleCount /= channels;
     channels = 1;

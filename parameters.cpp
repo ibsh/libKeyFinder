@@ -216,7 +216,7 @@ namespace KeyFinder{
     if(n >= max){
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds frequency index (" << n << "/" << max << ")";
-      throw Exception(ss.str());
+      throw Exception(ss.str().c_str());
     }
     return binFreqs[n];
   }
