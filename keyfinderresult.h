@@ -28,10 +28,10 @@ namespace KeyFinder{
 
   class KeyDetectionSegment{
   public:
-    KeyDetectionSegment(): key(SILENCE), firstWindow(0), lastWindow(0), energy(0.0){}
+    KeyDetectionSegment(): key(SILENCE), firstHop(0), lastHop(0), energy(0.0){}
     key_t key;
-    unsigned int firstWindow;
-    unsigned int lastWindow;
+    unsigned int firstHop;
+    unsigned int lastHop;
     float energy;
   };
 

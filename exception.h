@@ -23,6 +23,7 @@
 #define EXCEPTION_H
 
 #include <stdexcept>
+#include <sstream>
 
 namespace KeyFinder{
 

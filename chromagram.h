@@ -23,7 +23,7 @@
 #define CHROMAGRAM_H
 
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include "parameters.h"
 
 namespace KeyFinder{

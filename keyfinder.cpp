@@ -42,12 +42,12 @@ namespace KeyFinder{
 
     for (int s = 0; s < (signed)segmentBoundaries.size()-1; s++){
       KeyDetectionSegment segment;
-      segment.firstWindow = segmentBoundaries[s];
-      segment.lastWindow = segmentBoundaries[s+1] - 1;
+      segment.firstHop = segmentBoundaries[s];
+      segment.lastHop = segmentBoundaries[s+1] - 1;
       // collapse segment's time dimension, for a single chroma vector and a single energy value
       std::vector<float> segmentChroma(ch->getBins());
       // for each relevant hop of the chromagram
-      for (unsigned int hop = segment.firstWindow; hop <= segment.lastWindow; hop++) {
+      for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {
         // for each bin
         for (unsigned int bin = 0; bin < ch->getBins(); bin++) {
           float value = ch->getMagnitude(hop, bin);

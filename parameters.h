@@ -22,8 +22,7 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 
-#include <math.h>
-#include <sstream>
+#include <cmath>
 #include <vector>
 #include "constants.h"
 #include "exception.h"

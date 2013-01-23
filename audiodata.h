@@ -22,7 +22,6 @@
 #ifndef AUDIOSTREAM_H
 #define AUDIOSTREAM_H
 
-#include <sstream>
 #include <vector>
 #include "exception.h"
 

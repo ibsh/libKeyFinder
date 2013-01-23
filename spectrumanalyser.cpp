@@ -26,35 +26,30 @@ namespace KeyFinder{
   SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory){
     bins = params.getOctaves() * params.getBpo();
     hopSize = params.getHopSize();
-    frameRate = f;
-    fftFrameSize = params.getFftFrameSize();
     ct = spFactory->getChromaTransform(f, params);
-    fftInput  = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*fftFrameSize);
-    fftOutput = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*fftFrameSize);
-    fftPlan = fftw_plan_dft_1d(fftFrameSize, fftInput, fftOutput, FFTW_FORWARD, FFTW_ESTIMATE);
     wf = WindowFunction::getWindowFunction(params.getTemporalWindow());
+    fft = new FftAdapter(params.getFftFrameSize());
   }
 
   SpectrumAnalyser::~SpectrumAnalyser(){
     // don't delete the chroma transform; it's stored in the factory
     delete wf;
-    fftw_destroy_plan(fftPlan);
-    fftw_free(fftInput);
-    fftw_free(fftOutput);
+    delete fft;
   }
 
   Chromagram* SpectrumAnalyser::chromagram(AudioData* audio){
     Chromagram* ch = new Chromagram((audio->getSampleCount()/hopSize) + 1,bins);
+    unsigned int fftFrameSize = fft->getFrameSize();
     for (unsigned int i = 0; i < audio->getSampleCount(); i += hopSize){
       for (unsigned int j = 0; j < fftFrameSize; j++){
-        if(i+j < audio->getSampleCount())
-          fftInput[j][0] = audio->getSample(i+j) * wf->window(j,fftFrameSize); // real part, windowed
-        else
-          fftInput[j][0] = 0.0; // zero-pad if no PCM data remaining
-        fftInput[j][1] = 0.0;   // zero out imaginary part
+        if(i+j < audio->getSampleCount()){
+          fft->setInput(j, audio->getSample(i+j) * wf->window(j,fftFrameSize)); // real part, windowed
+        }else{
+          fft->setInput(j, 0.0); // zero-pad if no PCM data remaining
+        }
       }
-      fftw_execute(fftPlan);
-      std::vector<float> cv = ct->chromaVector(fftOutput);
+      fft->execute();
+      std::vector<float> cv = ct->chromaVector(fft);
       for (unsigned int j=0; j<bins; j++)
         ch->setMagnitude(i/hopSize,j,cv[j]);
     }

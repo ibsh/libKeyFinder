@@ -25,6 +25,7 @@
 #include <boost/thread/mutex.hpp>
 #include "chromagram.h"
 #include "audiodata.h"
+#include "fftadapter.h"
 #include "chromatransformfactory.h"
 #include "parameters.h"
 #include "windowfunctions.h"
@@ -39,13 +40,9 @@ namespace KeyFinder{
   protected:
     unsigned int bins;
     unsigned int hopSize;
-    unsigned int frameRate;
-    unsigned int fftFrameSize;
     ChromaTransform* ct;
-    fftw_complex* fftInput;
-    fftw_complex* fftOutput;
-    fftw_plan fftPlan;
     WindowFunction* wf;
+    FftAdapter* fft;
   };
 
 }

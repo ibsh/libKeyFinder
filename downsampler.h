@@ -23,9 +23,7 @@
 #define DOWNSAMPLER_H
 
 #include <cmath>
-#include <fftw3.h>
 #include <vector>
-
 #include "audiodata.h"
 #include "lowpassfilterfactory.h"
 #include "binode.h"

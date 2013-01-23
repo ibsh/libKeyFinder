@@ -23,8 +23,8 @@
 #define LOWPASSFILTER_H
 
 #include <cmath>
-#include <fftw3.h>
 #include <vector>
+#include "fftadapter.h"
 #include "windowfunctions.h"
 
 namespace KeyFinder{

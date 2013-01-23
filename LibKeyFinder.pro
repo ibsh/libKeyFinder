@@ -25,7 +25,7 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.2.1
+VERSION = 0.2.2
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -50,7 +50,8 @@ HEADERS += \
     binode.h \
     constants.h \
     chromatransform.h \
-    chromatransformfactory.h
+    chromatransformfactory.h \
+    fftadapter.h
 
 SOURCES += \
     keyfinder.cpp \
@@ -69,7 +70,8 @@ SOURCES += \
     lowpassfilter.cpp \
     downsampler.cpp \
     chromatransform.cpp \
-    chromatransformfactory.cpp
+    chromatransformfactory.cpp \
+    fftadapter.cpp
 
 OTHER_FILES += README
 

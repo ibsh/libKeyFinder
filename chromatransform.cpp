@@ -25,8 +25,8 @@ namespace KeyFinder{
 
   ChromaTransform::ChromaTransform(unsigned int fr, const Parameters& params){
     frameRate = fr;
-    bins = params.getOctaves() * params.getBpo();
-    fftFrameSize = params.getFftFrameSize();
+    chromaBins = params.getOctaves() * params.getBpo();
+    unsigned int fftFrameSize = params.getFftFrameSize();
     if(frameRate < 1){
       throw Exception("Frame rate must be > 0");
     }
@@ -34,24 +34,20 @@ namespace KeyFinder{
       throw Exception("Analysis frequencies over Nyquist");
     }
     if(frameRate / (float)fftFrameSize > (params.getBinFreq(1) - params.getBinFreq(0))){
-      throw Exception("Insufficient resolution");
+      throw Exception("Insufficient low-end resolution");
     }
-    binOffsets.resize(bins);
-    directSpectralKernel.resize(bins);
+    chromaBinFftOffsets.resize(chromaBins);
+    directSpectralKernel.resize(chromaBins);
     float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBpo()))-1);
-    for (unsigned int i = 0; i < bins; i++){
+    for (unsigned int i = 0; i < chromaBins; i++){
       float centreOfWindow = params.getBinFreq(i) * fftFrameSize / fr;
       float widthOfWindow = centreOfWindow * myQFactor;
       float beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
       float endOfWindow = beginningOfWindow + widthOfWindow;
       float sumOfCoefficients = 0.0;
-      binOffsets[i] = ceil(beginningOfWindow); // first useful fft bin
-      for (
-        unsigned int thisFftBin = ceil(beginningOfWindow);
-        thisFftBin <= floor(endOfWindow);
-        thisFftBin++
-      ){
-        float coefficient = kernelWindow(thisFftBin - beginningOfWindow, widthOfWindow);
+      chromaBinFftOffsets[i] = ceil(beginningOfWindow); // first useful fft bin
+      for (unsigned int fftBin = chromaBinFftOffsets[i]; fftBin <= floor(endOfWindow); fftBin++){
+        float coefficient = kernelWindow(fftBin - beginningOfWindow, widthOfWindow);
         sumOfCoefficients += coefficient;
         directSpectralKernel[i].push_back(coefficient);
       }
@@ -63,18 +59,15 @@ namespace KeyFinder{
 
   float ChromaTransform::kernelWindow(float n, float N)const{
     // discretely sampled continuous function, but different to other window functions
-    return 1.0 - cos((2 * PI * n)/N); // based on Hann; no need to halve since we normalise later
+    return 1.0 - cos((2 * PI * n)/N);
   }
 
-  std::vector<float> ChromaTransform::chromaVector(fftw_complex* fftResult) const{
-    std::vector<float> cv(bins);
-    for (unsigned int i = 0; i < bins; i++){
+  std::vector<float> ChromaTransform::chromaVector(const FftAdapter* fft) const{
+    std::vector<float> cv(chromaBins);
+    for (unsigned int i = 0; i < chromaBins; i++){
       float sum = 0.0;
       for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++){
-        unsigned int binNum = binOffsets[i]+j;
-        float real = fftResult[binNum][0];
-        float imag = fftResult[binNum][1];
-        float magnitude = sqrt((real*real)+(imag*imag));
+        float magnitude = fft->getMagnitude(chromaBinFftOffsets[i]+j);
         sum += (magnitude * directSpectralKernel[i][j]);
       }
       cv[i] = sum;

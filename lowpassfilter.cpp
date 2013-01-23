@@ -32,41 +32,33 @@ namespace KeyFinder{
 
   LowPassFilter::LowPassFilter(unsigned int coefficientCount, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize){
     float cutoffPoint = cornerFrequency / frameRate;
-    fftw_complex* fftInput  = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*fftFrameSize);
-    fftw_complex* fftResult = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*fftFrameSize);
-    fftw_plan fftPlan = fftw_plan_dft_1d(fftFrameSize, fftInput, fftResult, FFTW_FORWARD, FFTW_ESTIMATE);
+    FftAdapter* fft = new FftAdapter(fftFrameSize);
 
     // Build frequency domain response
     float tau = 0.5 / cutoffPoint;
     for (unsigned int i = 0; i <= fftFrameSize/2; i++){
       if ((float) i / (float) fftFrameSize <= cutoffPoint){
-        fftInput[i][0] = 1.0;
+        fft->setInput(i, tau);
       } else {
-        fftInput[i][0] = 0.0;
+        fft->setInput(i, 0.0);
       }
-      fftInput[i][0] *= tau;
-      fftInput[i][1] = 0.0;
     }
     for (unsigned int i = 1; i < fftFrameSize/2; i++){
-      fftInput[fftFrameSize-i][0] = fftInput[i][0];
-      fftInput[fftFrameSize-i][1] = 0.0;
+      fft->setInput(fftFrameSize-i, fft->getReal(i));
     }
 
     // inverse FFT to determine time-domain response
-    fftw_execute(fftPlan);
+    fft->execute();
 
     coefficients.resize(coefficientCount);
     unsigned int centre = (coefficientCount-1)/2;
     for (unsigned int i = 0; i < coefficientCount; i++){
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
-      coefficients[i] = fftResult[index][0] / (float) fftFrameSize;
+      coefficients[i] = fft->getReal(index) / (float) fftFrameSize;
     }
 
-    // cleanup FFTW memory
-    fftw_destroy_plan(fftPlan);
-    fftw_free(fftInput);
-    fftw_free(fftResult);
+    delete fft;
 
     WindowFunction* wf = WindowFunction::getWindowFunction(WINDOW_HAMMING);
     for (unsigned int i = 0; i < coefficientCount; i++){

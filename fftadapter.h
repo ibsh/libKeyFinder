@@ -19,26 +19,30 @@
 
 *************************************************************************/
 
-#ifndef CHROMATRANSFORM_H
-#define CHROMATRANSFORM_H
+#ifndef FFTADAPTER_H
+#define FFTADAPTER_H
 
-#include "parameters.h"
-#include "fftadapter.h"
+#include <cmath>
+#include <fftw3.h>
+#include "exception.h"
 
 namespace KeyFinder{
 
-  class ChromaTransform{
+  class FftAdapter{
   public:
-    ChromaTransform(unsigned int, const Parameters&);
-    std::vector<float> chromaVector(const FftAdapter*) const;
+    FftAdapter(unsigned int);
+    ~FftAdapter();
+    unsigned int getFrameSize() const;
+    void setInput(unsigned int, float) const;
+    void execute();
+    float getReal(unsigned int) const;
+    float getImaginary(unsigned int) const;
+    float getMagnitude(unsigned int) const;
   protected:
-    unsigned int chromaBins;
-    unsigned int frameRate;
-    // ragged 2D array; narrow for bass, wide for treble.
-    std::vector<std::vector<float> > directSpectralKernel;
-    // which fft bin to multiply by first coefficient.
-    std::vector<unsigned int> chromaBinFftOffsets;
-    float kernelWindow(float,float)const;
+    unsigned int frameSize;
+    fftw_complex* input;
+    fftw_complex* output;
+    fftw_plan     plan;
   };
 
 }
