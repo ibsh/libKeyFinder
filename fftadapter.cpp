@@ -46,11 +46,14 @@ namespace KeyFinder{
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
+    if (!boost::math::isfinite(real)){
+      throw Exception("Cannot set sample to NaN");
+    }
     input[i][0] = real;
     input[i][1] = 0.0;
   }
 
-  float FftAdapter::getReal(unsigned int i) const{
+  float FftAdapter::getOutputReal(unsigned int i) const{
     if (i >= frameSize){
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -59,7 +62,7 @@ namespace KeyFinder{
     return output[i][0];
   }
 
-  float FftAdapter::getImaginary(unsigned int i) const{
+  float FftAdapter::getOutputImaginary(unsigned int i) const{
     if (i >= frameSize){
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -68,13 +71,13 @@ namespace KeyFinder{
     return output[i][1];
   }
 
-  float FftAdapter::getMagnitude(unsigned int i) const{
+  float FftAdapter::getOutputMagnitude(unsigned int i) const{
     if (i >= frameSize){
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    return sqrt( pow(getReal(i), 2) + pow(getImaginary(i), 2) );
+    return sqrt( pow(getOutputReal(i), 2) + pow(getOutputImaginary(i), 2) );
   }
 
   void FftAdapter::execute(){

@@ -58,12 +58,15 @@ namespace KeyFinder{
       ss << "Cannot set out-of-bounds sample (" << n << "/" << sampleCount << ")";
       throw Exception(ss.str().c_str());
     }
+    if(!boost::math::isfinite(x)){
+      throw Exception("Cannot set sample to NaN");
+    }
     samples[n] = x;
   }
 
   void AudioData::addToSampleCount(unsigned int newSamples){
     try{
-      samples.resize(sampleCount + newSamples);
+      samples.resize(sampleCount + newSamples, 0.0);
       sampleCount += newSamples;
     }catch(...){
       std::ostringstream ss;

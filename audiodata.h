@@ -22,6 +22,7 @@
 #ifndef AUDIOSTREAM_H
 #define AUDIOSTREAM_H
 
+#include <boost/math/special_functions/fpclassify.hpp>
 #include <vector>
 #include "exception.h"
 

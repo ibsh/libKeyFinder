@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include <vector>
+#include <boost/math/special_functions/fpclassify.hpp>
 #include "constants.h"
 #include "exception.h"
 

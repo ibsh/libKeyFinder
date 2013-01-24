@@ -36,30 +36,29 @@ namespace KeyFinder{
 
     // Build frequency domain response
     float tau = 0.5 / cutoffPoint;
-    for (unsigned int i = 0; i <= fftFrameSize/2; i++){
+    for (unsigned int i = 0; i < fftFrameSize/2; i++){
+      float input = 0.0;
       if ((float) i / (float) fftFrameSize <= cutoffPoint){
-        fft->setInput(i, tau);
-      } else {
-        fft->setInput(i, 0.0);
+        input = tau;
       }
-    }
-    for (unsigned int i = 1; i < fftFrameSize/2; i++){
-      fft->setInput(fftFrameSize-i, fft->getReal(i));
+      fft->setInput(i, input);
+      fft->setInput(fftFrameSize-i-1, input);
     }
 
     // inverse FFT to determine time-domain response
     fft->execute();
 
-    coefficients.resize(coefficientCount);
+    coefficients.resize(coefficientCount, 0.0);
     unsigned int centre = (coefficientCount-1)/2;
     for (unsigned int i = 0; i < coefficientCount; i++){
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
-      coefficients[i] = fft->getReal(index) / (float) fftFrameSize;
+      coefficients[i] = fft->getOutputReal(index) / (float) fftFrameSize;
     }
 
     delete fft;
 
+    gain = 0.0;
     WindowFunction* wf = WindowFunction::getWindowFunction(WINDOW_HAMMING);
     for (unsigned int i = 0; i < coefficientCount; i++){
       // apply window

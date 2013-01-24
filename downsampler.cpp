@@ -46,6 +46,7 @@ namespace KeyFinder{
     try{
       audioOut->addToSampleCount(ns);
     }catch(const Exception& e){
+      delete audioOut;
       throw e;
     }
 
@@ -82,10 +83,11 @@ namespace KeyFinder{
         p = p->r;
 
         // load new sample into delay buffer
-        if (j < (signed)audioIn->getSampleCount())
+        if (j < (signed)audioIn->getSampleCount()){
           p->l->data = audioIn->getSample(j) / lpf->gain;
-        else
+        }else{
           p->l->data = 0.0; // zero pad once we're into the delay at the end of the file
+        }
 
         if ((j % (downsampleFactor * c)) < c){ // only do the maths for the useful samples
           float sum = 0.0;

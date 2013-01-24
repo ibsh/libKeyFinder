@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include <fftw3.h>
+#include <boost/math/special_functions/fpclassify.hpp>
 #include "exception.h"
 
 namespace KeyFinder{
@@ -35,9 +36,9 @@ namespace KeyFinder{
     unsigned int getFrameSize() const;
     void setInput(unsigned int, float) const;
     void execute();
-    float getReal(unsigned int) const;
-    float getImaginary(unsigned int) const;
-    float getMagnitude(unsigned int) const;
+    float getOutputReal(unsigned int) const;
+    float getOutputImaginary(unsigned int) const;
+    float getOutputMagnitude(unsigned int) const;
   protected:
     unsigned int frameSize;
     fftw_complex* input;

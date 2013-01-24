@@ -152,6 +152,7 @@ namespace KeyFinder{
     segGaussianSize = size;
   }
   void Parameters::setSegGaussianSigma(float sigma){
+    if(!boost::math::isfinite(sigma)) throw Exception("Gaussian sigma cannot be NaN");
     if(sigma <= 0) throw Exception("Gaussian sigma must be > 0");
     segGaussianSigma = sigma;
   }
@@ -164,10 +165,12 @@ namespace KeyFinder{
     generateBinFreqs();
   }
   void Parameters::setDirectSkStretch(float stretch){
+    if(!boost::math::isfinite(stretch)) throw Exception("Spectral kernel stretch cannot be NaN");
     if(stretch <= 0) throw Exception("Spectral kernel stretch must be > 0");
     directSkStretch = stretch;
   }
   void Parameters::setDetunedBandWeight(float weight){
+    if(!boost::math::isfinite(weight)) throw Exception("Detuned band weighting cannot be NaN");
     if(weight < 0) throw Exception("Detuned band weighting must be >= 0");
     detunedBandWeight = weight;
   }

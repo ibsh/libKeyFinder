@@ -36,8 +36,8 @@ namespace KeyFinder{
     if(frameRate / (float)fftFrameSize > (params.getBinFreq(1) - params.getBinFreq(0))){
       throw Exception("Insufficient low-end resolution");
     }
-    chromaBinFftOffsets.resize(chromaBins);
-    directSpectralKernel.resize(chromaBins);
+    chromaBinFftOffsets.resize(chromaBins, 0);
+    directSpectralKernel.resize(chromaBins, std::vector<float>(0, 0.0));
     float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBpo()))-1);
     for (unsigned int i = 0; i < chromaBins; i++){
       float centreOfWindow = params.getBinFreq(i) * fftFrameSize / fr;
@@ -52,14 +52,15 @@ namespace KeyFinder{
         directSpectralKernel[i].push_back(coefficient);
       }
       // normalisation by sum of coefficients and frequency of bin; models CQT very closely
-      for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++)
+      for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++){
         directSpectralKernel[i][j] = directSpectralKernel[i][j] / sumOfCoefficients * params.getBinFreq(i);
+      }
     }
   }
 
   float ChromaTransform::kernelWindow(float n, float N)const{
     // discretely sampled continuous function, but different to other window functions
-    return 1.0 - cos((2 * PI * n)/N);
+    return 1.0 - cos((2 * PI * n) / N);
   }
 
   std::vector<float> ChromaTransform::chromaVector(const FftAdapter* fft) const{
@@ -67,7 +68,7 @@ namespace KeyFinder{
     for (unsigned int i = 0; i < chromaBins; i++){
       float sum = 0.0;
       for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++){
-        float magnitude = fft->getMagnitude(chromaBinFftOffsets[i]+j);
+        float magnitude = fft->getOutputMagnitude(chromaBinFftOffsets[i]+j);
         sum += (magnitude * directSpectralKernel[i][j]);
       }
       cv[i] = sum;

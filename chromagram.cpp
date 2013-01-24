@@ -26,7 +26,7 @@ namespace KeyFinder{
   Chromagram::Chromagram(unsigned int h, unsigned int b){
     hops = h;
     bins = b;
-    chromaData = std::vector<std::vector<float> >(hops,std::vector<float>(bins));
+    chromaData = std::vector< std::vector<float> > (hops, std::vector<float> (bins, 0.0));
   }
 
   Chromagram::Chromagram(const Chromagram& that){
@@ -60,6 +60,9 @@ namespace KeyFinder{
       ss << "Cannot set magnitude of out-of-bounds bin (" << b << "/" << bins << ")";
       throw Exception(ss.str().c_str());
     }
+    if(!boost::math::isfinite(val)){
+      throw Exception("Cannot set magnitude to NaN");
+    }
     chromaData[h][b] = val;
   }
 
@@ -84,8 +87,8 @@ namespace KeyFinder{
     unsigned int oct = params.getOctaves();
     unsigned int bps = (bins/oct)/12;
     // find peaks; anything that's higher energy than the mean for this hop and higher energy than its neighbours.
-    std::vector<std::vector<float> > peakLocations;
-    std::vector<std::vector<float> > peakMagnitudes;
+    std::vector< std::vector<float> > peakLocations;
+    std::vector< std::vector<float> > peakMagnitudes;
     for (unsigned int hop = 0; hop < hops; hop++){
       // find mean magnitude for this hop
       float meanVal = 0;

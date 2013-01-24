@@ -50,8 +50,9 @@ namespace KeyFinder{
       }
       fft->execute();
       std::vector<float> cv = ct->chromaVector(fft);
-      for (unsigned int j=0; j<bins; j++)
-        ch->setMagnitude(i/hopSize,j,cv[j]);
+      for (unsigned int j=0; j<bins; j++){
+        ch->setMagnitude(i/hopSize, j, cv[j]);
+      }
     }
     return ch;
   }
