@@ -50,22 +50,19 @@ namespace KeyFinder{
 
     coefficients.resize(coefficientCount, 0.0);
     unsigned int centre = (coefficientCount-1)/2;
+    gain = 0.0;
+    WindowFunction* wf = WindowFunction::getWindowFunction(WINDOW_BLACKMAN);
+
     for (unsigned int i = 0; i < coefficientCount; i++){
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
-      coefficients[i] = fft->getOutputReal(index) / (float) fftFrameSize;
+      float coeff = fft->getOutputReal(index) / (float) fftFrameSize;
+      coeff *= wf->window(i, coefficientCount);
+      coefficients[i] = coeff;
+      gain += coeff;
     }
 
     delete fft;
-
-    gain = 0.0;
-    WindowFunction* wf = WindowFunction::getWindowFunction(WINDOW_HAMMING);
-    for (unsigned int i = 0; i < coefficientCount; i++){
-      // apply window
-      coefficients[i] *= wf->window(i, coefficientCount);
-      // finalise gain
-      gain += coefficients[i];
-    }
     delete wf;
 
   }
