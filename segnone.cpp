@@ -29,7 +29,7 @@ namespace KeyFinder{
   }
 
   std::vector<unsigned int> NoSeg::getSegments(const std::vector<float>& /*rateOfChange*/, const Parameters& /*params*/){
-    std::vector<unsigned int> noChanges(1);
+    std::vector<unsigned int> noChanges(1, 0);
     return noChanges;
   }
 

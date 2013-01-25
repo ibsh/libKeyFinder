@@ -37,11 +37,11 @@ namespace KeyFinder{
     return ct;
   }
 
-  Parameters ChromaTransformWrapper::chkParams() const{
+  Parameters ChromaTransformWrapper::getParameters() const{
     return params;
   }
 
-  unsigned int ChromaTransformWrapper::chkFrameRate() const{
+  unsigned int ChromaTransformWrapper::getFrameRate() const{
     return frate;
   }
 
@@ -57,8 +57,12 @@ namespace KeyFinder{
   ChromaTransform* ChromaTransformFactory::getChromaTransform(unsigned int f, const Parameters& p){
     boost::mutex::scoped_lock lock(chromaTransformFactoryMutex);
     for (unsigned int i=0; i<chromaTransforms.size(); i++){
-      if(chromaTransforms[i]->chkFrameRate() == f && p.equivalentSpectralKernels(chromaTransforms[i]->chkParams())){
-        return chromaTransforms[i]->getChromaTransform();
+      ChromaTransformWrapper* wrapper = chromaTransforms[i];
+      if(
+        wrapper->getFrameRate() == f &&
+        p.equivalentSpectralKernels(wrapper->getParameters())
+      ){
+        return wrapper->getChromaTransform();
       }
     }
     chromaTransforms.push_back(new ChromaTransformWrapper(f, p, new ChromaTransform(f, p)));

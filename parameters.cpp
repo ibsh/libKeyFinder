@@ -92,33 +92,33 @@ namespace KeyFinder{
     return true;
   }
 
-  bool                 Parameters::getOffsetToC()                 const { return offsetToC; }
-  temporal_window_t    Parameters::getTemporalWindow()            const { return temporalWindow; }
-  segmentation_t       Parameters::getSegmentation()              const { return segmentation; }
-  similarity_measure_t Parameters::getSimilarityMeasure()         const { return similarityMeasure; }
-  unsigned int         Parameters::getFftFrameSize()              const { return fftFrameSize; }
-  unsigned int         Parameters::getHopsPerFrame()              const { return hopsPerFrame; }
-  unsigned int         Parameters::getHopSize()                   const { return fftFrameSize / hopsPerFrame; }
-  unsigned int         Parameters::getOctaves()                   const { return octaves; }
-  unsigned int         Parameters::getBpo()                       const { return bps * 12; }
-  tone_profile_t       Parameters::getToneProfile()               const { return toneProfile; }
-  tuning_method_t      Parameters::getTuningMethod()              const { return tuningMethod; }
+  bool                 Parameters::getOffsetToC()                const { return offsetToC; }
+  temporal_window_t    Parameters::getTemporalWindow()           const { return temporalWindow; }
+  segmentation_t       Parameters::getSegmentation()             const { return segmentation; }
+  similarity_measure_t Parameters::getSimilarityMeasure()        const { return similarityMeasure; }
+  unsigned int         Parameters::getFftFrameSize()             const { return fftFrameSize; }
+  unsigned int         Parameters::getHopsPerFrame()             const { return hopsPerFrame; }
+  unsigned int         Parameters::getHopSize()                  const { return fftFrameSize / hopsPerFrame; }
+  unsigned int         Parameters::getOctaves()                  const { return octaves; }
+  unsigned int         Parameters::getBpo()                      const { return bps * 12; }
+  tone_profile_t       Parameters::getToneProfile()              const { return toneProfile; }
+  tuning_method_t      Parameters::getTuningMethod()             const { return tuningMethod; }
   unsigned int         Parameters::getSegPeakPickingNeighbours() const { return segPeakPickingNeighbours; }
-  unsigned int         Parameters::getArbitrarySegments()         const { return arbitrarySegments; }
+  unsigned int         Parameters::getArbitrarySegments()        const { return arbitrarySegments; }
   unsigned int         Parameters::getSegGaussianSize()          const { return segGaussianSize; }
   float                Parameters::getSegGaussianSigma()         const { return segGaussianSigma; }
-  float                Parameters::getStartingFreqA()             const { return stFreq; }
-  float                Parameters::getDirectSkStretch()           const { return directSkStretch; }
-  float                Parameters::getDetunedBandWeight()         const { return detunedBandWeight; }
-  std::vector<float>   Parameters::getCustomToneProfile()         const { return customToneProfile; }
+  float                Parameters::getStartingFreqA()            const { return stFreq; }
+  float                Parameters::getDirectSkStretch()          const { return directSkStretch; }
+  float                Parameters::getDetunedBandWeight()        const { return detunedBandWeight; }
+  std::vector<float>   Parameters::getCustomToneProfile()        const { return customToneProfile; }
 
   // basic mutators
   void Parameters::setTemporalWindow(temporal_window_t window)    { temporalWindow = window; }
   void Parameters::setSegmentation(segmentation_t f)              { segmentation = f; }
   void Parameters::setSimilarityMeasure(similarity_measure_t msr) { similarityMeasure = msr; }
   void Parameters::setToneProfile(tone_profile_t profile)         { toneProfile = profile; }
-  void Parameters::setSegPeakPickingNeighbours(unsigned int n)   { segPeakPickingNeighbours = n; }
   void Parameters::setTuningMethod(tuning_method_t tune)          { tuningMethod = tune; }
+  void Parameters::setSegPeakPickingNeighbours(unsigned int n)    { segPeakPickingNeighbours = n; }
 
   // mutators requiring validation or further work
   void Parameters::setOffsetToC(bool off){
@@ -203,8 +203,9 @@ namespace KeyFinder{
         binFreq *= pow(freqRatio, 3);
       }
       // tune down for bins before first concert pitch bin (if bps > 1)
-      for (unsigned int j = 0; j < concertPitchBin; j++)
+      for (unsigned int j = 0; j < concertPitchBin; j++){
         binFreqs.push_back(binFreq / pow(freqRatio, concertPitchBin - j));
+      }
       // and tune all other bins
       for (unsigned int j = concertPitchBin; j < bpo; j++){
         binFreqs.push_back(binFreq);

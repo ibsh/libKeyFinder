@@ -68,9 +68,13 @@ namespace KeyFinder{
     try{
       samples.resize(sampleCount + newSamples, 0.0);
       sampleCount += newSamples;
+    }catch(const std::exception& e){
+      std::ostringstream ss;
+      ss << "Exception adding " << newSamples << " samples to stream of " << sampleCount << ": " << e.what();
+      throw Exception(ss.str().c_str());
     }catch(...){
       std::ostringstream ss;
-      ss << "Memory allocation failure adding " << newSamples << " samples to audio stream of size " << sampleCount;
+      ss << "Unknown exception adding " << newSamples << " samples to stream of " << sampleCount;
       throw Exception(ss.str().c_str());
     }
   }

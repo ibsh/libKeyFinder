@@ -44,11 +44,9 @@ namespace KeyFinder{
       KeyDetectionSegment segment;
       segment.firstHop = segmentBoundaries[s];
       segment.lastHop = segmentBoundaries[s+1] - 1;
-      // collapse segment's time dimension, for a single chroma vector and a single energy value
+      // collapse segment's time dimension
       std::vector<float> segmentChroma(ch->getBins());
-      // for each relevant hop of the chromagram
       for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {
-        // for each bin
         for (unsigned int bin = 0; bin < ch->getBins(); bin++) {
           float value = ch->getMagnitude(hop, bin);
           segmentChroma[bin] += value;

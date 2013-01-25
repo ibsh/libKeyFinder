@@ -38,7 +38,7 @@ namespace KeyFinder{
     float tau = 0.5 / cutoffPoint;
     for (unsigned int i = 0; i < fftFrameSize/2; i++){
       float input = 0.0;
-      if ((float) i / (float) fftFrameSize <= cutoffPoint){
+      if (i / (float) fftFrameSize <= cutoffPoint){
         input = tau;
       }
       fft->setInput(i, input);

@@ -34,10 +34,10 @@ namespace KeyFinder{
     LowPassFilterWrapper(unsigned int, unsigned int, float, unsigned int, LowPassFilter*);
     ~LowPassFilterWrapper();
     LowPassFilter* getLowPassFilter() const;
-    unsigned int chkCoefficientCount() const;
-    unsigned int chkFrameRate() const;
-    float chkCornerFrequency() const;
-    unsigned int chkFftFrameSize() const;
+    unsigned int getCoefficientCount() const;
+    unsigned int getFrameRate() const;
+    float getCornerFrequency() const;
+    unsigned int getFftFrameSize() const;
   private:
     unsigned int coefficientCount;
     unsigned int frameRate;

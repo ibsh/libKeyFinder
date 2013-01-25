@@ -25,9 +25,9 @@ namespace KeyFinder{
 
   KeyClassifier::KeyClassifier(const Parameters& params){
     // Profiles
-    major = new ToneProfile(params.getToneProfile(), true, params);
-    minor = new ToneProfile(params.getToneProfile(), false, params);
-    silence = new ToneProfile(TONE_PROFILE_SILENT, true, params);
+    major   = new ToneProfile(params.getToneProfile(), SCALE_MAJOR, params);
+    minor   = new ToneProfile(params.getToneProfile(), SCALE_MINOR, params);
+    silence = new ToneProfile(TONE_PROFILE_SILENCE,    SCALE_MAJOR, params);
     similarityMeasure = params.getSimilarityMeasure();
   }
 
@@ -40,28 +40,18 @@ namespace KeyFinder{
   key_t KeyClassifier::classify(const std::vector<float>& chroma){
     std::vector<float> scores(24);
     float bestScore = 0.0;
-    if(similarityMeasure == SIMILARITY_CORRELATION){
-      float chromaMean = 0.0;
-      for (unsigned int i=0; i<chroma.size(); i++)
-        chromaMean += chroma[i];
-      chromaMean /= chroma.size();
-      for (unsigned int i=0; i<12; i++){ // for each pair of profiles
-        float sc = major->correlation(chroma, chromaMean, i); // major
-        scores[i*2] = sc;
-        sc = minor->correlation(chroma, chromaMean, i); // minor
-        scores[(i*2)+1] = sc;
-      }
-      bestScore = silence->correlation(chroma, chromaMean, 0);
-    }else{
-      // Cosine measure
-      for (unsigned int i=0; i<12; i++){ // for each pair of profiles
-        float sc = major->cosine(chroma, i); // major
-        scores[i*2] = sc;
-        sc = minor->cosine(chroma, i); // minor
-        scores[(i*2)+1] = sc;
-      }
-      bestScore = silence->cosine(chroma, 0);
+    float chromaMean = 0.0;
+    for (unsigned int i=0; i<chroma.size(); i++)
+      chromaMean += chroma[i];
+    chromaMean /= chroma.size();
+    for (unsigned int i=0; i<12; i++){
+      float score;
+      score = major->similarity(similarityMeasure, chroma, i, chromaMean); // major
+      scores[i*2] = score;
+      score = minor->similarity(similarityMeasure, chroma, i, chromaMean); // minor
+      scores[(i*2)+1] = score;
     }
+    bestScore = silence->similarity(similarityMeasure, chroma, 0, chromaMean);
     // find best match, defaulting to silence
     key_t bestMatch = SILENCE;
     for (unsigned int i=0; i<24; i++){

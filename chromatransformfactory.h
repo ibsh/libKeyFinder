@@ -35,8 +35,8 @@ namespace KeyFinder{
     ChromaTransformWrapper(unsigned int, const Parameters&, ChromaTransform*);
     ~ChromaTransformWrapper();
     ChromaTransform* getChromaTransform() const;
-    Parameters chkParams() const;
-    unsigned int chkFrameRate() const;
+    Parameters getParameters() const;
+    unsigned int getFrameRate() const;
   private:
     unsigned int frate;
     Parameters params;

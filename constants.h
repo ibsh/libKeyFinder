@@ -43,6 +43,11 @@ namespace KeyFinder{
     SILENCE
   };
 
+  enum scale_t{
+    SCALE_MAJOR,
+    SCALE_MINOR
+  };
+
   enum temporal_window_t{
     WINDOW_BLACKMAN,
     WINDOW_HANN,
@@ -61,7 +66,7 @@ namespace KeyFinder{
   };
 
   enum tone_profile_t{
-    TONE_PROFILE_SILENT,
+    TONE_PROFILE_SILENCE,
     TONE_PROFILE_KRUMHANSL,
     TONE_PROFILE_TEMPERLEY,
     TONE_PROFILE_GOMEZ,

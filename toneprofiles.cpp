@@ -23,10 +23,10 @@
 
 namespace KeyFinder{
 
-  ToneProfile::ToneProfile(tone_profile_t whichProfile, bool majorScale, const Parameters& params){
+  ToneProfile::ToneProfile(tone_profile_t whichProfile, scale_t scale, const Parameters& params){
 
     float p[12];
-    if(whichProfile == TONE_PROFILE_SILENT){
+    if(whichProfile == TONE_PROFILE_SILENCE){
       p[0]=0; p[1]=0;
       p[2]=0; p[3]=0;
       p[4]=0; p[5]=0;
@@ -34,7 +34,7 @@ namespace KeyFinder{
       p[8]=0; p[9]=0;
       p[10]=0; p[11]=0;
     }else if(whichProfile == TONE_PROFILE_TEMPERLEY){
-      if(majorScale){
+      if(scale == SCALE_MAJOR){
         p[0]=5.0; p[1]=2.0;
         p[2]=3.5; p[3]=2.0;
         p[4]=4.5;
@@ -52,7 +52,7 @@ namespace KeyFinder{
         p[10]=1.5; p[11]=4.0;
       }
     }else if(whichProfile == TONE_PROFILE_GOMEZ){
-      if(majorScale){
+      if(scale == SCALE_MAJOR){
         p[0]=0.82; p[1]=0.00;
         p[2]=0.55; p[3]=0.00;
         p[4]=0.53;
@@ -70,7 +70,7 @@ namespace KeyFinder{
         p[10]=0.10; p[11]=0.36;
       }
     }else if(whichProfile == TONE_PROFILE_SHAATH){
-      if(majorScale){
+      if(scale == SCALE_MAJOR){
         p[0]=6.6; p[1]=2.0;
         p[2]=3.5; p[3]=2.3;
         p[4]=4.6;
@@ -88,7 +88,7 @@ namespace KeyFinder{
         p[10]=4.3; p[11]=3.2;
       }
     }else if(whichProfile == TONE_PROFILE_KRUMHANSL){
-      if(majorScale){
+      if(scale == SCALE_MAJOR){
         p[0]=6.35; p[1]=2.23;
         p[2]=3.48; p[3]=2.33;
         p[4]=4.38;
@@ -107,7 +107,7 @@ namespace KeyFinder{
       }
     }else{ // Custom
       std::vector<float> ctp = params.getCustomToneProfile();
-      if(majorScale){
+      if(scale == SCALE_MAJOR){
         for (unsigned int i=0; i<12; i++)
           p[i] = (float)ctp[i];
       }else{
@@ -151,6 +151,13 @@ namespace KeyFinder{
     }while(p!=tonic);
   }
 
+  float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset, float inputMean){
+    if(measure == SIMILARITY_CORRELATION)
+      return correlation(input, offset, inputMean);
+    else
+      return cosine(input, offset);
+  }
+
   /*
   Determines cosine similarity between input vector and profile scale.
   input = array of 12 floats relating to an octave starting at A natural
@@ -182,7 +189,7 @@ namespace KeyFinder{
   input = array of 12 floats relating to an octave starting at A natural
   offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
   */
-  float ToneProfile::correlation(const std::vector<float>& input, float inputMean, int offset) const{
+  float ToneProfile::correlation(const std::vector<float>& input, int offset, float inputMean) const{
     Binode<float>* p = tonic;
     for (int i=0; i<offset; i++)
       p = p->l;

@@ -29,11 +29,12 @@ namespace KeyFinder{
 
   class ToneProfile{
   public:
-    ToneProfile(tone_profile_t, bool, const Parameters&);
+    ToneProfile(tone_profile_t, scale_t, const Parameters&);
     ~ToneProfile();
-    float cosine(const std::vector<float>&, int) const;
-    float correlation(const std::vector<float>&, float, int) const;
+    float similarity(similarity_measure_t, const std::vector<float>&, int, float);
   private:
+    float cosine(const std::vector<float>&, int) const;
+    float correlation(const std::vector<float>&, int, float) const;
     void free();
     Binode<float>* tonic;
     float profileMean;
