@@ -3,6 +3,13 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+CONFIG -= ppc ppc64
+CONFIG += x86 x86_64
+
+HEADERS += \
+    audiodatatest.h \
+    chromagramtest.h
+
 SOURCES += main.cpp \
     audiodatatest.cpp \
     chromagramtest.cpp
@@ -10,12 +17,5 @@ SOURCES += main.cpp \
 DEPENDPATH  += /usr/local/lib
 INCLUDEPATH += /usr/local/include
 
-CONFIG -= ppc ppc64
-CONFIG += x86 x86_64
-
 LIBS += -lkeyfinder
 LIBS += -lgtest
-
-HEADERS += \
-    audiodatatest.h \
-    chromagramtest.h

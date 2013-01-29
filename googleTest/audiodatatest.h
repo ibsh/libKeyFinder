@@ -1,6 +1,7 @@
 #ifndef AUDIODATATEST_H
 #define AUDIODATATEST_H
 
+#include <cmath>
 #include "gtest/gtest.h"
 
 #include "keyfinder/audiodata.h"

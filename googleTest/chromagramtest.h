@@ -1,6 +1,7 @@
 #ifndef CHROMAGRAMTEST_H
 #define CHROMAGRAMTEST_H
 
+#include <cmath>
 #include "gtest/gtest.h"
 
 #include "keyfinder/chromagram.h"
