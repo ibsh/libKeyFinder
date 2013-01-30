@@ -29,7 +29,18 @@
 
 namespace KeyFinder{
 
-  class LowPassFilterWrapper{
+  class LowPassFilterFactory{
+  public:
+    LowPassFilterFactory();
+    ~LowPassFilterFactory();
+    LowPassFilter* getLowPassFilter(unsigned int, unsigned int, float, unsigned int);
+  private:
+    class LowPassFilterWrapper;
+    std::vector<LowPassFilterWrapper*> filters;
+    boost::mutex LowPassFilterFactoryMutex;
+  };
+
+  class LowPassFilterFactory::LowPassFilterWrapper{
   public:
     LowPassFilterWrapper(unsigned int, unsigned int, float, unsigned int, LowPassFilter*);
     ~LowPassFilterWrapper();
@@ -44,16 +55,6 @@ namespace KeyFinder{
     float cornerFrequency;
     unsigned int fftFrameSize;
     LowPassFilter* lpf;
-  };
-
-  class LowPassFilterFactory{
-  public:
-    LowPassFilterFactory();
-    ~LowPassFilterFactory();
-    LowPassFilter* getLowPassFilter(unsigned int, unsigned int, float, unsigned int);
-  private:
-    std::vector<LowPassFilterWrapper*> filters;
-    boost::mutex LowPassFilterFactoryMutex;
   };
 
 }

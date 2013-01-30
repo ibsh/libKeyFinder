@@ -23,7 +23,9 @@
 
 namespace KeyFinder{
 
-  LowPassFilterWrapper::LowPassFilterWrapper(unsigned int cc, unsigned int fr, float cf, unsigned int fs, LowPassFilter* fi){
+  LowPassFilterFactory::LowPassFilterWrapper::LowPassFilterWrapper(
+    unsigned int cc, unsigned int fr, float cf, unsigned int fs, LowPassFilter* fi
+  ){
     coefficientCount = cc;
     frameRate = fr;
     cornerFrequency = cf;
@@ -31,27 +33,27 @@ namespace KeyFinder{
     lpf = fi;
   }
 
-  LowPassFilterWrapper::~LowPassFilterWrapper(){
+  LowPassFilterFactory::LowPassFilterWrapper::~LowPassFilterWrapper(){
     delete lpf;
   }
 
-  LowPassFilter* LowPassFilterWrapper::getLowPassFilter() const{
+  LowPassFilter* LowPassFilterFactory::LowPassFilterWrapper::getLowPassFilter() const{
     return lpf;
   }
 
-  unsigned int LowPassFilterWrapper::getCoefficientCount() const{
+  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getCoefficientCount() const{
     return coefficientCount;
   }
 
-  unsigned int LowPassFilterWrapper::getFrameRate() const{
+  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getFrameRate() const{
     return frameRate;
   }
 
-  float LowPassFilterWrapper::getCornerFrequency() const{
+  float LowPassFilterFactory::LowPassFilterWrapper::getCornerFrequency() const{
     return cornerFrequency;
   }
 
-  unsigned int LowPassFilterWrapper::getFftFrameSize() const{
+  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getFftFrameSize() const{
     return fftFrameSize;
   }
 
@@ -64,7 +66,9 @@ namespace KeyFinder{
       delete filters[i];
   }
 
-  LowPassFilter* LowPassFilterFactory::getLowPassFilter(unsigned int cc, unsigned int fr, float cf, unsigned int fs){
+  LowPassFilter* LowPassFilterFactory::getLowPassFilter(
+    unsigned int cc, unsigned int fr, float cf, unsigned int fs
+  ){
     boost::mutex::scoped_lock lock(LowPassFilterFactoryMutex);
     for (unsigned int i=0; i<filters.size(); i++){
       LowPassFilterWrapper* wrapper = filters[i];

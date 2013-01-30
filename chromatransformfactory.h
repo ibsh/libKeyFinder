@@ -29,8 +29,20 @@
 
 namespace KeyFinder{
 
+  // Holds all analysers generated in a session, to cut down on prep time.
+  class ChromaTransformFactory{
+  public:
+    ChromaTransformFactory();
+    ~ChromaTransformFactory();
+    ChromaTransform* getChromaTransform(unsigned int, const Parameters&);
+  private:
+    class ChromaTransformWrapper;
+    std::vector<ChromaTransformWrapper*> chromaTransforms;
+    boost::mutex chromaTransformFactoryMutex;
+  };
+
   // Keeps a reference to a spectrum analyser with distinguishing information
-  class ChromaTransformWrapper{
+  class ChromaTransformFactory::ChromaTransformWrapper{
   public:
     ChromaTransformWrapper(unsigned int, const Parameters&, ChromaTransform*);
     ~ChromaTransformWrapper();
@@ -41,17 +53,6 @@ namespace KeyFinder{
     unsigned int frate;
     Parameters params;
     ChromaTransform* ct;
-  };
-
-  // Singleton. It holds all analysers generated in a session, to cut down on prep time.
-  class ChromaTransformFactory{
-  public:
-    ChromaTransformFactory();
-    ~ChromaTransformFactory();
-    ChromaTransform* getChromaTransform(unsigned int, const Parameters&);
-  private:
-    std::vector<ChromaTransformWrapper*> chromaTransforms;
-    boost::mutex chromaTransformFactoryMutex;
   };
 
 }
