@@ -8,10 +8,12 @@ CONFIG += x86 x86_64
 
 HEADERS += \
     audiodatatest.h \
+    binodetest.h \
     chromagramtest.h
 
 SOURCES += main.cpp \
     audiodatatest.cpp \
+    binodetest.cpp \
     chromagramtest.cpp
 
 DEPENDPATH  += /usr/local/lib
