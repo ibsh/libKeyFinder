@@ -30,7 +30,7 @@
 
 namespace KeyFinder{
 
-  LowPassFilter::LowPassFilter(unsigned int coefficientCount, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize){
+  LowPassFilter::LowPassFilter(unsigned int impulseLength, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize){
     float cutoffPoint = cornerFrequency / frameRate;
     FftAdapter* fft = new FftAdapter(fftFrameSize);
 
@@ -48,16 +48,16 @@ namespace KeyFinder{
     // inverse FFT to determine time-domain response
     fft->execute();
 
-    coefficients.resize(coefficientCount, 0.0);
-    unsigned int centre = (coefficientCount-1)/2;
+    coefficients.resize(impulseLength, 0.0);
+    unsigned int centre = (impulseLength-1)/2;
     gain = 0.0;
     WindowFunction* wf = WindowFunction::getWindowFunction(WINDOW_BLACKMAN);
 
-    for (unsigned int i = 0; i < coefficientCount; i++){
+    for (unsigned int i = 0; i < impulseLength; i++){
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
       float coeff = fft->getOutputReal(index) / (float) fftFrameSize;
-      coeff *= wf->window(i, coefficientCount);
+      coeff *= wf->window(i, impulseLength);
       coefficients[i] = coeff;
       gain += coeff;
     }

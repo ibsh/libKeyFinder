@@ -54,6 +54,7 @@ namespace KeyFinder{
     // prep filter
     unsigned int filterOrder = 160;
     unsigned int filterDelay = filterOrder/2;
+    unsigned int filterImpulseLength = filterOrder + 1;
     // create circular buffer for filter delay
     Binode<float>* p = new Binode<float>(); // first node
     Binode<float>* q = p;
@@ -67,25 +68,25 @@ namespace KeyFinder{
     q->r = p;
 
     // get filter
-    LowPassFilter* lpf = lpfFactory->getLowPassFilter(filterOrder + 1, oldFrameRate, midCutoff, 2048);
+    LowPassFilter* lpf = lpfFactory->getLowPassFilter(filterImpulseLength, oldFrameRate, midCutoff, 2048);
 
     // for each channel (should be mono by this point but just in case)
     for (unsigned int ch = 0; ch < channels; ch++){
       q = p;
       // clear delay buffer
-      for (unsigned int k = 0; k <= filterOrder; k++){
+      for (unsigned int k = 0; k < filterImpulseLength; k++){
         q->data = 0.0;
         q = q->r;
       }
       // for each frame (running off the end of the sample stream by
       // filterDelay), get the relevant sample i for this channel
-      for (int i = ch; i < (signed)(oldSampleCount + filterDelay); i += channels){
+      for (unsigned int i = ch; i < oldSampleCount + (filterDelay * channels); i += channels){
 
         // shuffle old samples along delay buffer
         p = p->r;
 
         // load new sample into delay buffer
-        if (i < (signed)oldSampleCount){
+        if (i < oldSampleCount){
           p->l->data = audioIn->getSample(i) / lpf->gain;
         }else{
           // zero pad once we're into the delay at the end of the file
@@ -96,20 +97,20 @@ namespace KeyFinder{
         if ((i % (downsampleFactor * channels)) < channels){
           float sum = 0.0;
           q = p;
-          for (unsigned int k = 0; k <= filterOrder; k++){
+          for (unsigned int k = 0; k < filterImpulseLength; k++){
             sum += lpf->coefficients[k] * q->data;
             q = q->r;
           }
           // don't try and set samples during the warm-up, only once we've passed filterDelay samples
-          if (i >= (signed)filterDelay){
-            audioOut->setSample(((i-filterDelay) / downsampleFactor) + ch, sum);
+          if (i >= (filterDelay * channels)){
+            audioOut->setSample(((i-(filterDelay * channels)) / downsampleFactor) + ch, sum);
           }
         }
       }
     }
 
     // delete delay buffer
-    for (unsigned int k = 0; k <= filterOrder; k++){
+    for (unsigned int k = 0; k < filterImpulseLength; k++){
       q = p;
       p = p->r;
       delete q;
