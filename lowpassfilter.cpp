@@ -30,7 +30,10 @@
 
 namespace KeyFinder{
 
-  LowPassFilter::LowPassFilter(unsigned int impulseLength, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize){
+  LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize){
+    order = ord;
+    delay = order / 2;
+    impulseLength = order + 1;
     float cutoffPoint = cornerFrequency / frameRate;
     FftAdapter* fft = new FftAdapter(fftFrameSize);
 
@@ -48,8 +51,9 @@ namespace KeyFinder{
     // inverse FFT to determine time-domain response
     fft->execute();
 
+    // TODO determine whether to handle bad_alloc
     coefficients.resize(impulseLength, 0.0);
-    unsigned int centre = (impulseLength-1)/2;
+    unsigned int centre = order / 2;
     gain = 0.0;
     WindowFunction* wf = WindowFunction::getWindowFunction(WINDOW_BLACKMAN);
 
@@ -64,6 +68,84 @@ namespace KeyFinder{
 
     delete fft;
     delete wf;
+
+  }
+
+  void LowPassFilter::filter(AudioData*& audioIn) {
+
+    // create circular delay buffer
+    // this must be done in here for thread safety
+    Binode<float>* p = new Binode<float>(); // first node
+    Binode<float>* q = p;
+    for (unsigned int i=0; i<order; i++){
+      q->r = new Binode<float>(); // subsequent nodes, for a total of impulseLength
+      q->r->l = q;
+      q = q->r;
+    }
+    // join first and last nodes
+    p->l = q;
+    q->r = p;
+
+    unsigned int oldFrameRate = audioIn->getFrameRate();
+    unsigned int oldFrameCount = audioIn->getFrameCount();
+    unsigned int channels = audioIn->getChannels();
+
+    // prep output stream
+    AudioData* audioOut = new AudioData();
+    audioOut ->setFrameRate(oldFrameRate);
+    audioOut ->setChannels(channels);
+    try{
+      audioOut ->addToFrameCount(oldFrameCount);
+    }catch(const Exception& e){
+      delete audioOut ;
+      throw e;
+    }
+
+    // for each channel (should be mono by this point but just in case)
+    for (unsigned int ch = 0; ch < channels; ch++){
+      Binode<float>* q = p;
+      // clear delay buffer
+      for (unsigned int k = 0; k < impulseLength; k++){
+        q->data = 0.0;
+        q = q->r;
+      }
+      // for each frame (running off the end of the sample stream by delay)
+      for (unsigned int frm = 0; frm < oldFrameCount + delay; frm++){
+
+        // shuffle old samples along delay buffer
+        p = p->r;
+
+        // load new sample into delay buffer
+        if (frm < oldFrameCount){
+          p->l->data = audioIn->getSample(frm, ch) / gain;
+        }else{
+          // zero pad once we're into the delay at the end of the file
+          p->l->data = 0.0;
+        }
+
+        float sum = 0.0;
+        q = p;
+        for (unsigned int k = 0; k < impulseLength; k++){
+          sum += coefficients[k] * q->data;
+          q = q->r;
+        }
+
+        // and write to filtered stream after delay has passed
+        if (frm >= delay){
+          audioOut ->setSample(frm - delay, ch, sum);
+        }
+      }
+    }
+
+    // delete delay buffer
+    for (unsigned int i = 0; i < impulseLength; i++){
+      q = p;
+      p = p->r;
+      delete q;
+    }
+
+    delete audioIn;
+    audioIn = audioOut ;
 
   }
 

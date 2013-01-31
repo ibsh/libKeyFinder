@@ -35,12 +35,17 @@ namespace KeyFinder{
     unsigned int getChannels() const;
     unsigned int getFrameRate() const;
     float getSample(unsigned int) const;
+    float getSample(unsigned int, unsigned int) const;
     unsigned int getSampleCount() const;
+    unsigned int getFrameCount() const;
 
     void setChannels(unsigned int);
     void setFrameRate(unsigned int);
     void setSample(unsigned int, float);
+    void setSample(unsigned int, unsigned int, float);
     void addToSampleCount(unsigned int);
+    void addToFrameCount(unsigned int);
+
     void reduceToMono();
 
   private:

@@ -38,6 +38,8 @@ namespace KeyFinder{
   }
 
   Chromagram* SpectrumAnalyser::chromagram(AudioData* audio){
+    if (audio->getChannels() != 1)
+      throw Exception("Audio must be monophonic to be analysed");
     Chromagram* ch = new Chromagram((audio->getSampleCount()/hopSize) + 1,bins);
     unsigned int fftFrameSize = fft->getFrameSize();
     for (unsigned int i = 0; i < audio->getSampleCount(); i += hopSize){

@@ -25,15 +25,13 @@
 #include <cmath>
 #include <vector>
 #include "audiodata.h"
-#include "lowpassfilterfactory.h"
-#include "binode.h"
 #include "exception.h"
 
 namespace KeyFinder{
 
   class Downsampler{
   public:
-    void downsample(AudioData*&, const float&, LowPassFilterFactory*) const;
+    void downsample(AudioData*&, unsigned int) const;
   };
 
 }

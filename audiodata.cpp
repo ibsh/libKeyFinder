@@ -43,6 +43,7 @@ namespace KeyFinder{
     frameRate = n;
   }
 
+  // get sample by absolute index
   float AudioData::getSample(unsigned int n) const{
     if(n >= sampleCount){
       std::ostringstream ss;
@@ -52,6 +53,22 @@ namespace KeyFinder{
     return samples[n];
   }
 
+  // get sample by frame and channel
+  float AudioData::getSample(unsigned int frm, unsigned int ch) const{
+    if(frm >= getFrameCount()){
+      std::ostringstream ss;
+      ss << "Cannot get out-of-bounds frame (" << frm << "/" << getFrameCount() << ")";
+      throw Exception(ss.str().c_str());
+    }
+    if(ch >= channels){
+      std::ostringstream ss;
+      ss << "Cannot get out-of-bounds channel (" << ch << "/" << channels << ")";
+      throw Exception(ss.str().c_str());
+    }
+    return getSample(frm * channels + ch);
+  }
+
+  // set sample by absolute index
   void AudioData::setSample(unsigned int n, float x){
     if(n >= sampleCount){
       std::ostringstream ss;
@@ -62,6 +79,21 @@ namespace KeyFinder{
       throw Exception("Cannot set sample to NaN");
     }
     samples[n] = x;
+  }
+
+  // set sample by frame and channel
+  void AudioData::setSample(unsigned int frm, unsigned int ch, float x){
+    if(frm >= getFrameCount()){
+      std::ostringstream ss;
+      ss << "Cannot set out-of-bounds frame (" << frm << "/" << getFrameCount() << ")";
+      throw Exception(ss.str().c_str());
+    }
+    if(ch >= channels){
+      std::ostringstream ss;
+      ss << "Cannot set out-of-bounds channel (" << ch << "/" << channels << ")";
+      throw Exception(ss.str().c_str());
+    }
+    setSample(frm * channels + ch, x);
   }
 
   void AudioData::addToSampleCount(unsigned int newSamples){
@@ -81,8 +113,18 @@ namespace KeyFinder{
     }
   }
 
+  void AudioData::addToFrameCount(unsigned int newFrames){
+    if(channels < 1) throw Exception("Channels must be > 0");
+    addToSampleCount(newFrames * channels);
+  }
+
   unsigned int AudioData::getSampleCount() const{
     return sampleCount;
+  }
+
+  unsigned int AudioData::getFrameCount() const{
+    if(channels < 1) throw Exception("Channels must be > 0");
+    return sampleCount / channels;
   }
 
   void AudioData::reduceToMono(){

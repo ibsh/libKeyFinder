@@ -19,30 +19,14 @@
 
 *************************************************************************/
 
-#ifndef LOWPASSFILTER_H
-#define LOWPASSFILTER_H
+#ifndef DOWNSAMPLERTEST_H
+#define DOWNSAMPLERTEST_H
 
 #include <cmath>
-#include <vector>
-#include "audiodata.h"
-#include "binode.h"
-#include "fftadapter.h"
-#include "windowfunctions.h"
+#include "gtest/gtest.h"
 
-namespace KeyFinder{
+#include "keyfinder/downsampler.h"
 
-  class LowPassFilter{
-  public:
-    LowPassFilter(unsigned int, unsigned int, float, unsigned int);
-    void filter(AudioData*&);
-  private:
-    unsigned int order;
-    unsigned int delay;         // always order / 2
-    unsigned int impulseLength; // always order + 1
-    float gain;
-    std::vector<float> coefficients;
-  };
+class DownsamplerTest : public ::testing::Test { };
 
-}
-
-#endif
+#endif // DOWNSAMPLERTEST_H
