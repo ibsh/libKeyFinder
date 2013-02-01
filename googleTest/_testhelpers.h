@@ -19,12 +19,20 @@
 
 *************************************************************************/
 
-#ifndef DOWNSAMPLERTEST_H
-#define DOWNSAMPLERTEST_H
+#ifndef TESTHELPERS_H
+#define TESTHELPERS_H
 
-#include "_testhelpers.h"
-#include "keyfinder/downsampler.h"
+#include <cmath>
+#include "gtest/gtest.h"
 
-class DownsamplerTest : public ::testing::Test { };
+#undef  PI
+#define PI 3.1415926535897932384626433832795
 
-#endif // DOWNSAMPLERTEST_H
+float sine_wave(
+  unsigned int index,
+  float frequency,
+  unsigned int sampleRate,
+  unsigned int magnitude = 1
+);
+
+#endif // TESTHELPERS_H

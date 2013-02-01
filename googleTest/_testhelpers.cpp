@@ -19,12 +19,13 @@
 
 *************************************************************************/
 
-#ifndef DOWNSAMPLERTEST_H
-#define DOWNSAMPLERTEST_H
-
 #include "_testhelpers.h"
-#include "keyfinder/downsampler.h"
 
-class DownsamplerTest : public ::testing::Test { };
-
-#endif // DOWNSAMPLERTEST_H
+float sine_wave(
+  unsigned int index,
+  float frequency,
+  unsigned int sampleRate,
+  unsigned int magnitude
+){
+  return magnitude * sin(index * frequency / sampleRate * 2.0 * PI);
+}

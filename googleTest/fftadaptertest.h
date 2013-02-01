@@ -19,12 +19,12 @@
 
 *************************************************************************/
 
-#ifndef DOWNSAMPLERTEST_H
-#define DOWNSAMPLERTEST_H
+#ifndef FFTADAPTERTEST_H
+#define FFTADAPTERTEST_H
 
 #include "_testhelpers.h"
-#include "keyfinder/downsampler.h"
+#include "keyfinder/fftadapter.h"
 
-class DownsamplerTest : public ::testing::Test { };
+class FftAdapterTest : public ::testing::Test { };
 
-#endif // DOWNSAMPLERTEST_H
+#endif // FFTADAPTERTEST_H

@@ -32,14 +32,18 @@ HEADERS += \
     binodetest.h \
     chromagramtest.h \
     downsamplertest.h \
-    lowpassfiltertest.h
+    fftadaptertest.h \
+    lowpassfiltertest.h \
+    _testhelpers.h
 
 SOURCES += main.cpp \
     audiodatatest.cpp \
     binodetest.cpp \
     chromagramtest.cpp \
     downsamplertest.cpp \
-    lowpassfiltertest.cpp
+    fftadaptertest.cpp \
+    lowpassfiltertest.cpp \
+    _testhelpers.cpp
 
 DEPENDPATH  += /usr/local/lib
 INCLUDEPATH += /usr/local/include

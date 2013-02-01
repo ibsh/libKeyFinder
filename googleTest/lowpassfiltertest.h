@@ -22,9 +22,7 @@
 #ifndef LOWPASSFILTERTEST_H
 #define LOWPASSFILTERTEST_H
 
-#include <cmath>
-#include "gtest/gtest.h"
-
+#include "_testhelpers.h"
 #include "keyfinder/lowpassfilter.h"
 
 class LowPassFilterTest : public ::testing::Test { };

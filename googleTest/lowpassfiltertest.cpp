@@ -21,15 +21,6 @@
 
 #include "lowpassfiltertest.h"
 
-float sine_wave(
-  unsigned int index,
-  float frequency,
-  unsigned int sampleRate,
-  unsigned int magnitude = 1
-){
-  return magnitude * sin(index * frequency / sampleRate * 2.0 * PI);
-}
-
 unsigned int samples = 44100;
 float magnitude = 32768.0;
 // TODO: 5% tolerance is not ideal, and only works when
