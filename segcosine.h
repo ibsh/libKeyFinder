@@ -28,8 +28,8 @@ namespace KeyFinder{
 
   class CosineHcdf : public Segmentation{
   public:
-    virtual std::vector<float> getRateOfChange(const Chromagram&, const Parameters&);
-    virtual std::vector<unsigned int> getSegments(const std::vector<float>&, const Parameters&);
+    virtual std::vector<float> getRateOfChange(const Chromagram&, const Parameters&) const;
+    virtual std::vector<unsigned int> getSegments(const std::vector<float>&, const Parameters&) const;
   };
 
 }

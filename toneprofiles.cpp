@@ -151,7 +151,7 @@ namespace KeyFinder{
     }while(p!=tonic);
   }
 
-  float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset, float inputMean){
+  float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset, float inputMean) const{
     if(measure == SIMILARITY_CORRELATION)
       return correlation(input, offset, inputMean);
     else

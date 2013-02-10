@@ -23,7 +23,7 @@
 
 namespace KeyFinder{
 
-  std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params){
+  std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params) const{
     unsigned int hops = ch.getHops();
     unsigned int bins = ch.getBins();
     unsigned int gaussianSize = params.getSegGaussianSize();
@@ -74,7 +74,7 @@ namespace KeyFinder{
     return rateOfChange;
   }
 
-  std::vector<unsigned int> CosineHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& params){
+  std::vector<unsigned int> CosineHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& params) const{
     // Pick peaks
     std::vector<unsigned int> changes(1, 0); // start vector with a 0 to enable first classification
     unsigned int neighbours = params.getSegPeakPickingNeighbours();

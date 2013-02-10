@@ -23,12 +23,12 @@
 
 namespace KeyFinder{
 
-  std::vector<float> NoSeg::getRateOfChange(const Chromagram& ch, const Parameters& /*params*/){
+  std::vector<float> NoSeg::getRateOfChange(const Chromagram& ch, const Parameters& /*params*/) const{
     std::vector<float> NoChange(ch.getHops());
     return NoChange;
   }
 
-  std::vector<unsigned int> NoSeg::getSegments(const std::vector<float>& /*rateOfChange*/, const Parameters& /*params*/){
+  std::vector<unsigned int> NoSeg::getSegments(const std::vector<float>& /*rateOfChange*/, const Parameters& /*params*/) const{
     std::vector<unsigned int> noChanges(1, 0);
     return noChanges;
   }

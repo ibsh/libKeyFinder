@@ -31,7 +31,7 @@ namespace KeyFinder{
   public:
     ToneProfile(tone_profile_t, scale_t, const Parameters&);
     ~ToneProfile();
-    float similarity(similarity_measure_t, const std::vector<float>&, int, float);
+    float similarity(similarity_measure_t, const std::vector<float>&, int, float) const;
   private:
     float cosine(const std::vector<float>&, int) const;
     float correlation(const std::vector<float>&, int, float) const;

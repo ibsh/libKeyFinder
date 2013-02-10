@@ -23,12 +23,12 @@
 
 namespace KeyFinder{
 
-  std::vector<float> ArbitrarySeg::getRateOfChange(const Chromagram& ch, const Parameters& /*params*/){
+  std::vector<float> ArbitrarySeg::getRateOfChange(const Chromagram& ch, const Parameters& /*params*/) const{
     std::vector<float> NoChange(ch.getHops());
     return NoChange;
   }
 
-  std::vector<unsigned int> ArbitrarySeg::getSegments(const std::vector<float>& rateOfChange, const Parameters& params){
+  std::vector<unsigned int> ArbitrarySeg::getSegments(const std::vector<float>& rateOfChange, const Parameters& params) const{
     // Divide by arbitrary number of segments
     unsigned int segments = params.getArbitrarySegments();
     std::vector<unsigned int> changes(1); // start vector with a 0 to enable first classification
