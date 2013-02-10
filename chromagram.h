@@ -31,14 +31,30 @@ namespace KeyFinder{
 
   class Chromagram{
   public:
-    Chromagram(unsigned int h = 0, unsigned int b = 0);
-    Chromagram(const Chromagram&);
-    void setMagnitude(unsigned int, unsigned int, float);
-    float getMagnitude(unsigned int, unsigned int) const;
+    Chromagram(
+      unsigned int hops = 0,
+      unsigned int bins = 0
+    );
+    Chromagram(
+      const Chromagram& that
+    );
+    void setMagnitude(
+      unsigned int hop,
+      unsigned int bin,
+      float value
+    );
+    float getMagnitude(
+      unsigned int hop,
+      unsigned int bin
+    ) const;
     unsigned int getHops() const;
     unsigned int getBins() const;
-    void reduceToOneOctave(const Parameters&);
-    void reduceTuningBins(const Parameters&);
+    void reduceToOneOctave(
+      const Parameters& params
+    );
+    void reduceTuningBins(
+      const Parameters& params
+    );
   private:
     unsigned int hops;
     unsigned int bins;

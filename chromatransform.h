@@ -29,9 +29,14 @@ namespace KeyFinder{
 
   class ChromaTransform{
   public:
-    ChromaTransform(unsigned int, const Parameters&);
-    std::vector<float> chromaVector(const FftAdapter*) const;
-  protected:
+    ChromaTransform(
+      unsigned int frameRate,
+      const Parameters& params
+    );
+    std::vector<float> chromaVector(
+      const FftAdapter* fft
+    ) const;
+  private:
     unsigned int chromaBins;
     unsigned int frameRate;
     // ragged 2D array; narrow for bass, wide for treble.

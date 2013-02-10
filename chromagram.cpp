@@ -202,6 +202,7 @@ namespace KeyFinder{
     bins = 12 * oct;
   }
 
+  // TODO params here seems unnecessary, weaken this coupling
   void Chromagram::reduceToOneOctave(const Parameters& params){
     unsigned int oct = params.getOctaves();
     unsigned int bpo = bins/oct;
