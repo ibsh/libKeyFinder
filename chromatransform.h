@@ -29,13 +29,8 @@ namespace KeyFinder{
 
   class ChromaTransform{
   public:
-    ChromaTransform(
-      unsigned int frameRate,
-      const Parameters& params
-    );
-    std::vector<float> chromaVector(
-      const FftAdapter* fft
-    ) const;
+    ChromaTransform(unsigned int frameRate, const Parameters& params);
+    std::vector<float> chromaVector(const FftAdapter* fft) const;
   private:
     unsigned int chromaBins;
     unsigned int frameRate;

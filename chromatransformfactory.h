@@ -34,7 +34,10 @@ namespace KeyFinder{
   public:
     ChromaTransformFactory();
     ~ChromaTransformFactory();
-    ChromaTransform* getChromaTransform(unsigned int, const Parameters&);
+    ChromaTransform* getChromaTransform(
+      unsigned int frameRate,
+      const Parameters& params
+    );
   private:
     class ChromaTransformWrapper;
     std::vector<ChromaTransformWrapper*> chromaTransforms;
@@ -44,13 +47,17 @@ namespace KeyFinder{
   // Keeps a reference to a spectrum analyser with distinguishing information
   class ChromaTransformFactory::ChromaTransformWrapper{
   public:
-    ChromaTransformWrapper(unsigned int, const Parameters&, ChromaTransform*);
+    ChromaTransformWrapper(
+      unsigned int frameRate,
+      const Parameters& params,
+      ChromaTransform* transform
+    );
     ~ChromaTransformWrapper();
     ChromaTransform* getChromaTransform() const;
     Parameters getParameters() const;
     unsigned int getFrameRate() const;
   private:
-    unsigned int frate;
+    unsigned int frameRate;
     Parameters params;
     ChromaTransform* ct;
   };

@@ -29,7 +29,7 @@ namespace KeyFinder{
 
   class Exception : public std::runtime_error {
   public:
-    Exception(const char* c) : std::runtime_error(c) { }
+    Exception(const char* msg) : std::runtime_error(msg) { }
   };
 
 }

@@ -107,3 +107,36 @@ TEST(LowPassFilterTest, DoesBothAtOnce){
     ASSERT_GT(max, a->getSample(i));
   }
 }
+
+TEST(LowPassFilterTest, WorksWithShortcutFactor){
+  // make two sine waves, one second long
+  KeyFinder::AudioData* a = new KeyFinder::AudioData();
+  a->setChannels(1);
+  a->setFrameRate(samples);
+  a->addToSampleCount(samples);
+  for(unsigned int i = 0; i < samples; i++){
+    float sample = 0;
+    // high freq
+    sample += sine_wave(i, highFrequency, samples, magnitude);
+    // low freq
+    sample += sine_wave(i, lowFrequency, samples, magnitude);
+    a->setSample(i, sample);
+  }
+
+  KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, samples, cornerFrequency, filterFFT);
+  lpf->filter(a, 3);
+  delete lpf;
+
+  // test for lower wave only
+  for(unsigned int i = 0; i < samples; i++){
+    if(i % 3 != 0){
+      ASSERT_EQ(0.0, a->getSample(i));
+    }else{
+      float expected = sine_wave(i, lowFrequency, samples, magnitude);
+      float min = expected - tolerance;
+      float max = expected + tolerance;
+      ASSERT_LT(min, a->getSample(i));
+      ASSERT_GT(max, a->getSample(i));
+    }
+  }
+}

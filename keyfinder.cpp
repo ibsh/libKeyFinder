@@ -11,15 +11,15 @@ namespace KeyFinder{
     workingAudio->reduceToMono();
 
     // TODO: there is presumably some good maths to determine filter frequencies
-    float lpfCutoff = params.getLastFreq() * 1.05;
+    float lpfCutoff = params.getLastFrequency() * 1.05;
+    float dsCutoff = params.getLastFrequency() * 1.10;
+    unsigned int downsampleFactor = (int)floor( workingAudio->getFrameRate() / 2 / dsCutoff );
 
     // get filter
     LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio->getFrameRate(), lpfCutoff, 2048);
-    lpf->filter(workingAudio);
+    // feeding in the downsampleFactor for a shortcut
+    lpf->filter(workingAudio, downsampleFactor);
     // note we don't delete the LPF; it's stored in the factory for reuse
-
-    float dsCutoff = params.getLastFreq() * 1.10;
-    unsigned int downsampleFactor = (int)floor( workingAudio->getFrameRate() / 2 / dsCutoff );
 
     Downsampler ds;
     ds.downsample(workingAudio, downsampleFactor);

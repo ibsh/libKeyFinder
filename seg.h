@@ -29,9 +29,15 @@ namespace KeyFinder{
 
   class Segmentation{
   public:
-    static Segmentation* getSegmentation(const Parameters&);
-    virtual std::vector<float> getRateOfChange(const Chromagram&, const Parameters&) const = 0;
-    virtual std::vector<unsigned int> getSegments(const std::vector<float>&, const Parameters&) const = 0;
+    static Segmentation* getSegmentation(const Parameters& params);
+    virtual std::vector<float> getRateOfChange(
+      const Chromagram& chromagram,
+      const Parameters& params
+    ) const = 0;
+    virtual std::vector<unsigned int> getSegments(
+      const std::vector<float>& rateOfChange,
+      const Parameters& params
+    ) const = 0;
     virtual ~Segmentation();
   };
 

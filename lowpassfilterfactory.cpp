@@ -26,7 +26,7 @@ namespace KeyFinder{
   LowPassFilterFactory::LowPassFilterWrapper::LowPassFilterWrapper(
     unsigned int cc, unsigned int fr, float cf, unsigned int fs, LowPassFilter* fi
   ){
-    coefficientCount = cc;
+    order = cc;
     frameRate = fr;
     cornerFrequency = cf;
     fftFrameSize = fs;
@@ -41,8 +41,8 @@ namespace KeyFinder{
     return lpf;
   }
 
-  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getCoefficientCount() const{
-    return coefficientCount;
+  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getOrder() const{
+    return order;
   }
 
   unsigned int LowPassFilterFactory::LowPassFilterWrapper::getFrameRate() const{
@@ -73,7 +73,7 @@ namespace KeyFinder{
     for (unsigned int i=0; i<filters.size(); i++){
       LowPassFilterWrapper* wrapper = filters[i];
       if(
-        wrapper->getCoefficientCount() == cc &&
+        wrapper->getOrder() == cc &&
         wrapper->getFrameRate() == fr &&
         wrapper->getCornerFrequency() == cf &&
         wrapper->getFftFrameSize() == fs

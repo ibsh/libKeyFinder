@@ -26,7 +26,7 @@ namespace KeyFinder{
   ChromaTransformFactory::ChromaTransformWrapper::ChromaTransformWrapper(
     unsigned int f, const Parameters& p, ChromaTransform* s
   ){
-    frate = f;
+    frameRate = f;
     params = p;
     ct = s;
   }
@@ -44,7 +44,7 @@ namespace KeyFinder{
   }
 
   unsigned int ChromaTransformFactory::ChromaTransformWrapper::getFrameRate() const{
-    return frate;
+    return frameRate;
   }
 
   ChromaTransformFactory::ChromaTransformFactory(){

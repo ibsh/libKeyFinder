@@ -30,9 +30,9 @@ namespace KeyFinder{
 
   class KeyClassifier{
   public:
-    KeyClassifier(const Parameters&);
+    KeyClassifier(const Parameters& params);
     ~KeyClassifier();
-    key_t classify(const std::vector<float>&);
+    key_t classify(const std::vector<float>& chromaVector);
   private:
     ToneProfile* major;
     ToneProfile* minor;

@@ -33,8 +33,13 @@ namespace KeyFinder{
 
   class LowPassFilter{
   public:
-    LowPassFilter(unsigned int, unsigned int, float, unsigned int);
-    void filter(AudioData*&);
+    LowPassFilter(
+      unsigned int order,
+      unsigned int frameRate,
+      float cornerFrequency,
+      unsigned int fftFrameSize
+    );
+    void filter(AudioData*& audio, unsigned int shortcutFactor = 1) const;
   private:
     unsigned int order;
     unsigned int delay;         // always order / 2

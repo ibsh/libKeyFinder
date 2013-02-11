@@ -25,22 +25,22 @@ namespace KeyFinder{
 
   ChromaTransform::ChromaTransform(unsigned int fr, const Parameters& params){
     frameRate = fr;
-    chromaBins = params.getOctaves() * params.getBpo();
+    chromaBins = params.getOctaves() * params.getBandsPerOctave();
     unsigned int fftFrameSize = params.getFftFrameSize();
     if(frameRate < 1){
       throw Exception("Frame rate must be > 0");
     }
-    if(params.getLastFreq() > frameRate / 2.0){
+    if(params.getLastFrequency() > frameRate / 2.0){
       throw Exception("Analysis frequencies over Nyquist");
     }
-    if(frameRate / (float)fftFrameSize > (params.getBinFreq(1) - params.getBinFreq(0))){
+    if(frameRate / (float)fftFrameSize > (params.getBinFrequency(1) - params.getBinFrequency(0))){
       throw Exception("Insufficient low-end resolution");
     }
     chromaBinFftOffsets.resize(chromaBins, 0);
     directSpectralKernel.resize(chromaBins, std::vector<float>(0, 0.0));
-    float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBpo()))-1);
+    float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBandsPerOctave()))-1);
     for (unsigned int i = 0; i < chromaBins; i++){
-      float centreOfWindow = params.getBinFreq(i) * fftFrameSize / fr;
+      float centreOfWindow = params.getBinFrequency(i) * fftFrameSize / fr;
       float widthOfWindow = centreOfWindow * myQFactor;
       float beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
       float endOfWindow = beginningOfWindow + widthOfWindow;
@@ -53,7 +53,7 @@ namespace KeyFinder{
       }
       // normalisation by sum of coefficients and frequency of bin; models CQT very closely
       for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++){
-        directSpectralKernel[i][j] = directSpectralKernel[i][j] / sumOfCoefficients * params.getBinFreq(i);
+        directSpectralKernel[i][j] = directSpectralKernel[i][j] / sumOfCoefficients * params.getBinFrequency(i);
       }
     }
   }

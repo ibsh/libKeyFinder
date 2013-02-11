@@ -31,14 +31,16 @@ namespace KeyFinder{
 
   class FftAdapter{
   public:
-    FftAdapter(unsigned int);
+    FftAdapter(
+      unsigned int frameSize
+    );
     ~FftAdapter();
     unsigned int getFrameSize() const;
-    void setInput(unsigned int, float) const;
+    void setInput(unsigned int sample, float real) const;
     void execute();
-    float getOutputReal(unsigned int) const;
-    float getOutputImaginary(unsigned int) const;
-    float getOutputMagnitude(unsigned int) const;
+    float getOutputReal(unsigned int bin) const;
+    float getOutputImaginary(unsigned int bin) const;
+    float getOutputMagnitude(unsigned int bin) const;
   protected:
     unsigned int frameSize;
     fftw_complex* input;

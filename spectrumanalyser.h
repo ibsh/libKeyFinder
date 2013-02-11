@@ -34,8 +34,12 @@ namespace KeyFinder{
 
   class SpectrumAnalyser{
   public:
-    SpectrumAnalyser(unsigned int, const Parameters&, ChromaTransformFactory*);
-    Chromagram* chromagram(AudioData*) const;
+    SpectrumAnalyser(
+      unsigned int frameRate,
+      const Parameters& params,
+      ChromaTransformFactory* ctFactory
+    );
+    Chromagram* chromagram(AudioData* audio) const;
     ~SpectrumAnalyser();
   protected:
     unsigned int bins;

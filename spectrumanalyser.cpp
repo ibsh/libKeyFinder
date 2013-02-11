@@ -24,7 +24,7 @@
 namespace KeyFinder{
 
   SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory){
-    bins = params.getOctaves() * params.getBpo();
+    bins = params.getOctaves() * params.getBandsPerOctave();
     hopSize = params.getHopSize();
     ct = spFactory->getChromaTransform(f, params);
     wf = WindowFunction::getWindowFunction(params.getTemporalWindow());

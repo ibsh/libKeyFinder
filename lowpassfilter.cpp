@@ -31,6 +31,7 @@
 namespace KeyFinder{
 
   LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize){
+    // TODO: validate order is even
     order = ord;
     delay = order / 2;
     impulseLength = order + 1;
@@ -71,7 +72,7 @@ namespace KeyFinder{
 
   }
 
-  void LowPassFilter::filter(AudioData*& audioIn) {
+  void LowPassFilter::filter(AudioData*& audioIn, unsigned int shortcutFactor) const{
 
     // create circular delay buffer
     // this must be done in here for thread safety
@@ -123,16 +124,20 @@ namespace KeyFinder{
           p->l->data = 0.0;
         }
 
-        float sum = 0.0;
-        q = p;
-        for (unsigned int k = 0; k < impulseLength; k++){
-          sum += coefficients[k] * q->data;
-          q = q->r;
-        }
+        // start doing the maths once the delay has passed
+        // and, if shortcut != 1, only do the maths for the useful samples
+        // (this is mathematically dodgy, but it's fast and it usually works)
+        if((frm >= delay) && (frm - delay) % shortcutFactor == 0){
 
-        // and write to filtered stream after delay has passed
-        if (frm >= delay){
+          float sum = 0.0;
+          q = p;
+          for (unsigned int k = 0; k < impulseLength; k++){
+            sum += coefficients[k] * q->data;
+            q = q->r;
+          }
+
           audioOut ->setSample(frm - delay, ch, sum);
+
         }
       }
     }

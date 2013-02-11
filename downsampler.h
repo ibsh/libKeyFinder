@@ -31,7 +31,7 @@ namespace KeyFinder{
 
   class Downsampler{
   public:
-    void downsample(AudioData*&, unsigned int) const;
+    void downsample(AudioData*& audio, unsigned int factor) const;
   };
 
 }

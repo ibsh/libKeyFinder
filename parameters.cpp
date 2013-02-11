@@ -100,7 +100,7 @@ namespace KeyFinder{
   unsigned int         Parameters::getHopsPerFrame()             const { return hopsPerFrame; }
   unsigned int         Parameters::getHopSize()                  const { return fftFrameSize / hopsPerFrame; }
   unsigned int         Parameters::getOctaves()                  const { return octaves; }
-  unsigned int         Parameters::getBpo()                      const { return bps * 12; }
+  unsigned int         Parameters::getBandsPerOctave()           const { return bps * 12; }
   tone_profile_t       Parameters::getToneProfile()              const { return toneProfile; }
   tuning_method_t      Parameters::getTuningMethod()             const { return tuningMethod; }
   unsigned int         Parameters::getSegPeakPickingNeighbours() const { return segPeakPickingNeighbours; }
@@ -138,7 +138,7 @@ namespace KeyFinder{
     octaves = oct;
     generateBinFreqs();
   }
-  void Parameters::setBps(unsigned int bands){
+  void Parameters::setBandsPerSemitone(unsigned int bands){
     if(bands < 1) throw Exception("Bands per semitone must be > 0");
     bps = bands;
     generateBinFreqs();
@@ -156,7 +156,7 @@ namespace KeyFinder{
     if(sigma <= 0) throw Exception("Gaussian sigma must be > 0");
     segGaussianSigma = sigma;
   }
-  void Parameters::setStartingFreqA(float a){
+  void Parameters::setStartingFrequencyA(float a){
     if(
       a != 27.5  && a != 55.0  && a != 110.0  && a != 220.0  &&
       a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
@@ -215,7 +215,7 @@ namespace KeyFinder{
     }
   }
 
-  float Parameters::getBinFreq(unsigned int n)const{
+  float Parameters::getBinFrequency(unsigned int n)const{
     unsigned int max = octaves * 12 * bps;
     if(n >= max){
       std::ostringstream ss;
@@ -225,7 +225,7 @@ namespace KeyFinder{
     return binFreqs[n];
   }
 
-  float Parameters::getLastFreq() const{
+  float Parameters::getLastFrequency() const{
     return binFreqs[binFreqs.size()-1];
   }
 

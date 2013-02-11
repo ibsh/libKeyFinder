@@ -43,14 +43,14 @@ namespace KeyFinder{
     unsigned int getHopsPerFrame() const;
     unsigned int getHopSize() const;
     unsigned int getOctaves() const;
-    unsigned int getBpo() const;
+    unsigned int getBandsPerOctave() const;
     unsigned int getArbitrarySegments() const;
     unsigned int getSegPeakPickingNeighbours() const;
     unsigned int getSegGaussianSize() const;
     float getSegGaussianSigma() const;
     float getStartingFreqA() const;
-    float getBinFreq(unsigned int) const;
-    float getLastFreq() const;
+    float getBinFrequency(unsigned int bin) const;
+    float getLastFrequency() const;
     float getDirectSkStretch() const;
     float getDetunedBandWeight() const;
     temporal_window_t getTemporalWindow() const;
@@ -61,24 +61,24 @@ namespace KeyFinder{
     std::vector<float> getCustomToneProfile() const;
 
     // setters
-    void setOffsetToC(bool);
-    void setFftFrameSize(unsigned int);
-    void setHopsPerFrame(unsigned int);
-    void setOctaves(unsigned int);
-    void setBps(unsigned int);
-    void setArbitrarySegments(unsigned int);
-    void setSegPeakPickingNeighbours(unsigned int);
-    void setSegGaussianSize(unsigned int);
-    void setSegGaussianSigma(float);
-    void setStartingFreqA(float);
-    void setDirectSkStretch(float);
-    void setDetunedBandWeight(float);
-    void setTemporalWindow(temporal_window_t);
-    void setSegmentation(segmentation_t);
-    void setSimilarityMeasure(similarity_measure_t);
-    void setToneProfile(tone_profile_t);
-    void setTuningMethod(tuning_method_t);
-    void setCustomToneProfile(const std::vector<float>&);
+    void setOffsetToC(bool offsetToC);
+    void setFftFrameSize(unsigned int fftFrameSize);
+    void setHopsPerFrame(unsigned int hopsPerFrame);
+    void setOctaves(unsigned int octaves);
+    void setBandsPerSemitone(unsigned int bandsPerSemitone);
+    void setArbitrarySegments(unsigned int arbitrarySegments);
+    void setSegPeakPickingNeighbours(unsigned int segPeakPickingNeighbours);
+    void setSegGaussianSize(unsigned int segGaussianSize);
+    void setSegGaussianSigma(float segGaussianSigma);
+    void setStartingFrequencyA(float startingFrequency);
+    void setDirectSkStretch(float directSkStretch);
+    void setDetunedBandWeight(float detunedBandWeight);
+    void setTemporalWindow(temporal_window_t temporalWindow);
+    void setSegmentation(segmentation_t segmentation);
+    void setSimilarityMeasure(similarity_measure_t similarityMeasure);
+    void setToneProfile(tone_profile_t toneProfile);
+    void setTuningMethod(tuning_method_t tuningMethod);
+    void setCustomToneProfile(const std::vector<float>& customToneProfile);
 
   private:
     bool offsetToC;
