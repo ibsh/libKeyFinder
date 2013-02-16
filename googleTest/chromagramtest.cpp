@@ -63,9 +63,9 @@ TEST(ChromagramTest, Bounds){
 }
 
 TEST(ChromagramTest, NilTuning){
-  KeyFinder::Chromagram c(1, 12);
   KeyFinder::Parameters p;
   p.setOctaves(1);
+  KeyFinder::Chromagram c(1, 12);
 
   p.setTuningMethod(KeyFinder::TUNING_BIN_ADAPTIVE);
   c.reduceTuningBins(p);
@@ -76,9 +76,32 @@ TEST(ChromagramTest, NilTuning){
   ASSERT_EQ(12, c.getBins());
 }
 
-//TEST(ChromagramTest, AdaptiveTuning){
-//  FAIL();
-//}
+TEST(ChromagramTest, AdaptiveTuning){
+  KeyFinder::Parameters p;
+  p.setOctaves(1);
+  p.setBandsPerSemitone(3);
+  p.setTuningMethod(KeyFinder::TUNING_BIN_ADAPTIVE);
+  p.setDetunedBandWeight(0.1);
+
+  KeyFinder::Chromagram c(1, 36);
+  c.setMagnitude(0, 0, 100.0);
+  c.setMagnitude(0, 1,  10.0);
+  c.setMagnitude(0, 2,   0.0);
+
+  c.setMagnitude(0, 3,   0.0);
+  c.setMagnitude(0, 4,  10.0);
+  c.setMagnitude(0, 5, 100.0);
+
+  c.setMagnitude(0, 6,  10.0);
+  c.setMagnitude(0, 7, 100.0);
+  c.setMagnitude(0, 8,  10.0);
+
+  c.reduceTuningBins(p);
+  ASSERT_EQ(12, c.getBins());
+  ASSERT_EQ(101.0, c.getMagnitude(0,0));
+  ASSERT_EQ(101.0, c.getMagnitude(0,1));
+  ASSERT_EQ(102.0, c.getMagnitude(0,2));
+}
 
 //TEST(ChromagramTest, HarteTuning){
 //  FAIL();
