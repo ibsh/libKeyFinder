@@ -45,8 +45,8 @@ namespace KeyFinder{
     unsigned int bins;
     unsigned int hopSize;
     ChromaTransform* ct;
-    WindowFunction* wf;
     FftAdapter* fft;
+    temporal_window_t tw;
   };
 
 }
