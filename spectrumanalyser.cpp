@@ -27,25 +27,25 @@ namespace KeyFinder{
     bins = params.getOctaves() * params.getBandsPerOctave();
     hopSize = params.getHopSize();
     ct = spFactory->getChromaTransform(f, params);
-    wf = WindowFunction::getWindowFunction(params.getTemporalWindow());
     fft = new FftAdapter(params.getFftFrameSize());
+    tw = params.getTemporalWindow();
   }
 
   SpectrumAnalyser::~SpectrumAnalyser(){
     // don't delete the chroma transform; it's stored in the factory
-    delete wf;
     delete fft;
   }
 
   Chromagram* SpectrumAnalyser::chromagram(AudioData* audio) const{
     if (audio->getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
+    WindowFunction win;
     Chromagram* ch = new Chromagram((audio->getSampleCount()/hopSize) + 1,bins);
     unsigned int fftFrameSize = fft->getFrameSize();
     for (unsigned int i = 0; i < audio->getSampleCount(); i += hopSize){
       for (unsigned int j = 0; j < fftFrameSize; j++){
         if(i+j < audio->getSampleCount()){
-          fft->setInput(j, audio->getSample(i+j) * wf->window(j,fftFrameSize)); // real part, windowed
+          fft->setInput(j, audio->getSample(i+j) * win.window(tw, j, fftFrameSize)); // real part, windowed
         }else{
           fft->setInput(j, 0.0); // zero-pad if no PCM data remaining
         }

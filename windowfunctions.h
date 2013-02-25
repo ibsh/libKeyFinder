@@ -29,23 +29,7 @@ namespace KeyFinder{
 
   class WindowFunction{
   public:
-    static WindowFunction* getWindowFunction(temporal_window_t temporal_window);
-    virtual float window(int sample, int width) const = 0;
-  };
-
-  class HannWindow : public WindowFunction{
-  public:
-    virtual float window(int sample, int width) const;
-  };
-
-  class HammingWindow : public WindowFunction{
-  public:
-    virtual float window(int sample, int width) const;
-  };
-
-  class BlackmanWindow : public WindowFunction{
-  public:
-    virtual float window(int sample, int width) const;
+    float window(temporal_window_t type, int sample, int width) const;
   };
 
 }

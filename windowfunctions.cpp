@@ -23,28 +23,14 @@
 
 namespace KeyFinder{
 
-  WindowFunction* WindowFunction::getWindowFunction(temporal_window_t w){
+  float WindowFunction::window(temporal_window_t w, int n, int N) const {
     if(w == WINDOW_HANN){
-      return new HannWindow();
+      return 0.5 * (1.0 - cos((2 * PI * n)/(N-1)));
     }else if(w == WINDOW_HAMMING){
-      return new HammingWindow();
-    }else{
-      return new BlackmanWindow();
+      return 0.54 - (0.46 * cos((2 * PI * n)/(N-1)));
+    }else{ // Blackman
+      return 0.42 - (0.5 * cos((2 * PI * n)/(N-1))) + (0.08 * cos((4 * PI * n)/(N-1)));
     }
-  }
-
-  // subclasses
-
-  float HannWindow::window(int n, int N) const {
-    return 0.5 * (1.0 - cos((2 * PI * n)/(N-1)));
-  }
-
-  float HammingWindow::window(int n, int N) const {
-    return 0.54 - (0.46 * cos((2 * PI * n)/(N-1)));
-  }
-
-  float BlackmanWindow::window(int n, int N) const {
-    return 0.42 - (0.5 * cos((2 * PI * n)/(N-1))) + (0.08 * cos((4 * PI * n)/(N-1)));
   }
 
 }

@@ -56,20 +56,18 @@ namespace KeyFinder{
     coefficients.resize(impulseLength, 0.0);
     unsigned int centre = order / 2;
     gain = 0.0;
-    WindowFunction* wf = WindowFunction::getWindowFunction(WINDOW_BLACKMAN);
+    WindowFunction win;
 
     for (unsigned int i = 0; i < impulseLength; i++){
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
       float coeff = fft->getOutputReal(index) / (float) fftFrameSize;
-      coeff *= wf->window(i, impulseLength);
+      coeff *= win.window(WINDOW_BLACKMAN, i, impulseLength);
       coefficients[i] = coeff;
       gain += coeff;
     }
 
     delete fft;
-    delete wf;
-
   }
 
   void LowPassFilter::filter(AudioData*& audioIn, unsigned int shortcutFactor) const{
