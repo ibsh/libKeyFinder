@@ -35,6 +35,7 @@ HEADERS += \
     downsamplertest.h \
     fftadaptertest.h \
     keyclassifiertest.h \
+    lowpassfilterfactorytest.h \
     lowpassfiltertest.h
 
 SOURCES += \
@@ -46,6 +47,7 @@ SOURCES += \
     downsamplertest.cpp \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \
+    lowpassfilterfactorytest.cpp \
     lowpassfiltertest.cpp
 
 DEPENDPATH  += /usr/local/lib
