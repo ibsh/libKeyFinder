@@ -40,6 +40,7 @@ namespace KeyFinder{
   Chromagram SpectrumAnalyser::chromagram(AudioData* audio) const{
     if (audio->getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
+    WindowFunction win;
     unsigned int hops = (audio->getSampleCount() / hopSize) + 1;
     Chromagram ch(hops, octaves, bandsPerSemitone);
     unsigned int fftFrameSize = fft->getFrameSize();
@@ -47,7 +48,7 @@ namespace KeyFinder{
       unsigned int sampleOffset = hop * hopSize;
       for (unsigned int sample = 0; sample < fftFrameSize; sample++) {
         if (sampleOffset + sample < audio->getSampleCount()) {
-          fft->setInput(sample, audio->getSample(sampleOffset + sample) * wf->window(sample, fftFrameSize)); // real part, windowed
+          fft->setInput(sample, audio->getSample(sampleOffset + sample) * win.window(tw, sample, fftFrameSize)); // real part, windowed
         } else {
           fft->setInput(sample, 0.0); // zero-pad if no PCM data remaining
         }

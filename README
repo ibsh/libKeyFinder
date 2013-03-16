@@ -7,9 +7,6 @@ For the most basic use case, do something like this:
   // Static because it retains useful resources for repeat use
   static KeyFinder::KeyFinder k;
 
-  // Prepare the default set of parameters
-  KeyFinder::Parameters p;
-
   // Build an empty audio object
   KeyFinder::AudioData a;
 
@@ -24,7 +21,27 @@ For the most basic use case, do something like this:
   }
 
   // Run the analysis
-  KeyFinder::KeyDetectionResult r =  k.findKey(a, p);
+  KeyFinder::KeyDetectionResult r =  k.keyOfAudio(a);
 
   // And do something with the result!
   doSomethingWith(r.globalKeyEstimate);
+
+Alternatively, you can transform a stream of audio into a chromatic representation, and make progressive estimates of the key:
+
+  static KeyFinder::KeyFinder k;
+  KeyFinder::AudioData a;
+  a.setFrameRate(yourAudioStream.framerate);
+  a.setChannels(yourAudioStream.channels);
+  a.addToSampleCount(yourAudioStream.packetLength);
+
+  // prepare an empty chromagram for 6 octaves of audio
+  KeyFinder::Chromagram c(0, 6, 1);
+
+  while (yourPacket = newAudioPacket()) {
+    while (int i = 0; i < newAudioPacket.length; i++) {
+      a.setSample(i, newAudioPacket[i]);
+    }
+    c.append(k.chromagramOfAudio(a));
+    doSomethingWithLatestKeyEstimate(k.keyOfChromagram(c));
+  }
+
