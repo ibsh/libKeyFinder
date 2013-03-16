@@ -36,7 +36,8 @@ HEADERS += \
     fftadaptertest.h \
     keyclassifiertest.h \
     lowpassfilterfactorytest.h \
-    lowpassfiltertest.h
+    lowpassfiltertest.h \
+    parameterstest.h
 
 SOURCES += \
     main.cpp \
@@ -48,7 +49,8 @@ SOURCES += \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \
     lowpassfilterfactorytest.cpp \
-    lowpassfiltertest.cpp
+    lowpassfiltertest.cpp \
+    parameterstest.cpp
 
 DEPENDPATH  += /usr/local/lib
 INCLUDEPATH += /usr/local/include

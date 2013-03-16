@@ -96,14 +96,14 @@ namespace KeyFinder{
   temporal_window_t    Parameters::getTemporalWindow()           const { return temporalWindow; }
   segmentation_t       Parameters::getSegmentation()             const { return segmentation; }
   similarity_measure_t Parameters::getSimilarityMeasure()        const { return similarityMeasure; }
+  tone_profile_t       Parameters::getToneProfile()              const { return toneProfile; }
+  tuning_method_t      Parameters::getTuningMethod()             const { return tuningMethod; }
   unsigned int         Parameters::getFftFrameSize()             const { return fftFrameSize; }
   unsigned int         Parameters::getHopsPerFrame()             const { return hopsPerFrame; }
   unsigned int         Parameters::getHopSize()                  const { return fftFrameSize / hopsPerFrame; }
   unsigned int         Parameters::getOctaves()                  const { return octaves; }
   unsigned int         Parameters::getBandsPerSemitone()         const { return bps; }
   unsigned int         Parameters::getBandsPerOctave()           const { return bps * SEMITONES; }
-  tone_profile_t       Parameters::getToneProfile()              const { return toneProfile; }
-  tuning_method_t      Parameters::getTuningMethod()             const { return tuningMethod; }
   unsigned int         Parameters::getSegPeakPickingNeighbours() const { return segPeakPickingNeighbours; }
   unsigned int         Parameters::getArbitrarySegments()        const { return arbitrarySegments; }
   unsigned int         Parameters::getSegGaussianSize()          const { return segGaussianSize; }
