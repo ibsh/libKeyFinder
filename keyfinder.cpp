@@ -2,9 +2,7 @@
 
 namespace KeyFinder{
 
-  KeyDetectionResult KeyFinder::findKey(const AudioData& originalAudio, const Parameters& params){
-
-    KeyDetectionResult result;
+  Chromagram KeyFinder::chromagramOfAudio(const AudioData& originalAudio, const Parameters& params){
 
     AudioData* workingAudio = new AudioData(originalAudio);
 
@@ -24,67 +22,84 @@ namespace KeyFinder{
     Downsampler ds;
     ds.downsample(workingAudio, downsampleFactor);
 
-    SpectrumAnalyser* sa = new SpectrumAnalyser(workingAudio->getFrameRate(), params, &ctFactory);
-
     // run spectral analysis
-    Chromagram* ch = sa->chromagram(workingAudio);
+    SpectrumAnalyser sa(workingAudio->getFrameRate(), params, &ctFactory);
+    Chromagram ch = sa.chromagram(workingAudio);
 
     delete workingAudio;
-    delete sa;
 
-    // reduce chromagram
-    ch->reduceTuningBins(params);
-    result.fullChromagram = Chromagram(*ch);
-    ch->reduceToOneOctave(params);
-    result.oneOctaveChromagram = Chromagram(*ch);
+    // deal with tuning if necessary
+    if (ch.getBandsPerSemitone() > 1) {
+      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
+        ch.tuningBandAdaptive(params.getDetunedBandWeight());
+      } else if (params.getTuningMethod() == TUNING_HARTE) {
+        ch.tuningHarte();
+      }
+    }
+    return ch;
+  }
 
-    // get harmonic change signal
+  KeyDetectionResult KeyFinder::keyOfChromagram(const Chromagram& chromagram, const Parameters& params){
+
+    KeyDetectionResult result;
+
+    // working copy of chromagram
+    Chromagram ch = Chromagram(chromagram);
+    ch.reduceToOneOctave();
+
+    // get harmonic change signal and segment
     Segmentation* segmenter = Segmentation::getSegmentation(params);
-    result.harmonicChangeSignal = segmenter->getRateOfChange(*ch, params);
-
-    // get track segmentation
+    result.harmonicChangeSignal = segmenter->getRateOfChange(ch, params);
     std::vector<unsigned int> segmentBoundaries = segmenter->getSegments(result.harmonicChangeSignal, params);
-    segmentBoundaries.push_back(ch->getHops()); // sentinel
+    segmentBoundaries.push_back(ch.getHops()); // sentinel
     delete segmenter;
 
     // get key estimates for each segment
-    KeyClassifier hc(params);
+    KeyClassifier classifier(
+      params.getSimilarityMeasure(),
+      params.getToneProfile(),
+      params.getOffsetToC(),
+      params.getCustomToneProfile()
+    );
+
     std::vector<float> keyWeights(24); // TODO: not ideal using int cast of key_t enum. Hash?
 
-    for (int s = 0; s < (signed)segmentBoundaries.size()-1; s++){
+    for (int s = 0; s < (signed) segmentBoundaries.size() - 1; s++) {
       KeyDetectionSegment segment;
       segment.firstHop = segmentBoundaries[s];
-      segment.lastHop = segmentBoundaries[s+1] - 1;
+      segment.lastHop  = segmentBoundaries[s+1] - 1;
       // collapse segment's time dimension
-      std::vector<float> segmentChroma(ch->getBins());
+      std::vector<float> segmentChroma(ch.getBands(), 0.0);
       for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {
-        for (unsigned int bin = 0; bin < ch->getBins(); bin++) {
-          float value = ch->getMagnitude(hop, bin);
-          segmentChroma[bin] += value;
+        for (unsigned int band = 0; band < ch.getBands(); band++) {
+          float value = ch.getMagnitude(hop, band);
+          segmentChroma[band] += value;
           segment.energy += value;
         }
       }
-      segment.key = hc.classify(segmentChroma);
-      if(segment.key != SILENCE){
+      segment.key = classifier.classify(segmentChroma);
+      if (segment.key != SILENCE)
         keyWeights[segment.key] += segment.energy;
-      }
       result.segments.push_back(segment);
     }
-
-    delete ch;
 
     // get global key
     result.globalKeyEstimate = SILENCE;
     float mostCommonKeyWeight = 0.0;
-    for (int k = 0; k < (signed)keyWeights.size(); k++){
-      if(keyWeights[k] > mostCommonKeyWeight){
+    for (int k = 0; k < (signed)keyWeights.size(); k++) {
+      if (keyWeights[k] > mostCommonKeyWeight) {
         mostCommonKeyWeight = keyWeights[k];
         result.globalKeyEstimate = (key_t)k;
       }
     }
 
     return result;
+  }
 
+  // this method to be used for whole audio streams
+  KeyDetectionResult KeyFinder::keyOfAudio(const AudioData& originalAudio, const Parameters& params){
+    Chromagram ch = chromagramOfAudio(originalAudio, params);
+    return keyOfChromagram(ch, params);
   }
 
 }

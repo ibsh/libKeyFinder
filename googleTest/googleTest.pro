@@ -28,22 +28,25 @@ CONFIG -= ppc ppc64
 CONFIG += x86 x86_64
 
 HEADERS += \
+    _testhelpers.h \
     audiodatatest.h \
     binodetest.h \
     chromagramtest.h \
     downsamplertest.h \
     fftadaptertest.h \
-    lowpassfiltertest.h \
-    _testhelpers.h
+    keyclassifiertest.h \
+    lowpassfiltertest.h
 
-SOURCES += main.cpp \
+SOURCES += \
+    main.cpp \
+    _testhelpers.cpp \
     audiodatatest.cpp \
     binodetest.cpp \
     chromagramtest.cpp \
     downsamplertest.cpp \
     fftadaptertest.cpp \
-    lowpassfiltertest.cpp \
-    _testhelpers.cpp
+    keyclassifiertest.cpp \
+    lowpassfiltertest.cpp
 
 DEPENDPATH  += /usr/local/lib
 INCLUDEPATH += /usr/local/include

@@ -24,7 +24,8 @@
 namespace KeyFinder{
 
   SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory){
-    bins = params.getOctaves() * params.getBandsPerOctave();
+    octaves = params.getOctaves();
+    bandsPerSemitone = params.getBandsPerSemitone();
     hopSize = params.getHopSize();
     ct = spFactory->getChromaTransform(f, params);
     fft = new FftAdapter(params.getFftFrameSize());
@@ -36,24 +37,25 @@ namespace KeyFinder{
     delete fft;
   }
 
-  Chromagram* SpectrumAnalyser::chromagram(AudioData* audio) const{
+  Chromagram SpectrumAnalyser::chromagram(AudioData* audio) const{
     if (audio->getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
-    WindowFunction win;
-    Chromagram* ch = new Chromagram((audio->getSampleCount()/hopSize) + 1,bins);
+    unsigned int hops = (audio->getSampleCount() / hopSize) + 1;
+    Chromagram ch(hops, octaves, bandsPerSemitone);
     unsigned int fftFrameSize = fft->getFrameSize();
-    for (unsigned int i = 0; i < audio->getSampleCount(); i += hopSize){
-      for (unsigned int j = 0; j < fftFrameSize; j++){
-        if(i+j < audio->getSampleCount()){
-          fft->setInput(j, audio->getSample(i+j) * win.window(tw, j, fftFrameSize)); // real part, windowed
-        }else{
-          fft->setInput(j, 0.0); // zero-pad if no PCM data remaining
+    for (unsigned int hop = 0; hop < hops; hop ++) {
+      unsigned int sampleOffset = hop * hopSize;
+      for (unsigned int sample = 0; sample < fftFrameSize; sample++) {
+        if (sampleOffset + sample < audio->getSampleCount()) {
+          fft->setInput(sample, audio->getSample(sampleOffset + sample) * wf->window(sample, fftFrameSize)); // real part, windowed
+        } else {
+          fft->setInput(sample, 0.0); // zero-pad if no PCM data remaining
         }
       }
       fft->execute();
       std::vector<float> cv = ct->chromaVector(fft);
-      for (unsigned int j=0; j<bins; j++){
-        ch->setMagnitude(i/hopSize, j, cv[j]);
+      for (unsigned int band = 0; band < ch.getBands(); band++) {
+        ch.setMagnitude(hop, band, cv[band]);
       }
     }
     return ch;

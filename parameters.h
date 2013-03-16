@@ -43,13 +43,14 @@ namespace KeyFinder{
     unsigned int getHopsPerFrame() const;
     unsigned int getHopSize() const;
     unsigned int getOctaves() const;
+    unsigned int getBandsPerSemitone() const;
     unsigned int getBandsPerOctave() const;
     unsigned int getArbitrarySegments() const;
     unsigned int getSegPeakPickingNeighbours() const;
     unsigned int getSegGaussianSize() const;
     float getSegGaussianSigma() const;
     float getStartingFreqA() const;
-    float getBinFrequency(unsigned int bin) const;
+    float getBandFrequency(unsigned int band) const;
     float getLastFrequency() const;
     float getDirectSkStretch() const;
     float getDetunedBandWeight() const;
@@ -98,10 +99,10 @@ namespace KeyFinder{
     similarity_measure_t similarityMeasure;
     tone_profile_t toneProfile;
     tuning_method_t tuningMethod;
-    std::vector<float> binFreqs;
+    std::vector<float> bandFreqs;
     std::vector<float> customToneProfile;
 
-    void generateBinFreqs();
+    void generateBandFreqs();
   };
 
 }

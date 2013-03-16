@@ -25,6 +25,9 @@
 #undef  PI
 #define PI 3.1415926535897932384626433832795
 
+#undef SEMITONES
+#define SEMITONES 12 // per octave, obviously
+
 namespace KeyFinder{
 
   enum key_t{
@@ -76,7 +79,7 @@ namespace KeyFinder{
 
   enum tuning_method_t{
     TUNING_HARTE,
-    TUNING_BIN_ADAPTIVE
+    TUNING_BAND_ADAPTIVE
   };
 
 }

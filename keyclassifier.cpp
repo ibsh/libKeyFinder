@@ -23,12 +23,12 @@
 
 namespace KeyFinder{
 
-  KeyClassifier::KeyClassifier(const Parameters& params){
+  KeyClassifier::KeyClassifier(similarity_measure_t sm, tone_profile_t tp, bool offsetToC, const std::vector<float>& customProfile){
     // Profiles
-    major   = new ToneProfile(params.getToneProfile(), SCALE_MAJOR, params);
-    minor   = new ToneProfile(params.getToneProfile(), SCALE_MINOR, params);
-    silence = new ToneProfile(TONE_PROFILE_SILENCE,    SCALE_MAJOR, params);
-    similarityMeasure = params.getSimilarityMeasure();
+    major   = new ToneProfile(tp,                   SCALE_MAJOR, offsetToC, customProfile);
+    minor   = new ToneProfile(tp,                   SCALE_MINOR, offsetToC, customProfile);
+    silence = new ToneProfile(TONE_PROFILE_SILENCE, SCALE_MAJOR, offsetToC, customProfile);
+    similarityMeasure = sm;
   }
 
   KeyClassifier::~KeyClassifier(){
@@ -41,10 +41,10 @@ namespace KeyFinder{
     std::vector<float> scores(24);
     float bestScore = 0.0;
     float chromaMean = 0.0;
-    for (unsigned int i=0; i<chroma.size(); i++)
+    for (unsigned int i = 0; i < chroma.size(); i++)
       chromaMean += chroma[i];
     chromaMean /= chroma.size();
-    for (unsigned int i=0; i<12; i++){
+    for (unsigned int i = 0; i < SEMITONES; i++) {
       float score;
       score = major->similarity(similarityMeasure, chroma, i, chromaMean); // major
       scores[i*2] = score;
@@ -54,8 +54,8 @@ namespace KeyFinder{
     bestScore = silence->similarity(similarityMeasure, chroma, 0, chromaMean);
     // find best match, defaulting to silence
     key_t bestMatch = SILENCE;
-    for (unsigned int i=0; i<24; i++){
-      if(scores[i] > bestScore){
+    for (unsigned int i = 0; i < 24; i++) {
+      if (scores[i] > bestScore) {
         bestScore = scores[i];
         bestMatch = (key_t)i;
       }

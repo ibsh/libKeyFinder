@@ -15,9 +15,17 @@ namespace KeyFinder{
 
   class KeyFinder {
   public:
-    KeyDetectionResult findKey(
+    Chromagram chromagramOfAudio(
       const AudioData& audio,
-      const Parameters& params
+      const Parameters& params = Parameters()
+    );
+    KeyDetectionResult keyOfChromagram(
+      const Chromagram& chromagram,
+      const Parameters& params = Parameters()
+    );
+    KeyDetectionResult keyOfAudio(
+      const AudioData& audio,
+      const Parameters& params = Parameters()
     );
   private:
     LowPassFilterFactory   lpfFactory;

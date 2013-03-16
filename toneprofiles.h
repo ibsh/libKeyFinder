@@ -22,8 +22,11 @@
 #ifndef TONEPROFILES_H
 #define TONEPROFILES_H
 
-#include "parameters.h"
+#include <cmath>
+#include <vector>
+
 #include "binode.h"
+#include "constants.h"
 
 namespace KeyFinder{
 
@@ -32,7 +35,8 @@ namespace KeyFinder{
     ToneProfile(
       tone_profile_t toneProfile,
       scale_t scale,
-      const Parameters& params
+      bool offsetToC,
+      const std::vector<float>& customProfile = std::vector<float>(24, 0.0)
     );
     ~ToneProfile();
     float similarity(

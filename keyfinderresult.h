@@ -37,8 +37,6 @@ namespace KeyFinder{
 
   class KeyDetectionResult{
   public:
-    Chromagram fullChromagram;
-    Chromagram oneOctaveChromagram;
     std::vector<float> harmonicChangeSignal;
     std::vector<KeyDetectionSegment> segments;
     key_t globalKeyEstimate;

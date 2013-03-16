@@ -23,18 +23,18 @@
 
 namespace KeyFinder{
 
-  ToneProfile::ToneProfile(tone_profile_t whichProfile, scale_t scale, const Parameters& params){
+  ToneProfile::ToneProfile(tone_profile_t whichProfile, scale_t scale, bool offsetToC, const std::vector<float>& customProfile){
 
-    float p[12];
-    if(whichProfile == TONE_PROFILE_SILENCE){
+    float p[SEMITONES];
+    if (whichProfile == TONE_PROFILE_SILENCE) {
       p[0]=0; p[1]=0;
       p[2]=0; p[3]=0;
       p[4]=0; p[5]=0;
       p[6]=0; p[7]=0;
       p[8]=0; p[9]=0;
       p[10]=0; p[11]=0;
-    }else if(whichProfile == TONE_PROFILE_TEMPERLEY){
-      if(scale == SCALE_MAJOR){
+    } else if (whichProfile == TONE_PROFILE_TEMPERLEY) {
+      if (scale == SCALE_MAJOR) {
         p[0]=5.0; p[1]=2.0;
         p[2]=3.5; p[3]=2.0;
         p[4]=4.5;
@@ -42,7 +42,7 @@ namespace KeyFinder{
         p[7]=4.5; p[8]=2.0;
         p[9]=3.5; p[10]=1.5;
         p[11]=4.0;
-      }else{
+      } else {
         p[0]=5.0; p[1]=2.0;
         p[2]=3.5;
         p[3]=4.5; p[4]=2.0;
@@ -51,8 +51,8 @@ namespace KeyFinder{
         p[8]=3.5; p[9]=2.0;
         p[10]=1.5; p[11]=4.0;
       }
-    }else if(whichProfile == TONE_PROFILE_GOMEZ){
-      if(scale == SCALE_MAJOR){
+    } else if (whichProfile == TONE_PROFILE_GOMEZ) {
+      if (scale == SCALE_MAJOR) {
         p[0]=0.82; p[1]=0.00;
         p[2]=0.55; p[3]=0.00;
         p[4]=0.53;
@@ -60,7 +60,7 @@ namespace KeyFinder{
         p[7]=1.00; p[8]=0.00;
         p[9]=0.38; p[10]=0.00;
         p[11]=0.47;
-      }else{
+      } else {
         p[0]=0.81; p[1]=0.00;
         p[2]=0.53;
         p[3]=0.54; p[4]=0.00;
@@ -69,8 +69,8 @@ namespace KeyFinder{
         p[8]=0.27; p[9]=0.07;
         p[10]=0.10; p[11]=0.36;
       }
-    }else if(whichProfile == TONE_PROFILE_SHAATH){
-      if(scale == SCALE_MAJOR){
+    } else if (whichProfile == TONE_PROFILE_SHAATH) {
+      if (scale == SCALE_MAJOR) {
         p[0]=6.6; p[1]=2.0;
         p[2]=3.5; p[3]=2.3;
         p[4]=4.6;
@@ -78,7 +78,7 @@ namespace KeyFinder{
         p[7]=5.2; p[8]=2.4;
         p[9]=3.7; p[10]=2.3;
         p[11]=3.4;
-      }else{
+      } else {
         p[0]=6.5; p[1]=2.7;
         p[2]=3.5;
         p[3]=5.4; p[4]=2.6;
@@ -87,7 +87,7 @@ namespace KeyFinder{
         p[8]=4.0; p[9]=2.7;
         p[10]=4.3; p[11]=3.2;
       }
-    }else if(whichProfile == TONE_PROFILE_KRUMHANSL){
+    } else if (whichProfile == TONE_PROFILE_KRUMHANSL) {
       if(scale == SCALE_MAJOR){
         p[0]=6.35; p[1]=2.23;
         p[2]=3.48; p[3]=2.33;
@@ -96,7 +96,7 @@ namespace KeyFinder{
         p[7]=5.19; p[8]=2.39;
         p[9]=3.66; p[10]=2.29;
         p[11]=2.88;
-      }else{
+      } else {
         p[0]=6.33; p[1]=2.68;
         p[2]=3.52;
         p[3]=5.38; p[4]=2.60;
@@ -105,37 +105,37 @@ namespace KeyFinder{
         p[8]=3.98; p[9]=2.69;
         p[10]=3.34; p[11]=3.17;
       }
-    }else{ // Custom
-      std::vector<float> ctp = params.getCustomToneProfile();
-      if(scale == SCALE_MAJOR){
-        for (unsigned int i=0; i<12; i++)
-          p[i] = (float)ctp[i];
-      }else{
-        for (unsigned int i=0; i<12; i++)
-          p[i] = (float)ctp[i+12];
+    } else { // Custom
+      if (scale == SCALE_MAJOR) {
+        for (unsigned int i = 0; i < SEMITONES; i++)
+          p[i] = (float)customProfile[i];
+      } else {
+        for (unsigned int i = 0; i < SEMITONES; i++)
+          p[i] = (float)customProfile[i + SEMITONES];
       }
     }
 
     // copy into doubly-linked circular list
     tonic = new Binode<float>(p[0]);
     Binode<float> *q = tonic;
-    for (unsigned int i=1; i<12; i++){
+    for (unsigned int i = 1; i<SEMITONES; i++) {
       q->r = new Binode<float>(p[i]);
       q->r->l = q;
       q = q->r;
     }
     q->r = tonic;
     tonic->l = q;
-    // offset from A to C (3 semitones) if specified in Parameters
-    if(params.getOffsetToC()){
+
+    // offset from A to C (3 semitones) if specified
+    if (offsetToC) {
       for (unsigned int i=0; i<3; i++)
         tonic = tonic->r;
     }
 
     // get mean in preparation for correlation
     profileMean = 0.0;
-    for (unsigned int i=0; i<12; i++)
-      profileMean += (p[i] / 12.0);
+    for (unsigned int i=0; i < SEMITONES; i++)
+      profileMean += (p[i] / SEMITONES);
   }
 
   ToneProfile::~ToneProfile(){
@@ -144,15 +144,15 @@ namespace KeyFinder{
 
   void ToneProfile::free(){
     Binode<float>* p = tonic;
-    do{
+    do {
       Binode<float>* zap = p;
       p = p->r;
       delete zap;
-    }while(p!=tonic);
+    } while (p!=tonic);
   }
 
   float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset, float inputMean) const{
-    if(measure == SIMILARITY_CORRELATION)
+    if (measure == SIMILARITY_CORRELATION)
       return correlation(input, offset, inputMean);
     else
       return cosine(input, offset);
@@ -172,13 +172,13 @@ namespace KeyFinder{
     float intersection = 0.0;
     float profileNorm = 0.0;
     float inputNorm = 0.0;
-    for (int i=0; i<12; i++){
+    for (unsigned int i = 0; i < SEMITONES; i++) {
       intersection += input[i] * p->data;
       profileNorm += pow((p->data),2);
       inputNorm += pow((input[i]),2);
       p = p->r;
     }
-    if(profileNorm > 0 && inputNorm > 0) // divzero
+    if (profileNorm > 0 && inputNorm > 0) // div by zero check
       return intersection / (sqrt(profileNorm) * sqrt(inputNorm));
     else
       return 0;
@@ -197,7 +197,7 @@ namespace KeyFinder{
     float sumTop = 0.0;
     float sumBottomLeft = 0.0;
     float sumBottomRight = 0.0;
-    for (int i=0; i<12; i++){
+    for (unsigned int i=0; i < SEMITONES; i++) {
       float xMinusXBar = p->data - profileMean;
       float yMinusYBar = input[i] - inputMean;
       sumTop += xMinusXBar * yMinusYBar;
@@ -205,7 +205,7 @@ namespace KeyFinder{
       sumBottomRight += pow(yMinusYBar,2);
       p = p->r;
     }
-    if(sumBottomRight > 0 && sumBottomLeft > 0) // divzero
+    if (sumBottomRight > 0 && sumBottomLeft > 0) // div by zero check
       return sumTop / sqrt(sumBottomLeft * sumBottomRight);
     else
       return 0;

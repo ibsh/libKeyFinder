@@ -25,22 +25,22 @@ namespace KeyFinder{
 
   std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params) const{
     unsigned int hops = ch.getHops();
-    unsigned int bins = ch.getBins();
+    unsigned int bands = ch.getBands();
     unsigned int gaussianSize = params.getSegGaussianSize();
     float gaussianSigma = params.getSegGaussianSigma();
     unsigned int padding = 0; // as opposed to gaussianSize/2
-    std::vector<float> cosine(hops+padding, 0.0);
+    std::vector<float> cosine(hops + padding, 0.0);
     for (unsigned int hop = 0; hop < hops; hop++){
       float top = 0.0;
       float bottom = 0.0;
-      for (unsigned int bin = 0; bin < bins; bin++){
-        float mag = ch.getMagnitude(hop, bin);
+      for (unsigned int band = 0; band < bands; band++){
+        float mag = ch.getMagnitude(hop, band);
         top += mag;
         bottom += pow(mag,2);
       }
       float cos;
       if(bottom > 0.0) // divzero
-        cos = top / sqrt(bottom) * sqrt(bins * sqrt(2));
+        cos = top / sqrt(bottom) * sqrt(bands * sqrt(2));
       else
         cos = 0.0;
       cosine[hop] = cos;

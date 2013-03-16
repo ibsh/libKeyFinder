@@ -25,53 +25,53 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.2.2
+VERSION = 0.3.0
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
 HEADERS += \
-    keyfinder.h \
-    chromagram.h \
-    windowfunctions.h \
-    toneprofiles.h \
-    spectrumanalyser.h \
-    parameters.h \
-    exception.h \
-    seg.h \
-    keyclassifier.h \
-    segcosine.h \
-    segnone.h \
-    segarbitrary.h \
-    keyfinderresult.h \
     audiodata.h \
-    lowpassfilterfactory.h \
-    lowpassfilter.h \
-    downsampler.h \
     binode.h \
-    constants.h \
+    chromagram.h \
     chromatransform.h \
     chromatransformfactory.h \
-    fftadapter.h
+    constants.h \
+    downsampler.h \
+    exception.h \
+    fftadapter.h \
+    keyclassifier.h \
+    keyfinder.h \
+    keyfinderresult.h \
+    lowpassfilter.h \
+    lowpassfilterfactory.h \
+    parameters.h \
+    seg.h \
+    segarbitrary.h \
+    segcosine.h \
+    segnone.h \
+    spectrumanalyser.h \
+    toneprofiles.h \
+    windowfunctions.h
 
 SOURCES += \
-    keyfinder.cpp \
-    chromagram.cpp \
-    windowfunctions.cpp \
-    toneprofiles.cpp \
-    spectrumanalyser.cpp \
-    parameters.cpp \
-    keyclassifier.cpp \
-    seg.cpp \
-    segcosine.cpp \
-    segnone.cpp \
-    segarbitrary.cpp \
     audiodata.cpp \
-    lowpassfilterfactory.cpp \
-    lowpassfilter.cpp \
-    downsampler.cpp \
+    chromagram.cpp \
     chromatransform.cpp \
     chromatransformfactory.cpp \
-    fftadapter.cpp
+    downsampler.cpp \
+    fftadapter.cpp \
+    keyclassifier.cpp \
+    keyfinder.cpp \
+    lowpassfilter.cpp \
+    lowpassfilterfactory.cpp \
+    parameters.cpp \
+    seg.cpp \
+    segarbitrary.cpp \
+    segcosine.cpp \
+    segnone.cpp \
+    spectrumanalyser.cpp \
+    toneprofiles.cpp \
+    windowfunctions.cpp
 
 OTHER_FILES += README
 

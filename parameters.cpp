@@ -48,7 +48,7 @@ namespace KeyFinder{
     };
     customToneProfile = std::vector<float> (&custom[0], &custom[24]);
     // and other prep
-    generateBinFreqs();
+    generateBandFreqs();
   }
 
   Parameters& Parameters::operator=(const Parameters& that){
@@ -71,7 +71,7 @@ namespace KeyFinder{
       directSkStretch = that.directSkStretch;
       detunedBandWeight = that.detunedBandWeight;
       customToneProfile = that.customToneProfile;
-      generateBinFreqs();
+      generateBandFreqs();
     }
     return *this;
   }
@@ -100,7 +100,8 @@ namespace KeyFinder{
   unsigned int         Parameters::getHopsPerFrame()             const { return hopsPerFrame; }
   unsigned int         Parameters::getHopSize()                  const { return fftFrameSize / hopsPerFrame; }
   unsigned int         Parameters::getOctaves()                  const { return octaves; }
-  unsigned int         Parameters::getBandsPerOctave()           const { return bps * 12; }
+  unsigned int         Parameters::getBandsPerSemitone()         const { return bps; }
+  unsigned int         Parameters::getBandsPerOctave()           const { return bps * SEMITONES; }
   tone_profile_t       Parameters::getToneProfile()              const { return toneProfile; }
   tuning_method_t      Parameters::getTuningMethod()             const { return tuningMethod; }
   unsigned int         Parameters::getSegPeakPickingNeighbours() const { return segPeakPickingNeighbours; }
@@ -123,7 +124,7 @@ namespace KeyFinder{
   // mutators requiring validation or further work
   void Parameters::setOffsetToC(bool off){
     offsetToC = off;
-    generateBinFreqs();
+    generateBandFreqs();
   }
   void Parameters::setFftFrameSize(unsigned int framesize){
     if(framesize < 1) throw Exception("FFT frame size must be > 0");
@@ -136,12 +137,12 @@ namespace KeyFinder{
   void Parameters::setOctaves(unsigned int oct){
     if(oct < 1) throw Exception("Octaves must be > 0");
     octaves = oct;
-    generateBinFreqs();
+    generateBandFreqs();
   }
   void Parameters::setBandsPerSemitone(unsigned int bands){
     if(bands < 1) throw Exception("Bands per semitone must be > 0");
     bps = bands;
-    generateBinFreqs();
+    generateBandFreqs();
   }
   void Parameters::setArbitrarySegments(unsigned int s){
     if(s < 1) throw Exception("Arbitrary segments must be > 0");
@@ -162,7 +163,7 @@ namespace KeyFinder{
       a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
     ) throw Exception("Starting frequency must be an A (2^n * 27.5 Hz)");
     stFreq = a;
-    generateBinFreqs();
+    generateBandFreqs();
   }
   void Parameters::setDirectSkStretch(float stretch){
     if(!boost::math::isfinite(stretch)) throw Exception("Spectral kernel stretch cannot be NaN");
@@ -189,44 +190,44 @@ namespace KeyFinder{
     }
   }
 
-  void Parameters::generateBinFreqs(){
-    unsigned int bpo = bps * 12;
-    binFreqs.clear();
+  void Parameters::generateBandFreqs(){
+    unsigned int bpo = bps * SEMITONES;
+    bandFreqs.clear();
     float freqRatio = pow(2, 1.0 / bpo);
     float octFreq = stFreq;
-    float binFreq;
+    float bandFreq;
     unsigned int concertPitchBin = bps/2;
     for (unsigned int i = 0; i < octaves; i++){
-      binFreq = octFreq;
+      bandFreq = octFreq;
       // offset as required
       if(offsetToC){
-        binFreq *= pow(freqRatio, 3);
+        bandFreq *= pow(freqRatio, 3);
       }
       // tune down for bins before first concert pitch bin (if bps > 1)
       for (unsigned int j = 0; j < concertPitchBin; j++){
-        binFreqs.push_back(binFreq / pow(freqRatio, concertPitchBin - j));
+        bandFreqs.push_back(bandFreq / pow(freqRatio, concertPitchBin - j));
       }
       // and tune all other bins
       for (unsigned int j = concertPitchBin; j < bpo; j++){
-        binFreqs.push_back(binFreq);
-        binFreq *= freqRatio;
+        bandFreqs.push_back(bandFreq);
+        bandFreq *= freqRatio;
       }
       octFreq *= 2;
     }
   }
 
-  float Parameters::getBinFrequency(unsigned int n)const{
-    unsigned int max = octaves * 12 * bps;
-    if(n >= max){
+  float Parameters::getBandFrequency(unsigned int b)const{
+    unsigned int max = octaves * SEMITONES * bps;
+    if(b >= max){
       std::ostringstream ss;
-      ss << "Cannot get out-of-bounds frequency index (" << n << "/" << max << ")";
+      ss << "Cannot get out-of-bounds frequency index (" << b << "/" << max << ")";
       throw Exception(ss.str().c_str());
     }
-    return binFreqs[n];
+    return bandFreqs[b];
   }
 
   float Parameters::getLastFrequency() const{
-    return binFreqs[binFreqs.size()-1];
+    return bandFreqs[bandFreqs.size()-1];
   }
 
 }

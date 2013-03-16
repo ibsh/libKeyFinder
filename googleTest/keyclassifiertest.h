@@ -19,32 +19,12 @@
 
 *************************************************************************/
 
-#ifndef KEYCLASSIFIER_H
-#define KEYCLASSIFIER_H
+#ifndef KEYCLASSIFIERTEST_H
+#define KEYCLASSIFIERTEST_H
 
-#include <vector>
+#include "_testhelpers.h"
+#include "keyfinder/keyclassifier.h"
 
-#include "toneprofiles.h"
+class KeyClassifierTest : public ::testing::Test { };
 
-namespace KeyFinder{
-
-  class KeyClassifier{
-  public:
-    KeyClassifier(
-      similarity_measure_t similarityMeasure,
-      tone_profile_t toneProfile,
-      bool offsetToC,
-      const std::vector<float>& customProfile = std::vector<float>(24, 0.0)
-    );
-    ~KeyClassifier();
-    key_t classify(const std::vector<float>& chromaVector);
-  private:
-    ToneProfile* major;
-    ToneProfile* minor;
-    ToneProfile* silence;
-    similarity_measure_t similarityMeasure;
-  };
-
-}
-
-#endif
+#endif // KEYCLASSIFIERTEST_H

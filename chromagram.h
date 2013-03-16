@@ -31,20 +31,21 @@ namespace KeyFinder{
 
   class Chromagram{
   public:
-    Chromagram(unsigned int hops = 0, unsigned int bins = 0);
-    Chromagram(const Chromagram& that);
-    void setMagnitude(unsigned int hop, unsigned int bin, float value);
-    float getMagnitude(unsigned int hop, unsigned int bin) const;
+    Chromagram(unsigned int hops = 0, unsigned int octaves = 0, unsigned int bandsPerSemitone = 0);
+    void append(const Chromagram& that);
+    void setMagnitude(unsigned int hop, unsigned int band, float value);
+    float getMagnitude(unsigned int hop, unsigned int band) const;
     unsigned int getHops() const;
-    unsigned int getBins() const;
-    void reduceToOneOctave(const Parameters& params);
-    void reduceTuningBins(const Parameters& params);
+    unsigned int getBands() const;
+    unsigned int getBandsPerSemitone() const;
+    unsigned int getOctaves() const;
+    void reduceToOneOctave();
+    void tuningHarte();
+    void tuningBandAdaptive(float detunedBandWeight);
   private:
-    unsigned int hops;
-    unsigned int bins;
+    unsigned int bandsPerSemitone;
+    unsigned int octaves;
     std::vector<std::vector<float> > chromaData;
-    void tuningHarte(const Parameters&);
-    void tuningBinAdaptive(const Parameters&);
   };
 
 }
