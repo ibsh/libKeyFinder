@@ -100,8 +100,8 @@ namespace KeyFinder{
     try{
       samples.resize(sampleCount + newSamples, 0.0);
       sampleCount += newSamples;
-      // turns out this doesn't work; bad_alloc never gets thrown on Mac
-      // (presumably it tries to do everything in swap).
+      // TODO: turns out this doesn't work; bad_alloc never gets thrown on Mac,
+      // presumably it tries to do everything in swap
     }catch(const std::exception& e){
       std::ostringstream ss;
       ss << "Exception adding " << newSamples << " samples to stream of " << sampleCount << ": " << e.what();

@@ -116,7 +116,7 @@ TEST(ParametersTest, StartingFrequencyMutator){
 
 TEST(ParametersTest, CustomToneProfileMutator){
   KeyFinder::Parameters p;
-  p.setCustomToneProfile(std::vector<float>(24, 0.0));
+  ASSERT_NO_THROW(p.setCustomToneProfile(std::vector<float>(24, 0.0)));
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(23, 0.0)), KeyFinder::Exception);
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(25, 0.0)), KeyFinder::Exception);
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(24, -0.1)), KeyFinder::Exception);

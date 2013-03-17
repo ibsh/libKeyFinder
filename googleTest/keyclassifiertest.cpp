@@ -21,12 +21,16 @@
 
 #include "keyclassifiertest.h"
 
+KeyFinder::similarity_measure_t simCos = KeyFinder::SIMILARITY_COSINE;
+KeyFinder::similarity_measure_t simCor = KeyFinder::SIMILARITY_CORRELATION;
+
+KeyFinder::tone_profile_t tpK = KeyFinder::TONE_PROFILE_KRUMHANSL;
+KeyFinder::tone_profile_t tpT = KeyFinder::TONE_PROFILE_TEMPERLEY;
+KeyFinder::tone_profile_t tpG = KeyFinder::TONE_PROFILE_GOMEZ;
+KeyFinder::tone_profile_t tpS = KeyFinder::TONE_PROFILE_SHAATH;
+
 TEST(KeyClassifierTest, DetectsSilence){
-  KeyFinder::KeyClassifier kc(
-    KeyFinder::SIMILARITY_COSINE,
-    KeyFinder::TONE_PROFILE_SHAATH,
-    false
-  );
+  KeyFinder::KeyClassifier kc(simCos, tpS, false);
   std::vector<float> chroma(12);
   ASSERT_EQ(KeyFinder::SILENCE, kc.classify(chroma));
 }
@@ -43,33 +47,33 @@ TEST(KeyClassifierTest, DetectsAMinorTriad){
   chromaOffset[4] = 100.0; // E, offset
 
   // No offset, cosine similarity
-  KeyFinder::KeyClassifier kc1(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_KRUMHANSL, false);
+  KeyFinder::KeyClassifier kc1(simCos, tpK, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc1.classify(chromaNoOffset));
-  KeyFinder::KeyClassifier kc2(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_TEMPERLEY, false);
+  KeyFinder::KeyClassifier kc2(simCos, tpT, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc2.classify(chromaNoOffset));
-  KeyFinder::KeyClassifier kc3(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_GOMEZ, false);
+  KeyFinder::KeyClassifier kc3(simCos, tpG, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc3.classify(chromaNoOffset));
-  KeyFinder::KeyClassifier kc4(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_SHAATH, false);
+  KeyFinder::KeyClassifier kc4(simCos, tpS, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc4.classify(chromaNoOffset));
 
   // No offset, correlation
-  KeyFinder::KeyClassifier kc5(KeyFinder::SIMILARITY_CORRELATION, KeyFinder::TONE_PROFILE_KRUMHANSL, false);
+  KeyFinder::KeyClassifier kc5(simCor, tpK, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc5.classify(chromaNoOffset));
-  KeyFinder::KeyClassifier kc6(KeyFinder::SIMILARITY_CORRELATION, KeyFinder::TONE_PROFILE_TEMPERLEY, false);
+  KeyFinder::KeyClassifier kc6(simCor, tpT, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc6.classify(chromaNoOffset));
-  KeyFinder::KeyClassifier kc7(KeyFinder::SIMILARITY_CORRELATION, KeyFinder::TONE_PROFILE_GOMEZ, false);
+  KeyFinder::KeyClassifier kc7(simCor, tpG, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc7.classify(chromaNoOffset));
-  KeyFinder::KeyClassifier kc8(KeyFinder::SIMILARITY_CORRELATION, KeyFinder::TONE_PROFILE_SHAATH, false);
+  KeyFinder::KeyClassifier kc8(simCor, tpS, false);
   ASSERT_EQ(KeyFinder::A_MINOR, kc8.classify(chromaNoOffset));
 
   // With offset, cosine similarity
-  KeyFinder::KeyClassifier kc9(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_KRUMHANSL, true);
+  KeyFinder::KeyClassifier kc9(simCos, tpK, true);
   ASSERT_EQ(KeyFinder::A_MINOR, kc9.classify(chromaOffset));
-  KeyFinder::KeyClassifier kc10(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_TEMPERLEY, true);
+  KeyFinder::KeyClassifier kc10(simCos, tpT, true);
   ASSERT_EQ(KeyFinder::A_MINOR, kc10.classify(chromaOffset));
-  KeyFinder::KeyClassifier kc11(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_GOMEZ, true);
+  KeyFinder::KeyClassifier kc11(simCos, tpG, true);
   ASSERT_EQ(KeyFinder::A_MINOR, kc11.classify(chromaOffset));
-  KeyFinder::KeyClassifier kc12(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_SHAATH, true);
+  KeyFinder::KeyClassifier kc12(simCos, tpS, true);
   ASSERT_EQ(KeyFinder::A_MINOR, kc12.classify(chromaOffset));
 }
 
@@ -90,7 +94,7 @@ TEST(KeyClassifierTest, DetectsOtherTriads){
   gMajor[11] = 100.0;
   gMajor[2] = 100.0;
 
-  KeyFinder::KeyClassifier kc(KeyFinder::SIMILARITY_COSINE, KeyFinder::TONE_PROFILE_SHAATH, true);
+  KeyFinder::KeyClassifier kc(simCos, tpS, true);
   ASSERT_EQ(KeyFinder::C_MAJOR, kc.classify(cMajor));
   ASSERT_EQ(KeyFinder::C_MINOR, kc.classify(cMinor));
   ASSERT_EQ(KeyFinder::G_MAJOR, kc.classify(gMajor));

@@ -103,8 +103,3 @@ TEST(AudioDataTest, Frames){
   a.setSample(1,0, 20.0);
   ASSERT_EQ(20.0, a.getSample(2));
 }
-
-//TEST(AudioDataTest, SamplesHeavy) {
-//  KeyFinder::AudioData a;
-//  ASSERT_THROW(a.addToSampleCount(UINT_MAX), KeyFinder::Exception);
-//}
