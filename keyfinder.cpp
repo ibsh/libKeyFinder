@@ -77,6 +77,7 @@ namespace KeyFinder{
           segment.energy += value;
         }
       }
+      segment.chromaVector = segmentChroma;
       segment.key = classifier.classify(segmentChroma);
       if (segment.key != SILENCE)
         keyWeights[segment.key] += segment.energy;

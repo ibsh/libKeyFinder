@@ -28,11 +28,12 @@ namespace KeyFinder{
 
   class KeyDetectionSegment{
   public:
-    KeyDetectionSegment(): key(SILENCE), firstHop(0), lastHop(0), energy(0.0){}
-    key_t key;
+    KeyDetectionSegment(): firstHop(0), lastHop(0), chromaVector(0), energy(0.0), key(SILENCE){}
     unsigned int firstHop;
     unsigned int lastHop;
+    std::vector<float> chromaVector;
     float energy;
+    key_t key;
   };
 
   class KeyDetectionResult{

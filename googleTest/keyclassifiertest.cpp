@@ -29,6 +29,7 @@ KeyFinder::tone_profile_t tpT = KeyFinder::TONE_PROFILE_TEMPERLEY;
 KeyFinder::tone_profile_t tpG = KeyFinder::TONE_PROFILE_GOMEZ;
 KeyFinder::tone_profile_t tpS = KeyFinder::TONE_PROFILE_SHAATH;
 
+
 TEST(KeyClassifierTest, DetectsSilence){
   KeyFinder::KeyClassifier kc(simCos, tpS, false);
   std::vector<float> chroma(12);
@@ -37,14 +38,14 @@ TEST(KeyClassifierTest, DetectsSilence){
 
 TEST(KeyClassifierTest, DetectsAMinorTriad){
   std::vector<float> chromaNoOffset(12);
-  chromaNoOffset[0] = 100.0; // A
-  chromaNoOffset[3] = 100.0; // C
-  chromaNoOffset[7] = 100.0; // E
+  chromaNoOffset[0] = 1.0; // A
+  chromaNoOffset[3] = 1.0; // C
+  chromaNoOffset[7] = 1.0; // E
 
   std::vector<float> chromaOffset(12);
-  chromaOffset[9] = 100.0; // A, offset
-  chromaOffset[0] = 100.0; // C, offset
-  chromaOffset[4] = 100.0; // E, offset
+  chromaOffset[9] = 1.0; // A, offset
+  chromaOffset[0] = 1.0; // C, offset
+  chromaOffset[4] = 1.0; // E, offset
 
   // No offset, cosine similarity
   KeyFinder::KeyClassifier kc1(simCos, tpK, false);
@@ -80,19 +81,19 @@ TEST(KeyClassifierTest, DetectsAMinorTriad){
 TEST(KeyClassifierTest, DetectsOtherTriads){
   // all with offset
   std::vector<float> cMajor(12);
-  cMajor[0] = 100.0;
-  cMajor[4] = 100.0;
-  cMajor[7] = 100.0;
+  cMajor[0] = 1.0;
+  cMajor[4] = 1.0;
+  cMajor[7] = 1.0;
 
   std::vector<float> cMinor(12);
-  cMinor[0] = 100.0;
-  cMinor[3] = 100.0;
-  cMinor[7] = 100.0;
+  cMinor[0] = 1.0;
+  cMinor[3] = 1.0;
+  cMinor[7] = 1.0;
 
   std::vector<float> gMajor(12);
-  gMajor[7] = 100.0;
-  gMajor[11] = 100.0;
-  gMajor[2] = 100.0;
+  gMajor[7] = 1.0;
+  gMajor[11] = 1.0;
+  gMajor[2] = 1.0;
 
   KeyFinder::KeyClassifier kc(simCos, tpS, true);
   ASSERT_EQ(KeyFinder::C_MAJOR, kc.classify(cMajor));
