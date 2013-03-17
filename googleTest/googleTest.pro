@@ -32,14 +32,20 @@ HEADERS += \
     audiodatatest.h \
     binodetest.h \
     chromagramtest.h \
+    chromatransformtest.h \
+    chromatransformfactorytest.h \
     downsamplertest.h \
     fftadaptertest.h \
     keyclassifiertest.h \
     keyfindertest.h \
-    lowpassfilterfactorytest.h \
+    keyfinderresulttest.h \
     lowpassfiltertest.h \
-    parameterstest.h
+    lowpassfilterfactorytest.h \
+    parameterstest.h \
     segmentationtest.h \
+    spectrumanalysertest.h \
+    toneprofilestest.h \
+    windowfunctiontest.h
 
 SOURCES += \
     main.cpp \
@@ -47,14 +53,20 @@ SOURCES += \
     audiodatatest.cpp \
     binodetest.cpp \
     chromagramtest.cpp \
+    chromatransformtest.cpp \
+    chromatransformfactorytest.cpp \
     downsamplertest.cpp \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \
     keyfindertest.cpp \
-    lowpassfilterfactorytest.cpp \
+    keyfinderresulttest.cpp \
     lowpassfiltertest.cpp \
-    parameterstest.cpp
+    lowpassfilterfactorytest.cpp \
+    parameterstest.cpp \
     segmentationtest.cpp \
+    spectrumanalysertest.cpp \
+    toneprofilestest.cpp \
+    windowfunctiontest.cpp
 
 DEPENDPATH  += /usr/local/lib
 INCLUDEPATH += /usr/local/include
