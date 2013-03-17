@@ -38,14 +38,15 @@ namespace KeyFinder{
     } else if (params.getSegmentation() == SEGMENTATION_COSINE) {
       std::vector<float> rateOfChange = cosineRateOfChange(ch, params.getSegGaussianSize(), params.getSegGaussianSigma());
       unsigned int neighbours = params.getSegPeakPickingNeighbours();
-      for (unsigned int hop = 0; hop < rateOfChange.size(); hop++){
-        bool peak = false;
-        for (int i = -neighbours; i <= (signed)neighbours; i++)
-          if(i != 0 && hop < rateOfChange.size() - 1) // only test valid neighbours
-            if(rateOfChange[hop] > rateOfChange[hop-i] && rateOfChange[hop] > rateOfChange[hop+i])
-              peak = true;
-        if(peak)
-          segmentBoundaries.push_back(hop);
+      // for all hops except those in the neighbourhood of the extremities
+      for (unsigned int hop = neighbours; hop < rateOfChange.size() - neighbours; hop++){
+        bool peak = true;
+        // check that ROC is bigger than the neighbours in each direction
+        for (int i = -neighbours; i <= (signed)neighbours; i++) {
+          if (i == 0) continue;
+          if (rateOfChange[hop] <= rateOfChange[hop+i]) peak = false;
+        }
+        if (peak) segmentBoundaries.push_back(hop);
       }
     }
     return segmentBoundaries;
@@ -58,49 +59,41 @@ namespace KeyFinder{
   ) const {
     unsigned int hops = ch.getHops();
     unsigned int bands = ch.getBands();
-    unsigned int padding = 0; // as opposed to gaussianSize/2
-    std::vector<float> cosine(hops + padding, 0.0);
-    for (unsigned int hop = 0; hop < hops; hop++){
+    unsigned int padding = gaussianSize / 2;
+    // initialise to 1.0 (implies vectors are exactly the same)
+    std::vector<float> cosineSimilarities(hops, 1.0);
+    // determine cosine similarity for each hop except the first
+    for (unsigned int hop = 1; hop < hops; hop++) {
       float top = 0.0;
-      float bottom = 0.0;
-      for (unsigned int band = 0; band < bands; band++){
-        float mag = ch.getMagnitude(hop, band);
-        top += mag;
-        bottom += pow(mag,2);
+      float bottomLeft = 0.0;
+      float bottomRight = 0.0;
+      for (unsigned int band = 0; band < bands; band++) {
+        // add a tiny amount to each magnitude to guard against div by zero
+        float magA = ch.getMagnitude(hop - 1, band) + 0.001;
+        float magB = ch.getMagnitude(hop, band) + 0.001;
+        top += magA * magB;
+        bottomLeft  += magA * magA;
+        bottomRight += magB * magB;
       }
-      float cos;
-      if(bottom > 0.0) // divzero
-        cos = top / sqrt(bottom) * sqrt(bands * sqrt(2));
-      else
-        cos = 0.0;
-      cosine[hop] = cos;
+      cosineSimilarities[hop] = top / (sqrt(bottomLeft) * sqrt(bottomRight));
     }
-    // gaussian
+    // build gaussian kernel for smoothing
     std::vector<float> gaussian(gaussianSize);
-    for (unsigned int i=0; i<gaussianSize; i++){
-      gaussian[i] = exp(-1 * (pow(i - gaussianSize/2 , 2) / (2 * gaussianSigma * gaussianSigma)));
+    for (unsigned int i = 0; i < gaussianSize; i++) {
+      float gaussianCrv = exp(-1 * (pow((signed)i - (signed)padding, 2) / (2 * gaussianSigma * gaussianSigma)));
+      gaussian[i] = gaussianCrv;
     }
-    std::vector<float> smoothed(hops);
-    for (unsigned int hop = padding; hop < cosine.size(); hop++){
-      float conv = 0.0;
-      for (unsigned int k=0; k<gaussianSize; k++){
-        int frm = hop - (gaussianSize/2) + k;
-        if(frm >= 0 && frm < (signed)cosine.size()){
-          conv += cosine[frm] * gaussian[k];
-        }
+    std::vector<float> smoothed(hops, 0.0);
+    for (unsigned int hop = padding; hop < hops - padding; hop++) {
+      float convolution = 0.0;
+      for (unsigned int k = 0; k < gaussianSize; k++){
+        int frm = (signed)hop - (signed)padding + (signed)k;
+        if (frm >= 0 && frm < (signed)hops) // don't run off either end
+          convolution += (1.0 - cosineSimilarities[frm]) * gaussian[k];
       }
-      smoothed[hop-padding] = conv;
+      smoothed[hop] = convolution;
     }
-    // rate of change of hcdf signal; look at all hops except first.
-    std::vector<float> rateOfChange(hops, 0.0);
-    for (unsigned int hop=1; hop<hops; hop++){
-      float change = (smoothed[hop] - smoothed[hop-1]) / 90.0;
-      change = (change >= 0 ? change : change * -1.0);
-      rateOfChange[hop] = change;
-    }
-    // fudge first
-    rateOfChange[0] = rateOfChange[1];
-    return rateOfChange;
+    return smoothed;
   }
 
 }

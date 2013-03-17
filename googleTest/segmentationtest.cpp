@@ -25,7 +25,7 @@ TEST(SegmentationTest, NoSegmentationWorks){
   KeyFinder::Parameters p;
   p.setSegmentation(KeyFinder::SEGMENTATION_NONE);
 
-  KeyFinder::Chromagram c(10,1,1);
+  KeyFinder::Chromagram c(10, 1, 1);
   KeyFinder::Segmentation seg;
   std::vector<unsigned int> sb = seg.getSegmentationBoundaries(c, p);
   ASSERT_EQ(1, sb.size());
@@ -37,11 +37,44 @@ TEST(SegmentationTest, ArbitrarySegmentationWorks){
   p.setSegmentation(KeyFinder::SEGMENTATION_ARBITRARY);
   p.setArbitrarySegments(3);
 
-  KeyFinder::Chromagram c(21,1,1);
+  KeyFinder::Chromagram c(21, 1, 1);
   KeyFinder::Segmentation seg;
   std::vector<unsigned int> sb = seg.getSegmentationBoundaries(c, p);
   ASSERT_EQ(3, sb.size());
   ASSERT_EQ( 0, sb[0]);
   ASSERT_EQ( 7, sb[1]);
   ASSERT_EQ(14, sb[2]);
+}
+
+TEST(SegmentationTest, ChangeDetectionSegmentationWorks){
+  KeyFinder::Parameters p;
+  p.setSegmentation(KeyFinder::SEGMENTATION_COSINE);
+  p.setSegGaussianSize(11);
+  p.setSegGaussianSigma(2.0);
+
+  // changes: silent > c minor > db major > g minor > silent
+  KeyFinder::Chromagram c(200, 1, 1);
+  for (unsigned int i = 40; i < 80; i++) {
+    c.setMagnitude(i, 0, 1.0);
+    c.setMagnitude(i, 3, 1.0);
+    c.setMagnitude(i, 7, 1.0);
+  }
+  for (unsigned int i = 80; i < 120; i++) {
+    c.setMagnitude(i, 3, 1.0);
+    c.setMagnitude(i, 7, 1.0);
+    c.setMagnitude(i, 10, 1.0);
+  }
+  for (unsigned int i = 120; i < 160; i++) {
+    c.setMagnitude(i,  7, 1.0);
+    c.setMagnitude(i, 10, 1.0);
+    c.setMagnitude(i,  2, 1.0);
+  }
+  KeyFinder::Segmentation seg;
+  std::vector<unsigned int> sb = seg.getSegmentationBoundaries(c, p);
+  ASSERT_EQ(5, sb.size());
+  ASSERT_EQ(  0, sb[0]);
+  ASSERT_EQ( 40, sb[1]);
+  ASSERT_EQ( 80, sb[2]);
+  ASSERT_EQ(120, sb[3]);
+  ASSERT_EQ(160, sb[4]);
 }
