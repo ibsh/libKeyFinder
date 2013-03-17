@@ -19,15 +19,45 @@
 
 *************************************************************************/
 
-#include "segcosine.h"
+#include "segmentation.h"
 
 namespace KeyFinder{
 
-  std::vector<float> CosineHcdf::getRateOfChange(const Chromagram& ch, const Parameters& params) const{
+  std::vector<unsigned int> Segmentation::getSegmentationBoundaries(
+    const Chromagram& ch,
+    const Parameters& params
+  ) const {
+    std::vector<unsigned int> segmentBoundaries(1, 0); // start vector with a 0 to enable first classification
+    if (params.getSegmentation() == SEGMENTATION_ARBITRARY) {
+      unsigned int segments = params.getArbitrarySegments();
+      float interval = ch.getHops() / segments;
+      for (unsigned int i = 1; i < segments; i++){
+        segmentBoundaries.push_back((unsigned int)(interval * i + 0.5));
+      }
+      return segmentBoundaries;
+    } else if (params.getSegmentation() == SEGMENTATION_COSINE) {
+      std::vector<float> rateOfChange = cosineRateOfChange(ch, params.getSegGaussianSize(), params.getSegGaussianSigma());
+      unsigned int neighbours = params.getSegPeakPickingNeighbours();
+      for (unsigned int hop = 0; hop < rateOfChange.size(); hop++){
+        bool peak = false;
+        for (int i = -neighbours; i <= (signed)neighbours; i++)
+          if(i != 0 && hop < rateOfChange.size() - 1) // only test valid neighbours
+            if(rateOfChange[hop] > rateOfChange[hop-i] && rateOfChange[hop] > rateOfChange[hop+i])
+              peak = true;
+        if(peak)
+          segmentBoundaries.push_back(hop);
+      }
+    }
+    return segmentBoundaries;
+  }
+
+  std::vector<float> Segmentation::cosineRateOfChange(
+    const Chromagram& ch,
+    unsigned int gaussianSize,
+    float gaussianSigma
+  ) const {
     unsigned int hops = ch.getHops();
     unsigned int bands = ch.getBands();
-    unsigned int gaussianSize = params.getSegGaussianSize();
-    float gaussianSigma = params.getSegGaussianSigma();
     unsigned int padding = 0; // as opposed to gaussianSize/2
     std::vector<float> cosine(hops + padding, 0.0);
     for (unsigned int hop = 0; hop < hops; hop++){
@@ -66,28 +96,11 @@ namespace KeyFinder{
     for (unsigned int hop=1; hop<hops; hop++){
       float change = (smoothed[hop] - smoothed[hop-1]) / 90.0;
       change = (change >= 0 ? change : change * -1.0);
-      change /= 0.16; // TODO: fix awful magic number for display purposes in KeyFinder GUI app
       rateOfChange[hop] = change;
     }
     // fudge first
     rateOfChange[0] = rateOfChange[1];
     return rateOfChange;
-  }
-
-  std::vector<unsigned int> CosineHcdf::getSegments(const std::vector<float>& rateOfChange, const Parameters& params) const{
-    // Pick peaks
-    std::vector<unsigned int> changes(1, 0); // start vector with a 0 to enable first classification
-    unsigned int neighbours = params.getSegPeakPickingNeighbours();
-    for (unsigned int hop = 0; hop < rateOfChange.size(); hop++){
-      bool peak = true;
-      for (int i = -neighbours; i <= (signed)neighbours; i++)
-        if(i != 0 && hop+i < rateOfChange.size()) // only test valid neighbours
-          if(rateOfChange[hop+i] >= rateOfChange[hop])
-            peak = false; // there's a neighbour of higher or equal value; this isn't a peak
-      if(peak)
-        changes.push_back(hop);
-    }
-    return changes;
   }
 
 }

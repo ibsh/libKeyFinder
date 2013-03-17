@@ -19,23 +19,29 @@
 
 *************************************************************************/
 
-#include "seg.h"
+#include "segmentationtest.h"
 
-#include "segcosine.h"
-#include "segnone.h"
-#include "segarbitrary.h"
+TEST(SegmentationTest, NoSegmentationWorks){
+  KeyFinder::Parameters p;
+  p.setSegmentation(KeyFinder::SEGMENTATION_NONE);
 
-namespace KeyFinder{
+  KeyFinder::Chromagram c(10,1,1);
+  KeyFinder::Segmentation seg;
+  std::vector<unsigned int> sb = seg.getSegmentationBoundaries(c, p);
+  ASSERT_EQ(1, sb.size());
+  ASSERT_EQ(0, sb[0]);
+}
 
-  Segmentation* Segmentation::getSegmentation(const Parameters& params){
-    if(params.getSegmentation() == SEGMENTATION_COSINE)
-      return new CosineHcdf();
-    else if(params.getSegmentation() == SEGMENTATION_ARBITRARY)
-      return new ArbitrarySeg();
-    else
-      return new NoSeg();
-  }
+TEST(SegmentationTest, ArbitrarySegmentationWorks){
+  KeyFinder::Parameters p;
+  p.setSegmentation(KeyFinder::SEGMENTATION_ARBITRARY);
+  p.setArbitrarySegments(3);
 
-  Segmentation::~Segmentation(){ }
-
+  KeyFinder::Chromagram c(21,1,1);
+  KeyFinder::Segmentation seg;
+  std::vector<unsigned int> sb = seg.getSegmentationBoundaries(c, p);
+  ASSERT_EQ(3, sb.size());
+  ASSERT_EQ( 0, sb[0]);
+  ASSERT_EQ( 7, sb[1]);
+  ASSERT_EQ(14, sb[2]);
 }

@@ -39,6 +39,7 @@ HEADERS += \
     lowpassfilterfactorytest.h \
     lowpassfiltertest.h \
     parameterstest.h
+    segmentationtest.h \
 
 SOURCES += \
     main.cpp \
@@ -53,6 +54,7 @@ SOURCES += \
     lowpassfilterfactorytest.cpp \
     lowpassfiltertest.cpp \
     parameterstest.cpp
+    segmentationtest.cpp \
 
 DEPENDPATH  += /usr/local/lib
 INCLUDEPATH += /usr/local/include

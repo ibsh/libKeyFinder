@@ -19,22 +19,25 @@
 
 *************************************************************************/
 
-#ifndef HCDFARBITRARY_H
-#define HCDFARBITRARY_H
+#ifndef SEGMENTATION_H
+#define SEGMENTATION_H
 
-#include "seg.h"
+#include "chromagram.h"
+#include "parameters.h"
 
 namespace KeyFinder{
 
-  class ArbitrarySeg : public Segmentation{
+  class Segmentation{
   public:
-    virtual std::vector<float> getRateOfChange(
+    std::vector<unsigned int> getSegmentationBoundaries(
       const Chromagram& chromagram,
       const Parameters& params
     ) const;
-    virtual std::vector<unsigned int> getSegments(
-      const std::vector<float>& rateOfChange,
-      const Parameters& params
+  private:
+    std::vector<float> cosineRateOfChange(
+      const Chromagram& chromagram,
+      unsigned int gaussianSize,
+      float gaussianSigma
     ) const;
   };
 

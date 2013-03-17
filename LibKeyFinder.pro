@@ -25,7 +25,7 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.3.0
+VERSION = 0.3.1
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -45,10 +45,7 @@ HEADERS += \
     lowpassfilter.h \
     lowpassfilterfactory.h \
     parameters.h \
-    seg.h \
-    segarbitrary.h \
-    segcosine.h \
-    segnone.h \
+    segmentation.h \
     spectrumanalyser.h \
     toneprofiles.h \
     windowfunctions.h
@@ -65,10 +62,7 @@ SOURCES += \
     lowpassfilter.cpp \
     lowpassfilterfactory.cpp \
     parameters.cpp \
-    seg.cpp \
-    segarbitrary.cpp \
-    segcosine.cpp \
-    segnone.cpp \
+    segmentation.cpp \
     spectrumanalyser.cpp \
     toneprofiles.cpp \
     windowfunctions.cpp

@@ -48,11 +48,9 @@ namespace KeyFinder{
     ch.reduceToOneOctave();
 
     // get harmonic change signal and segment
-    Segmentation* segmenter = Segmentation::getSegmentation(params);
-    result.harmonicChangeSignal = segmenter->getRateOfChange(ch, params);
-    std::vector<unsigned int> segmentBoundaries = segmenter->getSegments(result.harmonicChangeSignal, params);
+    Segmentation segmenter;
+    std::vector<unsigned int> segmentBoundaries = segmenter.getSegmentationBoundaries(ch, params);
     segmentBoundaries.push_back(ch.getHops()); // sentinel
-    delete segmenter;
 
     // get key estimates for each segment
     KeyClassifier classifier(
@@ -65,7 +63,7 @@ namespace KeyFinder{
     std::vector<float> keyWeights(24); // TODO: not ideal using int cast of key_t enum. Hash?
 
     for (int s = 0; s < (signed) segmentBoundaries.size() - 1; s++) {
-      KeyDetectionSegment segment;
+      KeyDetectionResultSegment segment;
       segment.firstHop = segmentBoundaries[s];
       segment.lastHop  = segmentBoundaries[s+1] - 1;
       // collapse segment's time dimension

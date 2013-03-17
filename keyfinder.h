@@ -8,7 +8,7 @@
 #include "downsampler.h"
 #include "spectrumanalyser.h"
 #include "keyfinderresult.h"
-#include "seg.h"
+#include "segmentation.h"
 #include "keyclassifier.h"
 
 namespace KeyFinder{

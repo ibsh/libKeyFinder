@@ -19,25 +19,12 @@
 
 *************************************************************************/
 
-#ifndef HCDFCOSINE_H
-#define HCDFCOSINE_H
+#ifndef SEGMENTATIONTEST_H
+#define SEGMENTATIONTEST_H
 
-#include "seg.h"
+#include "_testhelpers.h"
+#include "keyfinder/segmentation.h"
 
-namespace KeyFinder{
+class SegmentationTest : public ::testing::Test { };
 
-  class CosineHcdf : public Segmentation{
-  public:
-    virtual std::vector<float> getRateOfChange(
-      const Chromagram& chromagram,
-      const Parameters& params
-    ) const;
-    virtual std::vector<unsigned int> getSegments(
-      const std::vector<float>& rateOfChange,
-      const Parameters& params
-    ) const;
-  };
-
-}
-
-#endif
+#endif // SEGMENTATIONTEST_H
