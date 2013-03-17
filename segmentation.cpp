@@ -83,6 +83,7 @@ namespace KeyFinder{
       float gaussianCrv = exp(-1 * (pow((signed)i - (signed)padding, 2) / (2 * gaussianSigma * gaussianSigma)));
       gaussian[i] = gaussianCrv;
     }
+    // smooth similarity vector (and invert it so it represents change, not similarity)
     std::vector<float> smoothed(hops, 0.0);
     for (unsigned int hop = padding; hop < hops - padding; hop++) {
       float convolution = 0.0;
