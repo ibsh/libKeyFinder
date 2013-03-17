@@ -35,6 +35,7 @@ HEADERS += \
     downsamplertest.h \
     fftadaptertest.h \
     keyclassifiertest.h \
+    keyfindertest.h \
     lowpassfilterfactorytest.h \
     lowpassfiltertest.h \
     parameterstest.h
@@ -48,6 +49,7 @@ SOURCES += \
     downsamplertest.cpp \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \
+    keyfindertest.cpp \
     lowpassfilterfactorytest.cpp \
     lowpassfiltertest.cpp \
     parameterstest.cpp
