@@ -28,8 +28,13 @@ namespace KeyFinder{
     bandsPerSemitone = params.getBandsPerSemitone();
     hopSize = params.getHopSize();
     ct = spFactory->getChromaTransform(f, params);
-    fft = new FftAdapter(params.getFftFrameSize());
-    tw = params.getTemporalWindow();
+    unsigned int fftFrameSize = params.getFftFrameSize();
+    fft = new FftAdapter(fftFrameSize);
+    WindowFunction win;
+    temporalWindow = std::vector<float>(fftFrameSize);
+    for (unsigned int i = 0; i < fftFrameSize; i++) {
+      temporalWindow[i] = win.window(params.getTemporalWindow(), i, fftFrameSize);
+    }
   }
 
   SpectrumAnalyser::~SpectrumAnalyser(){
@@ -40,15 +45,16 @@ namespace KeyFinder{
   Chromagram SpectrumAnalyser::chromagram(AudioData* audio) const{
     if (audio->getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
-    WindowFunction win;
-    unsigned int hops = (audio->getSampleCount() / hopSize) + 1;
+    unsigned int sampleCount = audio->getSampleCount();
+    unsigned int hops = (sampleCount / hopSize);
+    if (sampleCount % hopSize > 0) hops++;
     Chromagram ch(hops, octaves, bandsPerSemitone);
     unsigned int fftFrameSize = fft->getFrameSize();
     for (unsigned int hop = 0; hop < hops; hop ++) {
       unsigned int sampleOffset = hop * hopSize;
       for (unsigned int sample = 0; sample < fftFrameSize; sample++) {
-        if (sampleOffset + sample < audio->getSampleCount()) {
-          fft->setInput(sample, audio->getSample(sampleOffset + sample) * win.window(tw, sample, fftFrameSize)); // real part, windowed
+        if (sampleOffset + sample < sampleCount) {
+          fft->setInput(sample, audio->getSample(sampleOffset + sample) * temporalWindow[sample]); // real part, windowed
         } else {
           fft->setInput(sample, 0.0); // zero-pad if no PCM data remaining
         }

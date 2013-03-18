@@ -47,7 +47,7 @@ namespace KeyFinder{
     unsigned int hopSize;
     ChromaTransform* ct;
     FftAdapter* fft;
-    temporal_window_t tw;
+    std::vector<float> temporalWindow;
   };
 
 }
