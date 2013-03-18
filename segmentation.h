@@ -24,6 +24,7 @@
 
 #include "chromagram.h"
 #include "parameters.h"
+#include "windowfunctions.h"
 
 namespace KeyFinder{
 

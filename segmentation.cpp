@@ -59,42 +59,36 @@ namespace KeyFinder{
   ) const {
     unsigned int hops = ch.getHops();
     unsigned int bands = ch.getBands();
-    unsigned int padding = gaussianSize / 2;
     // initialise to 1.0 (implies vectors are exactly the same)
-    std::vector<float> cosineSimilarities(hops, 1.0);
-    // determine cosine similarity for each hop except the first
-    for (unsigned int hop = 1; hop < hops; hop++) {
-      float top = 0.0;
-      float bottomLeft = 0.0;
-      float bottomRight = 0.0;
-      for (unsigned int band = 0; band < bands; band++) {
-        // add a tiny amount to each magnitude to guard against div by zero
-        float magA = ch.getMagnitude(hop - 1, band) + 0.001;
-        float magB = ch.getMagnitude(hop, band) + 0.001;
-        top += magA * magB;
-        bottomLeft  += magA * magA;
-        bottomRight += magB * magB;
+    std::vector<float> cosineChanges(hops, 1.0);
+    // determine cosine similarity
+    for (unsigned int hop = 0; hop < hops; hop++) {
+      // for each hop except the first
+      if (hop > 0) {
+        float top = 0.0;
+        float bottomLeft = 0.0;
+        float bottomRight = 0.0;
+        for (unsigned int band = 0; band < bands; band++) {
+          // add a tiny amount to each magnitude to guard against div by zero
+          float magA = ch.getMagnitude(hop - 1, band) + 0.001;
+          float magB = ch.getMagnitude(hop, band) + 0.001;
+          top += magA * magB;
+          bottomLeft  += magA * magA;
+          bottomRight += magB * magB;
+        }
+        cosineChanges[hop] = top / (sqrt(bottomLeft) * sqrt(bottomRight));
       }
-      cosineSimilarities[hop] = top / (sqrt(bottomLeft) * sqrt(bottomRight));
+      // invert similarity so it represents change instead
+      cosineChanges[hop] = 1.0 - cosineChanges[hop];
     }
     // build gaussian kernel for smoothing
+    WindowFunction win;
     std::vector<float> gaussian(gaussianSize);
     for (unsigned int i = 0; i < gaussianSize; i++) {
-      float gaussianCrv = exp(-1 * (pow((signed)i - (signed)padding, 2) / (2 * gaussianSigma * gaussianSigma)));
-      gaussian[i] = gaussianCrv;
+      gaussian[i] = win.gaussianWindow(i, gaussianSize, gaussianSigma);
     }
-    // smooth similarity vector (and invert it so it represents change, not similarity)
-    std::vector<float> smoothed(hops, 0.0);
-    for (unsigned int hop = padding; hop < hops - padding; hop++) {
-      float convolution = 0.0;
-      for (unsigned int k = 0; k < gaussianSize; k++){
-        int frm = (signed)hop - (signed)padding + (signed)k;
-        if (frm >= 0 && frm < (signed)hops) // don't run off either end
-          convolution += (1.0 - cosineSimilarities[frm]) * gaussian[k];
-      }
-      smoothed[hop] = convolution;
-    }
-    return smoothed;
+    // smooth change vector
+    return win.convolve(cosineChanges, gaussian);
   }
 
 }
