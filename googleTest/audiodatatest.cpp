@@ -21,40 +21,40 @@
 
 #include "audiodatatest.h"
 
-TEST(AudioDataTest, ConstructorWorks){
+TEST (AudioDataTest, ConstructorWorks) {
   KeyFinder::AudioData a;
   ASSERT_EQ(0, a.getChannels());
   ASSERT_EQ(0, a.getFrameRate());
   ASSERT_EQ(0, a.getSampleCount());
 }
 
-TEST(AudioDataTest, Channels){
+TEST (AudioDataTest, Channels) {
   KeyFinder::AudioData a;
   a.setChannels(2);
   ASSERT_EQ(2, a.getChannels());
   ASSERT_THROW(a.setChannels(0), KeyFinder::Exception);
 }
 
-TEST(AudioDataTest, FrameRate){
+TEST (AudioDataTest, FrameRate) {
   KeyFinder::AudioData a;
   a.setFrameRate(44100);
   ASSERT_EQ(44100, a.getFrameRate());
   ASSERT_THROW(a.setFrameRate(0), KeyFinder::Exception);
 }
 
-TEST(AudioDataTest, SamplesBasic){
+TEST (AudioDataTest, SamplesBasic) {
   KeyFinder::AudioData a;
   a.addToSampleCount(100);
   ASSERT_EQ(100, a.getSampleCount());
   // init values
-  for(int i=0; i<100; i++){
+  for (int i=0; i<100; i++) {
     ASSERT_EQ(0.0, a.getSample(i));
   }
   a.setSample(0, 10.0);
   ASSERT_EQ(10.0, a.getSample(0));
 }
 
-TEST(AudioDataTest, Bounds){
+TEST (AudioDataTest, Bounds) {
   KeyFinder::AudioData a;
   a.addToSampleCount(5);
   ASSERT_THROW(a.getSample(-1), KeyFinder::Exception);
@@ -67,21 +67,21 @@ TEST(AudioDataTest, Bounds){
   ASSERT_THROW(a.setSample(0, NAN), KeyFinder::Exception);
 }
 
-TEST(AudioDataTest, MakeMono){
+TEST (AudioDataTest, MakeMono) {
   KeyFinder::AudioData a;
   a.setChannels(2);
   a.addToSampleCount(20);
-  for(int i=0; i<10; i++){
+  for (int i=0; i<10; i++) {
     a.setSample(i*2, 100.0);
   }
   a.reduceToMono();
   ASSERT_EQ(10, a.getSampleCount());
-  for(int i=0; i<10; i++){
+  for (int i=0; i<10; i++) {
     ASSERT_EQ(50.0, a.getSample(i));
   }
 }
 
-TEST(AudioDataTest, Frames){
+TEST (AudioDataTest, Frames) {
   KeyFinder::AudioData a;
   a.addToSampleCount(4);
   ASSERT_THROW(a.getSample(0,0), KeyFinder::Exception);

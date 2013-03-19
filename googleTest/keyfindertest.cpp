@@ -21,7 +21,7 @@
 
 #include "keyfindertest.h"
 
-TEST(KeyFinderTest, KeyOfChromagramReturnsSilence){
+TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
   KeyFinder::Chromagram ch(1,1,1);
   KeyFinder::KeyFinder kf;
   KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(ch);
@@ -42,7 +42,7 @@ TEST(KeyFinderTest, KeyOfChromagramReturnsSilence){
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[11]);
 }
 
-TEST(KeyFinderTest, KeyOfChromagramPassesThroughChromaData){
+TEST (KeyFinderTest, KeyOfChromagramPassesThroughChromaData) {
   KeyFinder::Chromagram ch(1,1,1);
   ch.setMagnitude(0, 0, 1.0);
   ch.setMagnitude(0, 3, 1.0);

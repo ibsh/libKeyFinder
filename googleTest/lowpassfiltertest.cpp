@@ -35,13 +35,13 @@ float cornerFrequency = 6500.0;
 unsigned int filterOrder = 160;
 unsigned int filterFFT = 2048;
 
-TEST(LowPassFilterTest, KillsHigherFreqs){
+TEST (LowPassFilterTest, KillsHigherFreqs) {
   // make a high frequency sine wave, one second long
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(1);
   a->setFrameRate(samples);
   a->addToSampleCount(samples);
-  for(unsigned int i = 0; i < samples; i++){
+  for (unsigned int i = 0; i < samples; i++) {
     a->setSample(i, sine_wave(i, highFrequency, samples, magnitude));
   }
 
@@ -50,18 +50,18 @@ TEST(LowPassFilterTest, KillsHigherFreqs){
   delete lpf;
 
   // test for near silence
-  for(unsigned int i = 0; i < samples; i++){
+  for (unsigned int i = 0; i < samples; i++) {
     ASSERT_GT(tolerance, a->getSample(i));
   }
 }
 
-TEST(LowPassFilterTest, MaintainsLowerFreqs){
+TEST (LowPassFilterTest, MaintainsLowerFreqs) {
   // make a low frequency sine wave, one second long
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(1);
   a->setFrameRate(samples);
   a->addToSampleCount(samples);
-  for(unsigned int i = 0; i < samples; i++){
+  for (unsigned int i = 0; i < samples; i++) {
     a->setSample(i, sine_wave(i, lowFrequency, samples, magnitude));
   }
 
@@ -70,7 +70,7 @@ TEST(LowPassFilterTest, MaintainsLowerFreqs){
   delete lpf;
 
   // test for near perfect reproduction
-  for(unsigned int i = 0; i < samples; i++){
+  for (unsigned int i = 0; i < samples; i++) {
     float expected = sine_wave(i, lowFrequency, samples, magnitude);
     float min = expected - tolerance;
     float max = expected + tolerance;
@@ -79,13 +79,13 @@ TEST(LowPassFilterTest, MaintainsLowerFreqs){
   }
 }
 
-TEST(LowPassFilterTest, DoesBothAtOnce){
+TEST (LowPassFilterTest, DoesBothAtOnce) {
   // make two sine waves, one second long
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(1);
   a->setFrameRate(samples);
   a->addToSampleCount(samples);
-  for(unsigned int i = 0; i < samples; i++){
+  for (unsigned int i = 0; i < samples; i++) {
     float sample = 0;
     // high freq
     sample += sine_wave(i, highFrequency, samples, magnitude);
@@ -99,7 +99,7 @@ TEST(LowPassFilterTest, DoesBothAtOnce){
   delete lpf;
 
   // test for lower wave only
-  for(unsigned int i = 0; i < samples; i++){
+  for (unsigned int i = 0; i < samples; i++) {
     float expected = sine_wave(i, lowFrequency, samples, magnitude);
     float min = expected - tolerance;
     float max = expected + tolerance;
@@ -108,13 +108,13 @@ TEST(LowPassFilterTest, DoesBothAtOnce){
   }
 }
 
-TEST(LowPassFilterTest, WorksWithShortcutFactor){
+TEST (LowPassFilterTest, WorksWithShortcutFactor) {
   // make two sine waves, one second long
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(1);
   a->setFrameRate(samples);
   a->addToSampleCount(samples);
-  for(unsigned int i = 0; i < samples; i++){
+  for (unsigned int i = 0; i < samples; i++) {
     float sample = 0;
     // high freq
     sample += sine_wave(i, highFrequency, samples, magnitude);
@@ -128,10 +128,10 @@ TEST(LowPassFilterTest, WorksWithShortcutFactor){
   delete lpf;
 
   // test for lower wave only
-  for(unsigned int i = 0; i < samples; i++){
-    if(i % 3 != 0){
+  for (unsigned int i = 0; i < samples; i++) {
+    if (i % 3 != 0) {
       ASSERT_EQ(0.0, a->getSample(i));
-    }else{
+    } else {
       float expected = sine_wave(i, lowFrequency, samples, magnitude);
       float min = expected - tolerance;
       float max = expected + tolerance;

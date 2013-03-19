@@ -25,7 +25,7 @@ namespace KeyFinder{
 
   LowPassFilterFactory::LowPassFilterWrapper::LowPassFilterWrapper(
     unsigned int cc, unsigned int fr, float cf, unsigned int fs, LowPassFilter* fi
-  ){
+  ) {
     order = cc;
     frameRate = fr;
     cornerFrequency = cf;
@@ -33,7 +33,7 @@ namespace KeyFinder{
     lpf = fi;
   }
 
-  LowPassFilterFactory::LowPassFilterWrapper::~LowPassFilterWrapper(){
+  LowPassFilterFactory::LowPassFilterWrapper::~LowPassFilterWrapper() {
     delete lpf;
   }
 
@@ -57,27 +57,27 @@ namespace KeyFinder{
     return fftFrameSize;
   }
 
-  LowPassFilterFactory::LowPassFilterFactory(){
+  LowPassFilterFactory::LowPassFilterFactory() {
     filters = std::vector<LowPassFilterWrapper*>(0);
   }
 
-  LowPassFilterFactory::~LowPassFilterFactory(){
+  LowPassFilterFactory::~LowPassFilterFactory() {
     for (unsigned int i=0; i<filters.size(); i++)
       delete filters[i];
   }
 
   LowPassFilter* LowPassFilterFactory::getLowPassFilter(
     unsigned int cc, unsigned int fr, float cf, unsigned int fs
-  ){
+  ) {
     boost::mutex::scoped_lock lock(LowPassFilterFactoryMutex);
-    for (unsigned int i=0; i<filters.size(); i++){
+    for (unsigned int i=0; i<filters.size(); i++) {
       LowPassFilterWrapper* wrapper = filters[i];
-      if(
+      if (
         wrapper->getOrder() == cc &&
         wrapper->getFrameRate() == fr &&
         wrapper->getCornerFrequency() == cf &&
         wrapper->getFftFrameSize() == fs
-      ){
+      ) {
         return wrapper->getLowPassFilter();
       }
     }

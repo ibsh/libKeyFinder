@@ -23,14 +23,14 @@
 
 namespace KeyFinder{
 
-  FftAdapter::FftAdapter(unsigned int fs){
+  FftAdapter::FftAdapter(unsigned int fs) {
     frameSize = fs;
     input  = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*frameSize);
     output = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*frameSize);
     plan = fftw_plan_dft_1d(frameSize, input, output, FFTW_FORWARD, FFTW_ESTIMATE);
   }
 
-  FftAdapter::~FftAdapter(){
+  FftAdapter::~FftAdapter() {
     fftw_destroy_plan(plan);
     fftw_free(input);
     fftw_free(output);
@@ -41,12 +41,12 @@ namespace KeyFinder{
   }
 
   void FftAdapter::setInput(unsigned int i, float real) const{
-    if (i >= frameSize){
+    if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(real)){
+    if (!boost::math::isfinite(real)) {
       throw Exception("Cannot set sample to NaN");
     }
     input[i][0] = real;
@@ -54,7 +54,7 @@ namespace KeyFinder{
   }
 
   float FftAdapter::getOutputReal(unsigned int i) const{
-    if (i >= frameSize){
+    if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
@@ -63,7 +63,7 @@ namespace KeyFinder{
   }
 
   float FftAdapter::getOutputImaginary(unsigned int i) const{
-    if (i >= frameSize){
+    if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
@@ -72,7 +72,7 @@ namespace KeyFinder{
   }
 
   float FftAdapter::getOutputMagnitude(unsigned int i) const{
-    if (i >= frameSize){
+    if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
@@ -80,7 +80,7 @@ namespace KeyFinder{
     return sqrt( pow(getOutputReal(i), 2) + pow(getOutputImaginary(i), 2) );
   }
 
-  void FftAdapter::execute(){
+  void FftAdapter::execute() {
     fftw_execute(plan);
   }
 

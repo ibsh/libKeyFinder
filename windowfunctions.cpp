@@ -24,11 +24,11 @@
 namespace KeyFinder{
 
   float WindowFunction::window(temporal_window_t w, int n, int N) const {
-    if(w == WINDOW_HANN){
+    if (w == WINDOW_HANN) {
       return 0.5 * (1.0 - cos((2 * PI * n)/(N-1)));
-    }else if(w == WINDOW_HAMMING){
+    } else if (w == WINDOW_HAMMING) {
       return 0.54 - (0.46 * cos((2 * PI * n)/(N-1)));
-    }else{ // Blackman
+    } else { // Blackman
       return 0.42 - (0.5 * cos((2 * PI * n)/(N-1))) + (0.08 * cos((4 * PI * n)/(N-1)));
     }
   }
@@ -47,7 +47,7 @@ namespace KeyFinder{
     // write something mean-based later.
     for (unsigned int sample = 0; sample < inputSize; sample++) {
       float convolution = 0.0;
-      for (unsigned int k = 0; k < window.size(); k++){
+      for (unsigned int k = 0; k < window.size(); k++) {
         int frm = (signed)sample - (signed)padding + (signed)k;
         if (frm >= 0 && frm < (signed)inputSize) // don't run off either end
           convolution += input[frm] * window[k];

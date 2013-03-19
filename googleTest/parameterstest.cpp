@@ -21,7 +21,7 @@
 
 #include "parameterstest.h"
 
-TEST(ParametersTest, DefaultsAndAccessors){
+TEST (ParametersTest, DefaultsAndAccessors) {
   KeyFinder::Parameters p;
 
   // bools
@@ -81,7 +81,7 @@ TEST(ParametersTest, DefaultsAndAccessors){
   ASSERT_NEAR(1975.53, p.getLastFrequency(),  0.01);
 }
 
-TEST(ParametersTest, FreqsWithoutOffset){
+TEST (ParametersTest, FreqsWithoutOffset) {
   KeyFinder::Parameters p;
   p.setOffsetToC(false);
   ASSERT_NEAR(27.5,    p.getBandFrequency(0),  0.01);
@@ -90,7 +90,7 @@ TEST(ParametersTest, FreqsWithoutOffset){
   ASSERT_NEAR(1661.22, p.getLastFrequency(),   0.01);
 }
 
-TEST(ParametersTest, FreqBounds){
+TEST (ParametersTest, FreqBounds) {
   KeyFinder::Parameters p;
   ASSERT_THROW(p.getBandFrequency(-1), KeyFinder::Exception);
   ASSERT_NO_THROW(p.getBandFrequency(71));
@@ -100,7 +100,7 @@ TEST(ParametersTest, FreqBounds){
   ASSERT_THROW(p.getBandFrequency(12), KeyFinder::Exception);
 }
 
-TEST(ParametersTest, StartingFrequencyMutator){
+TEST (ParametersTest, StartingFrequencyMutator) {
   KeyFinder::Parameters p;
   // Check that float comparisons are safe
   ASSERT_NO_THROW(p.setStartingFrequencyA(27.5));
@@ -114,7 +114,7 @@ TEST(ParametersTest, StartingFrequencyMutator){
   ASSERT_THROW(p.setStartingFrequencyA(27.4), KeyFinder::Exception);
 }
 
-TEST(ParametersTest, CustomToneProfileMutator){
+TEST (ParametersTest, CustomToneProfileMutator) {
   KeyFinder::Parameters p;
   ASSERT_NO_THROW(p.setCustomToneProfile(std::vector<float>(24, 0.0)));
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(23, 0.0)), KeyFinder::Exception);
@@ -122,7 +122,7 @@ TEST(ParametersTest, CustomToneProfileMutator){
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(24, -0.1)), KeyFinder::Exception);
 }
 
-TEST(ParametersTest, OtherMutatorsWithValidation){
+TEST (ParametersTest, OtherMutatorsWithValidation) {
   KeyFinder::Parameters p;
   p.setFftFrameSize(1);
   ASSERT_THROW(p.setFftFrameSize(0), KeyFinder::Exception);
@@ -144,7 +144,7 @@ TEST(ParametersTest, OtherMutatorsWithValidation){
   ASSERT_THROW(p.setDetunedBandWeight(-0.1), KeyFinder::Exception);
 }
 
-TEST(ParametersTest, FrequencyBandsForTuning){
+TEST (ParametersTest, FrequencyBandsForTuning) {
   KeyFinder::Parameters p;
   p.setOctaves(1);
   p.setOffsetToC(false);

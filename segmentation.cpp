@@ -31,7 +31,7 @@ namespace KeyFinder{
     if (params.getSegmentation() == SEGMENTATION_ARBITRARY) {
       unsigned int segments = params.getArbitrarySegments();
       float interval = ch.getHops() / segments;
-      for (unsigned int i = 1; i < segments; i++){
+      for (unsigned int i = 1; i < segments; i++) {
         segmentBoundaries.push_back((unsigned int)(interval * i + 0.5));
       }
       return segmentBoundaries;
@@ -39,7 +39,7 @@ namespace KeyFinder{
       std::vector<float> rateOfChange = cosineRateOfChange(ch, params.getSegGaussianSize(), params.getSegGaussianSigma());
       unsigned int neighbours = params.getSegPeakPickingNeighbours();
       // for all hops except those in the neighbourhood of the extremities
-      for (unsigned int hop = neighbours; hop < rateOfChange.size() - neighbours; hop++){
+      for (unsigned int hop = neighbours; hop < rateOfChange.size() - neighbours; hop++) {
         bool peak = true;
         // check that ROC is bigger than the neighbours in each direction
         for (int i = -neighbours; i <= (signed)neighbours; i++) {

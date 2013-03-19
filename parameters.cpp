@@ -23,7 +23,7 @@
 
 namespace KeyFinder{
 
-  Parameters::Parameters(){
+  Parameters::Parameters() {
     // defaults
     stFreq = 27.5;
     offsetToC = true;
@@ -51,8 +51,8 @@ namespace KeyFinder{
     generateBandFreqs();
   }
 
-  Parameters& Parameters::operator=(const Parameters& that){
-    if(this != &that){
+  Parameters& Parameters::operator=(const Parameters& that) {
+    if (this != &that) {
       temporalWindow = that.temporalWindow;
       segmentation = that.segmentation;
       fftFrameSize = that.fftFrameSize;
@@ -77,17 +77,17 @@ namespace KeyFinder{
   }
 
   bool Parameters::equivalentSpectralKernels(const Parameters& that) const{
-    if(stFreq != that.stFreq)
+    if (stFreq != that.stFreq)
       return false;
-    if(bps != that.bps)
+    if (bps != that.bps)
       return false;
-    if(octaves != that.octaves)
+    if (octaves != that.octaves)
       return false;
-    if(offsetToC != that.offsetToC)
+    if (offsetToC != that.offsetToC)
       return false;
-    if(fftFrameSize != that.fftFrameSize)
+    if (fftFrameSize != that.fftFrameSize)
       return false;
-    if(directSkStretch != that.directSkStretch)
+    if (directSkStretch != that.directSkStretch)
       return false;
     return true;
   }
@@ -122,93 +122,93 @@ namespace KeyFinder{
   void Parameters::setSegPeakPickingNeighbours(unsigned int n)    { segPeakPickingNeighbours = n; }
 
   // mutators requiring validation or further work
-  void Parameters::setOffsetToC(bool off){
+  void Parameters::setOffsetToC(bool off) {
     offsetToC = off;
     generateBandFreqs();
   }
-  void Parameters::setFftFrameSize(unsigned int framesize){
-    if(framesize < 1) throw Exception("FFT frame size must be > 0");
+  void Parameters::setFftFrameSize(unsigned int framesize) {
+    if (framesize < 1) throw Exception("FFT frame size must be > 0");
     fftFrameSize = framesize;
   }
-  void Parameters::setHopsPerFrame(unsigned int hpf){
-    if(hpf < 1) throw Exception("Hops per frame must be > 0");
+  void Parameters::setHopsPerFrame(unsigned int hpf) {
+    if (hpf < 1) throw Exception("Hops per frame must be > 0");
     hopsPerFrame = hpf;
   }
-  void Parameters::setOctaves(unsigned int oct){
-    if(oct < 1) throw Exception("Octaves must be > 0");
+  void Parameters::setOctaves(unsigned int oct) {
+    if (oct < 1) throw Exception("Octaves must be > 0");
     octaves = oct;
     generateBandFreqs();
   }
-  void Parameters::setBandsPerSemitone(unsigned int bands){
-    if(bands < 1) throw Exception("Bands per semitone must be > 0");
+  void Parameters::setBandsPerSemitone(unsigned int bands) {
+    if (bands < 1) throw Exception("Bands per semitone must be > 0");
     bps = bands;
     generateBandFreqs();
   }
-  void Parameters::setArbitrarySegments(unsigned int s){
-    if(s < 1) throw Exception("Arbitrary segments must be > 0");
+  void Parameters::setArbitrarySegments(unsigned int s) {
+    if (s < 1) throw Exception("Arbitrary segments must be > 0");
     arbitrarySegments = s;
   }
-  void Parameters::setSegGaussianSize(unsigned int size){
-    if(size < 1) throw Exception("Gaussian size must be > 0");
+  void Parameters::setSegGaussianSize(unsigned int size) {
+    if (size < 1) throw Exception("Gaussian size must be > 0");
     segGaussianSize = size;
   }
-  void Parameters::setSegGaussianSigma(float sigma){
-    if(!boost::math::isfinite(sigma)) throw Exception("Gaussian sigma cannot be NaN");
-    if(sigma <= 0) throw Exception("Gaussian sigma must be > 0");
+  void Parameters::setSegGaussianSigma(float sigma) {
+    if (!boost::math::isfinite(sigma)) throw Exception("Gaussian sigma cannot be NaN");
+    if (sigma <= 0) throw Exception("Gaussian sigma must be > 0");
     segGaussianSigma = sigma;
   }
-  void Parameters::setStartingFrequencyA(float a){
-    if(
+  void Parameters::setStartingFrequencyA(float a) {
+    if (
       a != 27.5  && a != 55.0  && a != 110.0  && a != 220.0  &&
       a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
     ) throw Exception("Starting frequency must be an A (2^n * 27.5 Hz)");
     stFreq = a;
     generateBandFreqs();
   }
-  void Parameters::setDirectSkStretch(float stretch){
-    if(!boost::math::isfinite(stretch)) throw Exception("Spectral kernel stretch cannot be NaN");
-    if(stretch <= 0) throw Exception("Spectral kernel stretch must be > 0");
+  void Parameters::setDirectSkStretch(float stretch) {
+    if (!boost::math::isfinite(stretch)) throw Exception("Spectral kernel stretch cannot be NaN");
+    if (stretch <= 0) throw Exception("Spectral kernel stretch must be > 0");
     directSkStretch = stretch;
   }
-  void Parameters::setDetunedBandWeight(float weight){
-    if(!boost::math::isfinite(weight)) throw Exception("Detuned band weighting cannot be NaN");
-    if(weight < 0) throw Exception("Detuned band weighting must be >= 0");
+  void Parameters::setDetunedBandWeight(float weight) {
+    if (!boost::math::isfinite(weight)) throw Exception("Detuned band weighting cannot be NaN");
+    if (weight < 0) throw Exception("Detuned band weighting must be >= 0");
     detunedBandWeight = weight;
   }
-  void Parameters::setCustomToneProfile(const std::vector<float>& v){
-    if(v.size() != 24) throw Exception("Custom tone profile must have 24 elements");
-    for(unsigned int i = 0; i < 24; i++)
-      if(v[i] < 0)
+  void Parameters::setCustomToneProfile(const std::vector<float>& v) {
+    if (v.size() != 24) throw Exception("Custom tone profile must have 24 elements");
+    for (unsigned int i = 0; i < 24; i++)
+      if (v[i] < 0)
         throw Exception("Custom tone profile elements must be >= 0");
     // Exception handling for occasional problem on OSX Leopard.
     try{
       customToneProfile = v;
-    }catch(const std::exception& e){
+    }catch(const std::exception& e) {
       throw Exception(e.what());
-    }catch(...){
+    }catch(...) {
       throw Exception("Unknown exception setting custom tone profile");
     }
   }
 
-  void Parameters::generateBandFreqs(){
+  void Parameters::generateBandFreqs() {
     unsigned int bpo = bps * SEMITONES;
     bandFreqs.clear();
     float freqRatio = pow(2, 1.0 / bpo);
     float octFreq = stFreq;
     float bandFreq;
     unsigned int concertPitchBin = bps/2;
-    for (unsigned int i = 0; i < octaves; i++){
+    for (unsigned int i = 0; i < octaves; i++) {
       bandFreq = octFreq;
       // offset as required
-      if(offsetToC){
+      if (offsetToC) {
         bandFreq *= pow(freqRatio, 3);
       }
       // tune down for bins before first concert pitch bin (if bps > 1)
-      for (unsigned int j = 0; j < concertPitchBin; j++){
+      for (unsigned int j = 0; j < concertPitchBin; j++) {
         bandFreqs.push_back(bandFreq / pow(freqRatio, concertPitchBin - j));
       }
       // and tune all other bins
-      for (unsigned int j = concertPitchBin; j < bpo; j++){
+      for (unsigned int j = concertPitchBin; j < bpo; j++) {
         bandFreqs.push_back(bandFreq);
         bandFreq *= freqRatio;
       }
@@ -218,7 +218,7 @@ namespace KeyFinder{
 
   float Parameters::getBandFrequency(unsigned int b)const{
     unsigned int max = octaves * SEMITONES * bps;
-    if(b >= max){
+    if (b >= max) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds frequency index (" << b << "/" << max << ")";
       throw Exception(ss.str().c_str());

@@ -30,13 +30,13 @@ KeyFinder::tone_profile_t tpG = KeyFinder::TONE_PROFILE_GOMEZ;
 KeyFinder::tone_profile_t tpS = KeyFinder::TONE_PROFILE_SHAATH;
 
 
-TEST(KeyClassifierTest, DetectsSilence){
+TEST (KeyClassifierTest, DetectsSilence) {
   KeyFinder::KeyClassifier kc(simCos, tpS, false);
   std::vector<float> chroma(12);
   ASSERT_EQ(KeyFinder::SILENCE, kc.classify(chroma));
 }
 
-TEST(KeyClassifierTest, DetectsAMinorTriad){
+TEST (KeyClassifierTest, DetectsAMinorTriad) {
   std::vector<float> chromaNoOffset(12);
   chromaNoOffset[0] = 1.0; // A
   chromaNoOffset[3] = 1.0; // C
@@ -78,7 +78,7 @@ TEST(KeyClassifierTest, DetectsAMinorTriad){
   ASSERT_EQ(KeyFinder::A_MINOR, kc12.classify(chromaOffset));
 }
 
-TEST(KeyClassifierTest, DetectsOtherTriads){
+TEST (KeyClassifierTest, DetectsOtherTriads) {
   // all with offset
   std::vector<float> cMajor(12);
   cMajor[0] = 1.0;

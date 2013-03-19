@@ -23,7 +23,7 @@
 
 namespace KeyFinder{
 
-  KeyClassifier::KeyClassifier(similarity_measure_t sm, tone_profile_t tp, bool offsetToC, const std::vector<float>& customProfile){
+  KeyClassifier::KeyClassifier(similarity_measure_t sm, tone_profile_t tp, bool offsetToC, const std::vector<float>& customProfile) {
     // Profiles
     major   = new ToneProfile(tp,                   SCALE_MAJOR, offsetToC, customProfile);
     minor   = new ToneProfile(tp,                   SCALE_MINOR, offsetToC, customProfile);
@@ -31,13 +31,13 @@ namespace KeyFinder{
     similarityMeasure = sm;
   }
 
-  KeyClassifier::~KeyClassifier(){
+  KeyClassifier::~KeyClassifier() {
     delete major;
     delete minor;
     delete silence;
   }
 
-  key_t KeyClassifier::classify(const std::vector<float>& chroma){
+  key_t KeyClassifier::classify(const std::vector<float>& chroma) {
     std::vector<float> scores(24);
     float bestScore = 0.0;
     float chromaMean = 0.0;

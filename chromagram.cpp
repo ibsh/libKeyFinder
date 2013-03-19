@@ -23,19 +23,19 @@
 
 namespace KeyFinder{
 
-  Chromagram::Chromagram(unsigned int hops, unsigned int oct, unsigned int bps){
+  Chromagram::Chromagram(unsigned int hops, unsigned int oct, unsigned int bps) {
     bandsPerSemitone = bps;
     octaves = oct;
     chromaData = std::vector< std::vector<float> > (hops, std::vector<float> (bps * oct * SEMITONES, 0.0));
   }
 
   float Chromagram::getMagnitude(unsigned int h, unsigned int b) const{
-    if(h >= getHops()){
+    if (h >= getHops()) {
       std::ostringstream ss;
       ss << "Cannot get magnitude of out-of-bounds hop (" << h << "/" << getHops() << ")";
       throw Exception(ss.str().c_str());
     }
-    if(b >= getBands()){
+    if (b >= getBands()) {
       std::ostringstream ss;
       ss << "Cannot get magnitude of out-of-bounds band (" << b << "/" << getBands() << ")";
       throw Exception(ss.str().c_str());
@@ -43,24 +43,24 @@ namespace KeyFinder{
     return chromaData[h][b];
   }
 
-  void Chromagram::setMagnitude(unsigned int h, unsigned int b, float val){
-    if(h >= getHops()){
+  void Chromagram::setMagnitude(unsigned int h, unsigned int b, float val) {
+    if (h >= getHops()) {
       std::ostringstream ss;
       ss << "Cannot set magnitude of out-of-bounds hop (" << h << "/" << getHops() << ")";
       throw Exception(ss.str().c_str());
     }
-    if(b >= getBands()){
+    if (b >= getBands()) {
       std::ostringstream ss;
       ss << "Cannot set magnitude of out-of-bounds band (" << b << "/" << getBands() << ")";
       throw Exception(ss.str().c_str());
     }
-    if(!boost::math::isfinite(val)){
+    if (!boost::math::isfinite(val)) {
       throw Exception("Cannot set magnitude to NaN");
     }
     chromaData[h][b] = val;
   }
 
-  void Chromagram::tuningHarte(){
+  void Chromagram::tuningHarte() {
     /*
      * This is quite involved, and it's only an approximation of Harte's method
      * based on his thesis rather than a port of his code, but it works well for
@@ -114,7 +114,7 @@ namespace KeyFinder{
     float tuningMax = 0;
     unsigned int tuningPeak = -1;
     for (unsigned int i = 0; i < bandsPerSemitone * 10; i++) {
-      if(peakTuningDistribution[i] > tuningMax) {
+      if (peakTuningDistribution[i] > tuningMax) {
         tuningMax = peakTuningDistribution[i];
         tuningPeak = i;
       }
@@ -147,7 +147,7 @@ namespace KeyFinder{
     bandsPerSemitone = 1;
   }
 
-  void Chromagram::tuningBandAdaptive(float detunedBandWeight){
+  void Chromagram::tuningBandAdaptive(float detunedBandWeight) {
     /*
      * This is designed to tune for each semitone band rather than for the whole
      * recording; aimed at dance music with individually detuned elements, rather
@@ -163,7 +163,7 @@ namespace KeyFinder{
       // determine highest energy tuning band
       unsigned int whichband = 0;
       float max = oneSemitoneChroma[0];
-      for (unsigned int i=1; i<bandsPerSemitone; i++){
+      for (unsigned int i=1; i<bandsPerSemitone; i++) {
         if (oneSemitoneChroma[i] > max) {
           max = oneSemitoneChroma[i];
           whichband = i;
@@ -197,8 +197,8 @@ namespace KeyFinder{
     octaves = 1;
   }
 
-  void Chromagram::append(const Chromagram& that){
-    if(that.octaves != octaves || that.bandsPerSemitone != bandsPerSemitone)
+  void Chromagram::append(const Chromagram& that) {
+    if (that.octaves != octaves || that.bandsPerSemitone != bandsPerSemitone)
       throw Exception("Cannot append a chromagram with a different number of bands");
     unsigned int oldHops = getHops();
     chromaData.resize(getHops() + that.getHops(), std::vector<float> (getBands(), 0.0));

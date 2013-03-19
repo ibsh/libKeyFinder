@@ -21,30 +21,30 @@
 
 #include "chromagramtest.h"
 
-TEST(ChromagramTest, ConstructorDefaultsWork){
+TEST (ChromagramTest, ConstructorDefaultsWork) {
   KeyFinder::Chromagram c;
   ASSERT_EQ(0, c.getHops());
   ASSERT_EQ(0, c.getBands());
 }
 
-TEST(ChromagramTest, ConstructorArgumentsWork){
+TEST (ChromagramTest, ConstructorArgumentsWork) {
   KeyFinder::Chromagram c(20, 1, 1);
   ASSERT_EQ(20, c.getHops());
   ASSERT_EQ(12, c.getBands());
-  for(int h=0; h<20; h++){
-    for(int b=0; b<12; b++){
+  for (int h=0; h<20; h++) {
+    for (int b=0; b<12; b++) {
       ASSERT_FLOAT_EQ(0.0, c.getMagnitude(h, b));
     }
   }
 }
 
-TEST(ChromagramTest, Mutator){
+TEST (ChromagramTest, Mutator) {
   KeyFinder::Chromagram c(1, 1, 1);
   c.setMagnitude(0, 0, 1.0);
   ASSERT_FLOAT_EQ(1.0, c.getMagnitude(0, 0));
 }
 
-TEST(ChromagramTest, CopyConstructor){
+TEST (ChromagramTest, CopyConstructor) {
   KeyFinder::Chromagram c(1, 1, 1);
   c.setMagnitude(0, 0, 1.0);
   ASSERT_EQ(1, c.getHops());
@@ -59,7 +59,7 @@ TEST(ChromagramTest, CopyConstructor){
   ASSERT_FLOAT_EQ(0.0, c2.getMagnitude(0, 1));
 }
 
-TEST(ChromagramTest, Assignment){
+TEST (ChromagramTest, Assignment) {
   KeyFinder::Chromagram c(1, 1, 1);
   c.setMagnitude(0, 0, 1.0);
   ASSERT_EQ(1, c.getHops());
@@ -74,7 +74,7 @@ TEST(ChromagramTest, Assignment){
   ASSERT_FLOAT_EQ(0.0, c2.getMagnitude(0, 1));
 }
 
-TEST(ChromagramTest, Bounds){
+TEST (ChromagramTest, Bounds) {
   KeyFinder::Chromagram c(5, 1, 1);
   // hops min max
   ASSERT_THROW(c.getMagnitude(-1,  0), KeyFinder::Exception);
@@ -91,7 +91,7 @@ TEST(ChromagramTest, Bounds){
   ASSERT_THROW(c.setMagnitude( 0,  0, NAN), KeyFinder::Exception);
 }
 
-TEST(ChromagramTest, Append){
+TEST (ChromagramTest, Append) {
   KeyFinder::Chromagram c1(5, 1, 1);
   KeyFinder::Chromagram c2(2, 1, 2);
   KeyFinder::Chromagram c3(2, 1, 1);
@@ -109,7 +109,7 @@ TEST(ChromagramTest, Append){
   ASSERT_FLOAT_EQ(200.0, c1.getMagnitude(6, 0));
 }
 
-TEST(ChromagramTest, ReduceToOneOctave){
+TEST (ChromagramTest, ReduceToOneOctave) {
   KeyFinder::Chromagram c(1, 3, 1);
   c.setMagnitude(0,  0, 10.0);
   c.setMagnitude(0, 12, 15.0);
@@ -118,14 +118,14 @@ TEST(ChromagramTest, ReduceToOneOctave){
   ASSERT_FLOAT_EQ(10.0, c.getMagnitude(0, 0));
 }
 
-TEST(ChromagramTest, ReduceToOneOctaveDoesntAffectOneOctave){
+TEST (ChromagramTest, ReduceToOneOctaveDoesntAffectOneOctave) {
   KeyFinder::Chromagram c(1, 1, 1);
   ASSERT_EQ(12, c.getBands());
   c.reduceToOneOctave();
   ASSERT_EQ(12, c.getBands());
 }
 
-TEST(ChromagramTest, NilTuning){
+TEST (ChromagramTest, NilTuning) {
   KeyFinder::Chromagram c(1, 1, 1);
   c.setMagnitude(0,  0, 1.0);
 
@@ -138,7 +138,7 @@ TEST(ChromagramTest, NilTuning){
   ASSERT_FLOAT_EQ(1.0, c.getMagnitude(0, 0));
 }
 
-TEST(ChromagramTest, AdaptiveTuning){
+TEST (ChromagramTest, AdaptiveTuning) {
   KeyFinder::Chromagram c(1, 1, 3);
   c.setMagnitude(0,  0,  1.0);
   c.setMagnitude(0,  1,  0.0);
@@ -164,7 +164,7 @@ TEST(ChromagramTest, AdaptiveTuning){
   ASSERT_FLOAT_EQ(10.2, c.getMagnitude(0,3));
 }
 
-TEST(ChromagramTest, HarteTuning){
+TEST (ChromagramTest, HarteTuning) {
   KeyFinder::Chromagram c(1, 1, 3);
   c.setMagnitude(0,  0,  1.0);
   c.setMagnitude(0,  1,  1.0);

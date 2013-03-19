@@ -21,12 +21,12 @@
 
 #include "fftadaptertest.h"
 
-TEST(FftAdapterTest, WorksForCleanOscillations){
+TEST (FftAdapterTest, WorksForCleanOscillations) {
 
   unsigned int frameSize = 2048;
   KeyFinder::FftAdapter f(frameSize);
 
-  for(unsigned int i = 0; i < frameSize; i++){
+  for (unsigned int i = 0; i < frameSize; i++) {
     float sample = 0.0;
     sample += sine_wave(i,  2, frameSize, 10000);
     sample += sine_wave(i,  4, frameSize,  8000);
@@ -39,19 +39,19 @@ TEST(FftAdapterTest, WorksForCleanOscillations){
 
   f.execute();
 
-  for(unsigned int i = 0; i < frameSize / 2; i++){
+  for (unsigned int i = 0; i < frameSize / 2; i++) {
     float out = f.getOutputMagnitude(i);
-    if (i == 2){
+    if (i == 2) {
       ASSERT_EQ(10000 / 2 * frameSize, out);
-    } else if (i == 4){
+    } else if (i == 4) {
       ASSERT_EQ(8000 / 2 * frameSize, out);
-    } else if (i == 5){
+    } else if (i == 5) {
       ASSERT_EQ(6000 / 2 * frameSize, out);
-    } else if (i == 7){
+    } else if (i == 7) {
       ASSERT_EQ(4000 / 2 * frameSize, out);
-    } else if (i == 13){
+    } else if (i == 13) {
       ASSERT_EQ(2000 / 2 * frameSize, out);
-    } else if (i == 20){
+    } else if (i == 20) {
       ASSERT_EQ(500 / 2 * frameSize, out);
     } else {
       ASSERT_GT(1, out);

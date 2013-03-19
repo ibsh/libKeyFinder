@@ -23,14 +23,14 @@
 
 namespace KeyFinder{
 
-  AudioData::AudioData(): samples(0), channels(0), frameRate(0), sampleCount(0){ }
+  AudioData::AudioData(): samples(0), channels(0), frameRate(0), sampleCount(0) { }
 
   unsigned int AudioData::getChannels() const{
     return channels;
   }
 
-  void AudioData::setChannels(unsigned int newChannels){
-    if(newChannels < 1) throw Exception("Channels must be > 0");
+  void AudioData::setChannels(unsigned int newChannels) {
+    if (newChannels < 1) throw Exception("Channels must be > 0");
     channels = newChannels;
   }
 
@@ -38,14 +38,14 @@ namespace KeyFinder{
     return frameRate;
   }
 
-  void AudioData::setFrameRate(unsigned int newFrameRate){
-    if(newFrameRate < 1) throw Exception("Frame rate must be > 0");
+  void AudioData::setFrameRate(unsigned int newFrameRate) {
+    if (newFrameRate < 1) throw Exception("Frame rate must be > 0");
     frameRate = newFrameRate;
   }
 
   // get sample by absolute index
   float AudioData::getSample(unsigned int index) const{
-    if(index >= sampleCount){
+    if (index >= sampleCount) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << index << "/" << sampleCount << ")";
       throw Exception(ss.str().c_str());
@@ -55,12 +55,12 @@ namespace KeyFinder{
 
   // get sample by frame and channel
   float AudioData::getSample(unsigned int frame, unsigned int channel) const{
-    if(frame >= getFrameCount()){
+    if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
       throw Exception(ss.str().c_str());
     }
-    if(channel >= channels){
+    if (channel >= channels) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds channel (" << channel << "/" << channels << ")";
       throw Exception(ss.str().c_str());
@@ -69,26 +69,26 @@ namespace KeyFinder{
   }
 
   // set sample by absolute index
-  void AudioData::setSample(unsigned int index, float value){
-    if(index >= sampleCount){
+  void AudioData::setSample(unsigned int index, float value) {
+    if (index >= sampleCount) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << index << "/" << sampleCount << ")";
       throw Exception(ss.str().c_str());
     }
-    if(!boost::math::isfinite(value)){
+    if (!boost::math::isfinite(value)) {
       throw Exception("Cannot set sample to NaN");
     }
     samples[index] = value;
   }
 
   // set sample by frame and channel
-  void AudioData::setSample(unsigned int frame, unsigned int channel, float value){
-    if(frame >= getFrameCount()){
+  void AudioData::setSample(unsigned int frame, unsigned int channel, float value) {
+    if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
       throw Exception(ss.str().c_str());
     }
-    if(channel >= channels){
+    if (channel >= channels) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds channel (" << channel << "/" << channels << ")";
       throw Exception(ss.str().c_str());
@@ -96,25 +96,25 @@ namespace KeyFinder{
     setSample(frame * channels + channel, value);
   }
 
-  void AudioData::addToSampleCount(unsigned int newSamples){
+  void AudioData::addToSampleCount(unsigned int newSamples) {
     try{
       samples.resize(sampleCount + newSamples, 0.0);
       sampleCount += newSamples;
       // TODO: turns out this doesn't work; bad_alloc never gets thrown on Mac,
       // presumably it tries to do everything in swap
-    }catch(const std::exception& e){
+    }catch(const std::exception& e) {
       std::ostringstream ss;
       ss << "Exception adding " << newSamples << " samples to stream of " << sampleCount << ": " << e.what();
       throw Exception(ss.str().c_str());
-    }catch(...){
+    }catch(...) {
       std::ostringstream ss;
       ss << "Unknown exception adding " << newSamples << " samples to stream of " << sampleCount;
       throw Exception(ss.str().c_str());
     }
   }
 
-  void AudioData::addToFrameCount(unsigned int newFrames){
-    if(channels < 1) throw Exception("Channels must be > 0");
+  void AudioData::addToFrameCount(unsigned int newFrames) {
+    if (channels < 1) throw Exception("Channels must be > 0");
     addToSampleCount(newFrames * channels);
   }
 
@@ -123,15 +123,15 @@ namespace KeyFinder{
   }
 
   unsigned int AudioData::getFrameCount() const{
-    if(channels < 1) throw Exception("Channels must be > 0");
+    if (channels < 1) throw Exception("Channels must be > 0");
     return sampleCount / channels;
   }
 
-  void AudioData::reduceToMono(){
-    if(channels == 1) return;
+  void AudioData::reduceToMono() {
+    if (channels == 1) return;
     std::vector<float> newStream(sampleCount / channels);
-    for (unsigned int i = 0; i < sampleCount; i += channels){
-      for (unsigned int j = 0; j < channels; j++){
+    for (unsigned int i = 0; i < sampleCount; i += channels) {
+      for (unsigned int j = 0; j < channels; j++) {
         newStream[i/channels] += samples[i + j] / channels;
       }
     }

@@ -2,7 +2,7 @@
 
 namespace KeyFinder{
 
-  Chromagram KeyFinder::chromagramOfAudio(const AudioData& originalAudio, const Parameters& params){
+  Chromagram KeyFinder::chromagramOfAudio(const AudioData& originalAudio, const Parameters& params) {
 
     AudioData* workingAudio = new AudioData(originalAudio);
 
@@ -39,7 +39,7 @@ namespace KeyFinder{
     return ch;
   }
 
-  KeyDetectionResult KeyFinder::keyOfChromagram(const Chromagram& chromagram, const Parameters& params){
+  KeyDetectionResult KeyFinder::keyOfChromagram(const Chromagram& chromagram, const Parameters& params) {
 
     KeyDetectionResult result;
 
@@ -96,7 +96,7 @@ namespace KeyFinder{
   }
 
   // this method to be used for whole audio streams
-  KeyDetectionResult KeyFinder::keyOfAudio(const AudioData& originalAudio, const Parameters& params){
+  KeyDetectionResult KeyFinder::keyOfAudio(const AudioData& originalAudio, const Parameters& params) {
     Chromagram ch = chromagramOfAudio(originalAudio, params);
     return keyOfChromagram(ch, params);
   }

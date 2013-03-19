@@ -21,17 +21,17 @@
 
 #include "windowfunctiontest.h"
 
-TEST(WindowFunctionTest, GaussianFn){
+TEST (WindowFunctionTest, GaussianFn) {
   KeyFinder::WindowFunction win;
   unsigned int width = 23;
   std::vector<float> g(width, 0.0);
-  for(unsigned int i = 0; i < width; i++)
+  for (unsigned int i = 0; i < width; i++)
     g[i] = win.gaussianWindow(i, width, sqrt(12.0));
   ASSERT_NEAR(0.0, g[0], 0.01);
-  for(unsigned int i = 1; i < width / 2; i++)
+  for (unsigned int i = 1; i < width / 2; i++)
     ASSERT_GT(g[i], g[i-1]);
   ASSERT_FLOAT_EQ(1.0, g[width / 2]);
-  for(unsigned int i = width / 2 + 1; i < width; i++)
+  for (unsigned int i = width / 2 + 1; i < width; i++)
     ASSERT_LT(g[i], g[i-1]);
   ASSERT_NEAR(0.0, g[width - 1], 0.01);
 }

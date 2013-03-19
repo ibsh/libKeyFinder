@@ -21,7 +21,7 @@
 
 #include "lowpassfilterfactorytest.h"
 
-TEST(LowPassFilterFactoryTest, RepeatedFilterRequests){
+TEST (LowPassFilterFactoryTest, RepeatedFilterRequests) {
   KeyFinder::LowPassFilterFactory lpff;
 
   KeyFinder::LowPassFilter* lpf1 = lpff.getLowPassFilter(1, 1, 20.0, 1);

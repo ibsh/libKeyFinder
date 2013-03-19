@@ -21,15 +21,15 @@
 
 #include "downsamplertest.h"
 
-TEST(DownsamplerTest, ResamplesOneChannel){
+TEST (DownsamplerTest, ResamplesOneChannel) {
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(1);
   a->setFrameRate(100);
   a->addToSampleCount(10);
-  for(unsigned int i = 0; i < 5; i++){
+  for (unsigned int i = 0; i < 5; i++) {
     a->setSample(i, 100.0);
   }
-  for(unsigned int i = 5; i < 10; i++){
+  for (unsigned int i = 5; i < 10; i++) {
     a->setSample(i, 500.0);
   }
 
@@ -42,18 +42,18 @@ TEST(DownsamplerTest, ResamplesOneChannel){
   ASSERT_EQ(500.0, a->getSample(1));
 }
 
-TEST(DownsamplerTest, ResamplesNonintegralRelationship){
+TEST (DownsamplerTest, ResamplesNonintegralRelationship) {
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(1);
   a->setFrameRate(100);
   a->addToSampleCount(12);
-  for(unsigned int i = 0; i < 5; i++){
+  for (unsigned int i = 0; i < 5; i++) {
     a->setSample(i, 100.0);
   }
-  for(unsigned int i = 5; i < 10; i++){
+  for (unsigned int i = 5; i < 10; i++) {
     a->setSample(i, 500.0);
   }
-  for(unsigned int i = 10; i < 12; i++){
+  for (unsigned int i = 10; i < 12; i++) {
     a->setSample(i, 1000.0);
   }
 
@@ -66,12 +66,12 @@ TEST(DownsamplerTest, ResamplesNonintegralRelationship){
   ASSERT_EQ(400.0, a->getSample(2));
 }
 
-TEST(DownsamplerTest, ResamplesTwoChannels){
+TEST (DownsamplerTest, ResamplesTwoChannels) {
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(2);
   a->setFrameRate(100);
   a->addToFrameCount(6);
-  for(unsigned int i = 0; i < a->getFrameCount(); i++){
+  for (unsigned int i = 0; i < a->getFrameCount(); i++) {
     a->setSample(i, 0, 100.0);
     a->setSample(i, 1, 200.0);
   }
@@ -87,12 +87,12 @@ TEST(DownsamplerTest, ResamplesTwoChannels){
 }
 
 
-TEST(DownsamplerTest, ResamplesMoreChannels){
+TEST (DownsamplerTest, ResamplesMoreChannels) {
   KeyFinder::AudioData* a = new KeyFinder::AudioData();
   a->setChannels(5);
   a->setFrameRate(100);
   a->addToFrameCount(6);
-  for(unsigned int i = 0; i < a->getFrameCount(); i++){
+  for (unsigned int i = 0; i < a->getFrameCount(); i++) {
     a->setSample(i, 0, 100.0);
     a->setSample(i, 1, 200.0);
     a->setSample(i, 2, 300.0);

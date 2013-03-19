@@ -30,7 +30,7 @@
 
 namespace KeyFinder{
 
-  LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize){
+  LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
     // TODO: validate order is even
     order = ord;
     delay = order / 2;
@@ -40,9 +40,9 @@ namespace KeyFinder{
 
     // Build frequency domain response
     float tau = 0.5 / cutoffPoint;
-    for (unsigned int i = 0; i < fftFrameSize/2; i++){
+    for (unsigned int i = 0; i < fftFrameSize/2; i++) {
       float input = 0.0;
-      if (i / (float) fftFrameSize <= cutoffPoint){
+      if (i / (float) fftFrameSize <= cutoffPoint) {
         input = tau;
       }
       fft->setInput(i, input);
@@ -58,7 +58,7 @@ namespace KeyFinder{
     gain = 0.0;
     WindowFunction win;
 
-    for (unsigned int i = 0; i < impulseLength; i++){
+    for (unsigned int i = 0; i < impulseLength; i++) {
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
       float coeff = fft->getOutputReal(index) / (float) fftFrameSize;
@@ -76,7 +76,7 @@ namespace KeyFinder{
     // this must be done in here for thread safety
     Binode<float>* p = new Binode<float>(); // first node
     Binode<float>* q = p;
-    for (unsigned int i=0; i<order; i++){
+    for (unsigned int i=0; i<order; i++) {
       q->r = new Binode<float>(); // subsequent nodes, for a total of impulseLength
       q->r->l = q;
       q = q->r;
@@ -95,29 +95,29 @@ namespace KeyFinder{
     audioOut ->setChannels(channels);
     try{
       audioOut ->addToFrameCount(oldFrameCount);
-    }catch(const Exception& e){
+    }catch(const Exception& e) {
       delete audioOut ;
       throw e;
     }
 
     // for each channel (should be mono by this point but just in case)
-    for (unsigned int ch = 0; ch < channels; ch++){
+    for (unsigned int ch = 0; ch < channels; ch++) {
       Binode<float>* q = p;
       // clear delay buffer
-      for (unsigned int k = 0; k < impulseLength; k++){
+      for (unsigned int k = 0; k < impulseLength; k++) {
         q->data = 0.0;
         q = q->r;
       }
       // for each frame (running off the end of the sample stream by delay)
-      for (unsigned int frm = 0; frm < oldFrameCount + delay; frm++){
+      for (unsigned int frm = 0; frm < oldFrameCount + delay; frm++) {
 
         // shuffle old samples along delay buffer
         p = p->r;
 
         // load new sample into delay buffer
-        if (frm < oldFrameCount){
+        if (frm < oldFrameCount) {
           p->l->data = audioIn->getSample(frm, ch) / gain;
-        }else{
+        } else {
           // zero pad once we're into the delay at the end of the file
           p->l->data = 0.0;
         }
@@ -125,11 +125,11 @@ namespace KeyFinder{
         // start doing the maths once the delay has passed
         // and, if shortcut != 1, only do the maths for the useful samples
         // (this is mathematically dodgy, but it's fast and it usually works)
-        if((frm >= delay) && (frm - delay) % shortcutFactor == 0){
+        if ((frm >= delay) && (frm - delay) % shortcutFactor == 0) {
 
           float sum = 0.0;
           q = p;
-          for (unsigned int k = 0; k < impulseLength; k++){
+          for (unsigned int k = 0; k < impulseLength; k++) {
             sum += coefficients[k] * q->data;
             q = q->r;
           }
@@ -141,7 +141,7 @@ namespace KeyFinder{
     }
 
     // delete delay buffer
-    for (unsigned int i = 0; i < impulseLength; i++){
+    for (unsigned int i = 0; i < impulseLength; i++) {
       q = p;
       p = p->r;
       delete q;

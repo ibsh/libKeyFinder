@@ -28,7 +28,7 @@
 #undef  PI
 #define PI 3.1415926535897932384626433832795
 
-float sine_wave(
+float sine_wave (
   unsigned int index,
   float frequency,
   unsigned int sampleRate,

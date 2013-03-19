@@ -23,7 +23,7 @@
 
 namespace KeyFinder{
 
-  SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory){
+  SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory) {
     octaves = params.getOctaves();
     bandsPerSemitone = params.getBandsPerSemitone();
     hopSize = params.getHopSize();
@@ -37,7 +37,7 @@ namespace KeyFinder{
     }
   }
 
-  SpectrumAnalyser::~SpectrumAnalyser(){
+  SpectrumAnalyser::~SpectrumAnalyser() {
     // don't delete the chroma transform; it's stored in the factory
     delete fft;
   }

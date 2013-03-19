@@ -27,7 +27,7 @@ namespace KeyFinder{
   template <class T>
   class Binode{
   public:
-    Binode(T x = 0): l(0), r(0), data(x){}
+    Binode(T x = 0): l(0), r(0), data(x) {}
     Binode* l, *r;
     T data;
   };

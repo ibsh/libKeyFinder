@@ -21,7 +21,7 @@
 
 #include "binodetest.h"
 
-TEST(BinodeTest, ConstructorDefaultsWork){
+TEST (BinodeTest, ConstructorDefaultsWork) {
   KeyFinder::Binode<float> bf;
   ASSERT_EQ(0.0, bf.data);
   ASSERT_EQ(NULL, bf.l);
@@ -33,7 +33,7 @@ TEST(BinodeTest, ConstructorDefaultsWork){
   ASSERT_EQ(NULL, bi.r);
 }
 
-TEST(BinodeTest, ConstructorArgumentsWork){
+TEST (BinodeTest, ConstructorArgumentsWork) {
   KeyFinder::Binode<float> bf(365.25);
   ASSERT_EQ(365.25, bf.data);
   ASSERT_EQ(NULL, bf.l);

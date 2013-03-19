@@ -41,20 +41,20 @@ namespace KeyFinder{
     audioOut->setChannels(channels);
     try{
       audioOut->addToFrameCount(newFrameCount);
-    }catch(const Exception& e){
+    }catch(const Exception& e) {
       delete audioOut;
       throw e;
     }
 
     // for each frame of the output
-    for (unsigned int outFrm = 0; outFrm < newFrameCount; outFrm++){
+    for (unsigned int outFrm = 0; outFrm < newFrameCount; outFrm++) {
       // for each channel
-      for (unsigned int ch = 0; ch < channels; ch++){
+      for (unsigned int ch = 0; ch < channels; ch++) {
         // take the mean of a set of input frames
         float mean = 0.0;
-        for (unsigned int element = 0; element < factor; element++){
+        for (unsigned int element = 0; element < factor; element++) {
           unsigned int inFrm = (outFrm * factor) + element;
-          if(inFrm < audioIn->getFrameCount()){
+          if (inFrm < audioIn->getFrameCount()) {
             mean += audioIn->getSample(inFrm, ch) / factor;
           }
         }

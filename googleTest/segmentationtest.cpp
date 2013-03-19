@@ -21,7 +21,7 @@
 
 #include "segmentationtest.h"
 
-TEST(SegmentationTest, NoSegmentationWorks){
+TEST (SegmentationTest, NoSegmentationWorks) {
   KeyFinder::Parameters p;
   p.setSegmentation(KeyFinder::SEGMENTATION_NONE);
 
@@ -32,7 +32,7 @@ TEST(SegmentationTest, NoSegmentationWorks){
   ASSERT_EQ(0, sb[0]);
 }
 
-TEST(SegmentationTest, ArbitrarySegmentationWorks){
+TEST (SegmentationTest, ArbitrarySegmentationWorks) {
   KeyFinder::Parameters p;
   p.setSegmentation(KeyFinder::SEGMENTATION_ARBITRARY);
   p.setArbitrarySegments(3);
@@ -46,7 +46,7 @@ TEST(SegmentationTest, ArbitrarySegmentationWorks){
   ASSERT_EQ(14, sb[2]);
 }
 
-TEST(SegmentationTest, ChangeDetectionSegmentationWorks){
+TEST (SegmentationTest, ChangeDetectionSegmentationWorks) {
   KeyFinder::Parameters p;
   p.setSegmentation(KeyFinder::SEGMENTATION_COSINE);
   p.setSegGaussianSize(11);

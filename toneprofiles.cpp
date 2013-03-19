@@ -23,7 +23,7 @@
 
 namespace KeyFinder{
 
-  ToneProfile::ToneProfile(tone_profile_t whichProfile, scale_t scale, bool offsetToC, const std::vector<float>& customProfile){
+  ToneProfile::ToneProfile(tone_profile_t whichProfile, scale_t scale, bool offsetToC, const std::vector<float>& customProfile) {
 
     float p[SEMITONES];
     if (whichProfile == TONE_PROFILE_SILENCE) {
@@ -88,7 +88,7 @@ namespace KeyFinder{
         p[10]=4.3; p[11]=3.2;
       }
     } else if (whichProfile == TONE_PROFILE_KRUMHANSL) {
-      if(scale == SCALE_MAJOR){
+      if (scale == SCALE_MAJOR) {
         p[0]=6.35; p[1]=2.23;
         p[2]=3.48; p[3]=2.33;
         p[4]=4.38;
@@ -138,11 +138,11 @@ namespace KeyFinder{
       profileMean += (p[i] / SEMITONES);
   }
 
-  ToneProfile::~ToneProfile(){
+  ToneProfile::~ToneProfile() {
     free();
   }
 
-  void ToneProfile::free(){
+  void ToneProfile::free() {
     Binode<float>* p = tonic;
     do {
       Binode<float>* zap = p;
