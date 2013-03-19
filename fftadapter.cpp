@@ -36,11 +36,11 @@ namespace KeyFinder{
     fftw_free(output);
   }
 
-  unsigned int FftAdapter::getFrameSize() const{
+  unsigned int FftAdapter::getFrameSize() const {
     return frameSize;
   }
 
-  void FftAdapter::setInput(unsigned int i, float real) const{
+  void FftAdapter::setInput(unsigned int i, float real) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -53,7 +53,7 @@ namespace KeyFinder{
     input[i][1] = 0.0;
   }
 
-  float FftAdapter::getOutputReal(unsigned int i) const{
+  float FftAdapter::getOutputReal(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -62,7 +62,7 @@ namespace KeyFinder{
     return output[i][0];
   }
 
-  float FftAdapter::getOutputImaginary(unsigned int i) const{
+  float FftAdapter::getOutputImaginary(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -71,7 +71,7 @@ namespace KeyFinder{
     return output[i][1];
   }
 
-  float FftAdapter::getOutputMagnitude(unsigned int i) const{
+  float FftAdapter::getOutputMagnitude(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";

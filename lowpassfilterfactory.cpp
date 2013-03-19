@@ -37,23 +37,23 @@ namespace KeyFinder{
     delete lpf;
   }
 
-  LowPassFilter* LowPassFilterFactory::LowPassFilterWrapper::getLowPassFilter() const{
+  LowPassFilter* LowPassFilterFactory::LowPassFilterWrapper::getLowPassFilter() const {
     return lpf;
   }
 
-  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getOrder() const{
+  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getOrder() const {
     return order;
   }
 
-  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getFrameRate() const{
+  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getFrameRate() const {
     return frameRate;
   }
 
-  float LowPassFilterFactory::LowPassFilterWrapper::getCornerFrequency() const{
+  float LowPassFilterFactory::LowPassFilterWrapper::getCornerFrequency() const {
     return cornerFrequency;
   }
 
-  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getFftFrameSize() const{
+  unsigned int LowPassFilterFactory::LowPassFilterWrapper::getFftFrameSize() const {
     return fftFrameSize;
   }
 

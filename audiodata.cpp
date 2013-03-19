@@ -25,7 +25,7 @@ namespace KeyFinder{
 
   AudioData::AudioData(): samples(0), channels(0), frameRate(0), sampleCount(0) { }
 
-  unsigned int AudioData::getChannels() const{
+  unsigned int AudioData::getChannels() const {
     return channels;
   }
 
@@ -34,7 +34,7 @@ namespace KeyFinder{
     channels = newChannels;
   }
 
-  unsigned int AudioData::getFrameRate() const{
+  unsigned int AudioData::getFrameRate() const {
     return frameRate;
   }
 
@@ -44,7 +44,7 @@ namespace KeyFinder{
   }
 
   // get sample by absolute index
-  float AudioData::getSample(unsigned int index) const{
+  float AudioData::getSample(unsigned int index) const {
     if (index >= sampleCount) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << index << "/" << sampleCount << ")";
@@ -54,7 +54,7 @@ namespace KeyFinder{
   }
 
   // get sample by frame and channel
-  float AudioData::getSample(unsigned int frame, unsigned int channel) const{
+  float AudioData::getSample(unsigned int frame, unsigned int channel) const {
     if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
@@ -118,11 +118,11 @@ namespace KeyFinder{
     addToSampleCount(newFrames * channels);
   }
 
-  unsigned int AudioData::getSampleCount() const{
+  unsigned int AudioData::getSampleCount() const {
     return sampleCount;
   }
 
-  unsigned int AudioData::getFrameCount() const{
+  unsigned int AudioData::getFrameCount() const {
     if (channels < 1) throw Exception("Channels must be > 0");
     return sampleCount / channels;
   }

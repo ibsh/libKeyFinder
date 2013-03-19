@@ -24,7 +24,7 @@
 
 namespace KeyFinder{
 
-  void Downsampler::downsample(AudioData*& audioIn, unsigned int factor) const{
+  void Downsampler::downsample(AudioData*& audioIn, unsigned int factor) const {
 
     if (factor == 1) return;
 

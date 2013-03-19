@@ -35,15 +35,15 @@ namespace KeyFinder{
     delete ct;
   }
 
-  ChromaTransform* ChromaTransformFactory::ChromaTransformWrapper::getChromaTransform() const{
+  ChromaTransform* ChromaTransformFactory::ChromaTransformWrapper::getChromaTransform() const {
     return ct;
   }
 
-  Parameters ChromaTransformFactory::ChromaTransformWrapper::getParameters() const{
+  Parameters ChromaTransformFactory::ChromaTransformWrapper::getParameters() const {
     return params;
   }
 
-  unsigned int ChromaTransformFactory::ChromaTransformWrapper::getFrameRate() const{
+  unsigned int ChromaTransformFactory::ChromaTransformWrapper::getFrameRate() const {
     return frameRate;
   }
 

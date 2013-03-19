@@ -42,7 +42,7 @@ namespace KeyFinder{
     delete fft;
   }
 
-  Chromagram SpectrumAnalyser::chromagram(AudioData* audio) const{
+  Chromagram SpectrumAnalyser::chromagram(AudioData* audio) const {
     if (audio->getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
     unsigned int sampleCount = audio->getSampleCount();

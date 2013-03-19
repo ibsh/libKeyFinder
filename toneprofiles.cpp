@@ -151,7 +151,7 @@ namespace KeyFinder{
     } while (p!=tonic);
   }
 
-  float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset, float inputMean) const{
+  float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset, float inputMean) const {
     if (measure == SIMILARITY_CORRELATION)
       return correlation(input, offset, inputMean);
     else
@@ -163,7 +163,7 @@ namespace KeyFinder{
   input = array of 12 floats relating to an octave starting at A natural
   offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
   */
-  float ToneProfile::cosine(const std::vector<float>& input, int offset) const{
+  float ToneProfile::cosine(const std::vector<float>& input, int offset) const {
     // Rotate starting pointer left for offset. Each step shifts the position
     // of the tonic one step further right of the starting pointer (or one semitone up).
     Binode<float>* p = tonic;
@@ -190,7 +190,7 @@ namespace KeyFinder{
   offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
   inputMean = mean input value
   */
-  float ToneProfile::correlation(const std::vector<float>& input, int offset, float inputMean) const{
+  float ToneProfile::correlation(const std::vector<float>& input, int offset, float inputMean) const {
     Binode<float>* p = tonic;
     for (int i=0; i<offset; i++)
       p = p->l;

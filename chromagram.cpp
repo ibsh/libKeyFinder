@@ -29,7 +29,7 @@ namespace KeyFinder{
     chromaData = std::vector< std::vector<float> > (hops, std::vector<float> (bps * oct * SEMITONES, 0.0));
   }
 
-  float Chromagram::getMagnitude(unsigned int h, unsigned int b) const{
+  float Chromagram::getMagnitude(unsigned int h, unsigned int b) const {
     if (h >= getHops()) {
       std::ostringstream ss;
       ss << "Cannot get magnitude of out-of-bounds hop (" << h << "/" << getHops() << ")";
@@ -207,19 +207,19 @@ namespace KeyFinder{
         setMagnitude(oldHops + h, b, that.getMagnitude(h, b));
   }
 
-  unsigned int Chromagram::getHops() const{
+  unsigned int Chromagram::getHops() const {
     return chromaData.size();
   }
 
-  unsigned int Chromagram::getBands() const{
+  unsigned int Chromagram::getBands() const {
     return bandsPerSemitone * octaves * SEMITONES;
   }
 
-  unsigned int Chromagram::getBandsPerSemitone() const{
+  unsigned int Chromagram::getBandsPerSemitone() const {
     return bandsPerSemitone;
   }
 
-  unsigned int Chromagram::getOctaves() const{
+  unsigned int Chromagram::getOctaves() const {
     return octaves;
   }
 

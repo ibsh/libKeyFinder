@@ -70,7 +70,7 @@ namespace KeyFinder{
     delete fft;
   }
 
-  void LowPassFilter::filter(AudioData*& audioIn, unsigned int shortcutFactor) const{
+  void LowPassFilter::filter(AudioData*& audioIn, unsigned int shortcutFactor) const {
 
     // create circular delay buffer
     // this must be done in here for thread safety

@@ -76,7 +76,7 @@ namespace KeyFinder{
     return *this;
   }
 
-  bool Parameters::equivalentSpectralKernels(const Parameters& that) const{
+  bool Parameters::equivalentSpectralKernels(const Parameters& that) const {
     if (stFreq != that.stFreq)
       return false;
     if (bps != that.bps)
@@ -216,7 +216,7 @@ namespace KeyFinder{
     }
   }
 
-  float Parameters::getBandFrequency(unsigned int b)const{
+  float Parameters::getBandFrequency(unsigned int b) const {
     unsigned int max = octaves * SEMITONES * bps;
     if (b >= max) {
       std::ostringstream ss;
@@ -226,7 +226,7 @@ namespace KeyFinder{
     return bandFreqs[b];
   }
 
-  float Parameters::getLastFrequency() const{
+  float Parameters::getLastFrequency() const {
     return bandFreqs[bandFreqs.size()-1];
   }
 
