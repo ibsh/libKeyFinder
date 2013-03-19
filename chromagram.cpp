@@ -21,7 +21,7 @@
 
 #include "chromagram.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   Chromagram::Chromagram(unsigned int hops, unsigned int oct, unsigned int bps) :
     bandsPerSemitone(bps), octaves(oct),

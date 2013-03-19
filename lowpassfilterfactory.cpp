@@ -21,7 +21,7 @@
 
 #include "lowpassfilterfactory.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   LowPassFilterFactory::LowPassFilterWrapper::LowPassFilterWrapper(
     unsigned int cc, unsigned int fr, float cf, unsigned int fs, LowPassFilter* fi

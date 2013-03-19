@@ -28,9 +28,9 @@
 #include "constants.h"
 #include "exception.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class Parameters{
+  class Parameters {
   public:
 
     Parameters();

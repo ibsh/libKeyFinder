@@ -21,7 +21,7 @@
 
 #include "toneprofiles.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   ToneProfile::ToneProfile(tone_profile_t whichProfile, scale_t scale, bool offsetToC, const std::vector<float>& customProfile) {
 

@@ -29,9 +29,9 @@
 #include "fftadapter.h"
 #include "windowfunctions.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class LowPassFilter{
+  class LowPassFilter {
   public:
     LowPassFilter(
       unsigned int order,

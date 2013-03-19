@@ -26,9 +26,9 @@
 
 #include "toneprofiles.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class KeyClassifier{
+  class KeyClassifier {
   public:
     KeyClassifier(
       similarity_measure_t similarityMeasure,

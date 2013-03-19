@@ -25,9 +25,9 @@
 #include "parameters.h"
 #include "fftadapter.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class ChromaTransform{
+  class ChromaTransform {
   public:
     ChromaTransform(unsigned int frameRate, const Parameters& params);
     std::vector<float> chromaVector(const FftAdapter* fft) const;

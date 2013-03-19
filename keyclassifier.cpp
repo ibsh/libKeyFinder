@@ -21,7 +21,7 @@
 
 #include "keyclassifier.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   KeyClassifier::KeyClassifier(similarity_measure_t sm, tone_profile_t tp, bool offsetToC, const std::vector<float>& customProfile) {
     // Profiles

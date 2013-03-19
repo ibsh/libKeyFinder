@@ -27,9 +27,9 @@
 #include <cmath>
 #include "parameters.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class Chromagram{
+  class Chromagram {
   public:
     Chromagram(unsigned int hops = 0, unsigned int octaves = 0, unsigned int bandsPerSemitone = 0);
     void append(const Chromagram& that);

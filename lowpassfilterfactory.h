@@ -27,9 +27,9 @@
 #include "lowpassfilter.h"
 #include "parameters.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class LowPassFilterFactory{
+  class LowPassFilterFactory {
   public:
     LowPassFilterFactory();
     ~LowPassFilterFactory();
@@ -45,7 +45,7 @@ namespace KeyFinder{
     boost::mutex LowPassFilterFactoryMutex;
   };
 
-  class LowPassFilterFactory::LowPassFilterWrapper{
+  class LowPassFilterFactory::LowPassFilterWrapper {
   public:
     LowPassFilterWrapper(
       unsigned int order,

@@ -21,7 +21,7 @@
 
 #include "fftadapter.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   FftAdapter::FftAdapter(unsigned int fs) {
     frameSize = fs;

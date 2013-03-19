@@ -21,7 +21,7 @@
 
 #include "chromatransformfactory.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   ChromaTransformFactory::ChromaTransformWrapper::ChromaTransformWrapper(
     unsigned int f, const Parameters& p, ChromaTransform* s

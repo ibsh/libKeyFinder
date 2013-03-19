@@ -26,9 +26,9 @@
 #include <vector>
 #include "exception.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class AudioData{
+  class AudioData {
   public:
     AudioData();
 

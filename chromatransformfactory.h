@@ -27,10 +27,10 @@
 #include "chromatransform.h"
 #include "parameters.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   // Holds all analysers generated in a session, to cut down on prep time.
-  class ChromaTransformFactory{
+  class ChromaTransformFactory {
   public:
     ChromaTransformFactory();
     ~ChromaTransformFactory();
@@ -45,7 +45,7 @@ namespace KeyFinder{
   };
 
   // Keeps a reference to a spectrum analyser with distinguishing information
-  class ChromaTransformFactory::ChromaTransformWrapper{
+  class ChromaTransformFactory::ChromaTransformWrapper {
   public:
     ChromaTransformWrapper(
       unsigned int frameRate,

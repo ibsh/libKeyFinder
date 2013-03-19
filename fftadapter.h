@@ -27,9 +27,9 @@
 #include <boost/math/special_functions/fpclassify.hpp>
 #include "exception.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class FftAdapter{
+  class FftAdapter {
   public:
     FftAdapter(
       unsigned int frameSize

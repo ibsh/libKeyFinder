@@ -21,7 +21,7 @@
 
 #include "windowfunctions.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   float WindowFunction::window(temporal_window_t w, int n, int N) const {
     if (w == WINDOW_HANN) {

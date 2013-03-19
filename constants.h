@@ -28,9 +28,9 @@
 #undef SEMITONES
 #define SEMITONES 12 // per octave, obviously
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  enum key_t{
+  enum key_t {
     A_MAJOR,       A_MINOR,
     B_FLAT_MAJOR,	 B_FLAT_MINOR,
     B_MAJOR,       B_MINOR,
@@ -46,29 +46,29 @@ namespace KeyFinder{
     SILENCE
   };
 
-  enum scale_t{
+  enum scale_t {
     SCALE_MAJOR,
     SCALE_MINOR
   };
 
-  enum temporal_window_t{
+  enum temporal_window_t {
     WINDOW_BLACKMAN,
     WINDOW_HANN,
     WINDOW_HAMMING
   };
 
-  enum segmentation_t{
+  enum segmentation_t {
     SEGMENTATION_NONE,
     SEGMENTATION_ARBITRARY,
     SEGMENTATION_COSINE
   };
 
-  enum similarity_measure_t{
+  enum similarity_measure_t {
     SIMILARITY_COSINE,
     SIMILARITY_CORRELATION
   };
 
-  enum tone_profile_t{
+  enum tone_profile_t {
     TONE_PROFILE_SILENCE,
     TONE_PROFILE_KRUMHANSL,
     TONE_PROFILE_TEMPERLEY,
@@ -77,7 +77,7 @@ namespace KeyFinder{
     TONE_PROFILE_CUSTOM
   };
 
-  enum tuning_method_t{
+  enum tuning_method_t {
     TUNING_HARTE,
     TUNING_BAND_ADAPTIVE
   };

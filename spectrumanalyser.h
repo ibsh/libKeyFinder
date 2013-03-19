@@ -30,9 +30,9 @@
 #include "parameters.h"
 #include "windowfunctions.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class SpectrumAnalyser{
+  class SpectrumAnalyser {
   public:
     SpectrumAnalyser(
       unsigned int frameRate,

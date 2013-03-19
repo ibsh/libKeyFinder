@@ -25,7 +25,7 @@
 #include <stdexcept>
 #include <sstream>
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   class Exception : public std::runtime_error {
   public:

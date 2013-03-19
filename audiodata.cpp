@@ -21,7 +21,7 @@
 
 #include "audiodata.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   AudioData::AudioData(): samples(0), channels(0), frameRate(0), sampleCount(0) { }
 

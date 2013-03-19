@@ -24,9 +24,9 @@
 
 #include "chromagram.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class KeyDetectionResultSegment{
+  class KeyDetectionResultSegment {
   public:
     KeyDetectionResultSegment(): firstHop(0), lastHop(0), chromaVector(0), energy(0.0), key(SILENCE) {}
     unsigned int firstHop;
@@ -36,7 +36,7 @@ namespace KeyFinder{
     key_t key;
   };
 
-  class KeyDetectionResult{
+  class KeyDetectionResult {
   public:
     KeyDetectionResult(): segments(0), globalKeyEstimate(SILENCE) {}
     std::vector<KeyDetectionResultSegment> segments;

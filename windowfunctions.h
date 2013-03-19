@@ -27,9 +27,9 @@
 
 #include "constants.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class WindowFunction{
+  class WindowFunction {
   public:
     float window(temporal_window_t type, int sample, int width) const;
     float gaussianWindow(int sample, int width, float sigma) const;

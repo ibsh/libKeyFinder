@@ -26,9 +26,9 @@
 #include "parameters.h"
 #include "windowfunctions.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class Segmentation{
+  class Segmentation {
   public:
     std::vector<unsigned int> getSegmentationBoundaries(
       const Chromagram& chromagram,

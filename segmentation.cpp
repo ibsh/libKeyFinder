@@ -21,7 +21,7 @@
 
 #include "segmentation.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   std::vector<unsigned int> Segmentation::getSegmentationBoundaries(
     const Chromagram& ch,

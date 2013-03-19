@@ -27,9 +27,9 @@
 #include "audiodata.h"
 #include "exception.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class Downsampler{
+  class Downsampler {
   public:
     void downsample(AudioData*& audio, unsigned int factor) const;
   };

@@ -11,7 +11,7 @@
 #include "segmentation.h"
 #include "keyclassifier.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   class KeyFinder {
   public:

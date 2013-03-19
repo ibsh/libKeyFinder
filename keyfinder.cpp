@@ -1,6 +1,6 @@
 #include "keyfinder.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   Chromagram KeyFinder::chromagramOfAudio(const AudioData& originalAudio, const Parameters& params) {
 

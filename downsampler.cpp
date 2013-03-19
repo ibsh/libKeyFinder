@@ -22,7 +22,7 @@
 #include "downsampler.h"
 
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   void Downsampler::downsample(AudioData*& audioIn, unsigned int factor) const {
 

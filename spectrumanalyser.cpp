@@ -21,7 +21,7 @@
 
 #include "spectrumanalyser.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory) {
     octaves = params.getOctaves();

@@ -21,7 +21,7 @@
 
 #include "parameters.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   Parameters::Parameters() {
     // defaults

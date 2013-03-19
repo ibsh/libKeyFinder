@@ -28,7 +28,7 @@
 
 #include "lowpassfilter.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
     // TODO: validate order is even

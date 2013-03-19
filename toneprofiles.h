@@ -28,9 +28,9 @@
 #include "binode.h"
 #include "constants.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
-  class ToneProfile{
+  class ToneProfile {
   public:
     ToneProfile(
       tone_profile_t toneProfile,

@@ -21,7 +21,7 @@
 
 #include "chromatransform.h"
 
-namespace KeyFinder{
+namespace KeyFinder {
 
   ChromaTransform::ChromaTransform(unsigned int fr, const Parameters& params) {
     frameRate = fr;
