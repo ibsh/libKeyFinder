@@ -46,7 +46,7 @@ namespace KeyFinder{
       1,0,1,0,1,1,0,1,0,1,0,1, // major
       1,0,1,1,0,1,0,1,1,0,1,0  // minor
     };
-    customToneProfile = std::vector<float> (&custom[0], &custom[24]);
+    customToneProfile = std::vector<float>(&custom[0], &custom[24]);
     // and other prep
     generateBandFreqs();
   }

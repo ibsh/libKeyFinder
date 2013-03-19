@@ -23,11 +23,10 @@
 
 namespace KeyFinder{
 
-  Chromagram::Chromagram(unsigned int hops, unsigned int oct, unsigned int bps) {
-    bandsPerSemitone = bps;
-    octaves = oct;
-    chromaData = std::vector< std::vector<float> > (hops, std::vector<float> (bps * oct * SEMITONES, 0.0));
-  }
+  Chromagram::Chromagram(unsigned int hops, unsigned int oct, unsigned int bps) :
+    bandsPerSemitone(bps), octaves(oct),
+    chromaData(hops, std::vector<float>(bps * oct * SEMITONES, 0.0))
+  { }
 
   float Chromagram::getMagnitude(unsigned int h, unsigned int b) const {
     if (h >= getHops()) {
@@ -125,7 +124,7 @@ namespace KeyFinder{
     for (int i = (1 - (bandsPerSemitone * 2)); i < (signed)bandsPerSemitone * 2; i++)
       bandsToKeep.push_back((tuningPeak + i + (bandsPerSemitone*10)) % (bandsPerSemitone*10));
     // and discard the others
-    std::vector<std::vector<float> > twelveBpoChroma(getHops(), std::vector<float>(SEMITONES * octaves));
+    std::vector< std::vector<float> > twelveBpoChroma(getHops(), std::vector<float>(SEMITONES * octaves));
     for (unsigned int hop = 0; hop < getHops(); hop++) {
       for (unsigned int peak = 0; peak < peakLocations[hop].size(); peak++) {
         float peakLocationMod = fmodf(peakLocations[hop][peak], (float)bandsPerSemitone);
@@ -154,7 +153,7 @@ namespace KeyFinder{
      * than music that is internally consistent but off concert pitch.
      */
     if (bandsPerSemitone == 1) return;
-    std::vector<std::vector<float> > twelveBpoChroma(getHops(), std::vector<float>(SEMITONES * octaves));
+    std::vector< std::vector<float> > twelveBpoChroma(getHops(), std::vector<float>(SEMITONES * octaves));
     for (unsigned int st = 0; st < SEMITONES * octaves; st++) {
       std::vector<float> oneSemitoneChroma(bandsPerSemitone);
       for (unsigned int h = 0; h < getHops(); h++)
@@ -184,7 +183,7 @@ namespace KeyFinder{
     if (octaves == 1)
       return;
     unsigned int bandsPerOctave = bandsPerSemitone * SEMITONES;
-    std::vector<std::vector<float> > oneOctaveChroma(getHops(), std::vector<float>(bandsPerOctave));
+    std::vector< std::vector<float> > oneOctaveChroma(getHops(), std::vector<float>(bandsPerOctave));
     for (unsigned int h = 0; h < getHops(); h++) {
       for (unsigned int b = 0; b < bandsPerOctave; b++) {
         float sum = 0.0;
@@ -201,7 +200,7 @@ namespace KeyFinder{
     if (that.octaves != octaves || that.bandsPerSemitone != bandsPerSemitone)
       throw Exception("Cannot append a chromagram with a different number of bands");
     unsigned int oldHops = getHops();
-    chromaData.resize(getHops() + that.getHops(), std::vector<float> (getBands(), 0.0));
+    chromaData.resize(getHops() + that.getHops(), std::vector<float>(getBands(), 0.0));
     for (unsigned int h = 0; h < that.getHops(); h++)
       for (unsigned int b = 0; b < that.getBands(); b++)
         setMagnitude(oldHops + h, b, that.getMagnitude(h, b));

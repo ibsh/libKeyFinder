@@ -45,7 +45,7 @@ namespace KeyFinder{
   private:
     unsigned int bandsPerSemitone;
     unsigned int octaves;
-    std::vector<std::vector<float> > chromaData;
+    std::vector< std::vector<float> > chromaData;
   };
 
 }
