@@ -35,6 +35,11 @@ float cornerFrequency = 6500.0;
 unsigned int filterOrder = 160;
 unsigned int filterFFT = 2048;
 
+TEST (LowPassFilterTest, InsistsOnEvenOrder) {
+  KeyFinder::LowPassFilter* lpf = NULL;
+  ASSERT_THROW(lpf = new KeyFinder::LowPassFilter(filterOrder + 1, samples, cornerFrequency, filterFFT), KeyFinder::Exception);
+  ASSERT_EQ(NULL, lpf);
+}
 TEST (LowPassFilterTest, KillsHigherFreqs) {
   // make a high frequency sine wave, one second long
   KeyFinder::AudioData* a = new KeyFinder::AudioData();

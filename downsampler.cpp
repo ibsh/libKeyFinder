@@ -25,19 +25,14 @@
 namespace KeyFinder {
 
   void Downsampler::downsample(AudioData*& audioIn, unsigned int factor) const {
-
     if (factor == 1) return;
 
     unsigned int channels = audioIn->getChannels();
-    unsigned int oldFrameRate = audioIn->getFrameRate();
     unsigned int oldFrameCount = audioIn->getFrameCount();
-
-    // prep output stream
-    unsigned int newFrameRate = oldFrameRate / factor;
-    unsigned int newFrameCount = ceil((float)oldFrameCount / factor);
+    unsigned int newFrameCount = ceil((float)oldFrameCount / (float)factor);
 
     AudioData* audioOut = new AudioData();
-    audioOut->setFrameRate(newFrameRate);
+    audioOut->setFrameRate(audioIn->getFrameRate() / factor);
     audioOut->setChannels(channels);
     try{
       audioOut->addToFrameCount(newFrameCount);
@@ -55,7 +50,7 @@ namespace KeyFinder {
         for (unsigned int element = 0; element < factor; element++) {
           unsigned int inFrm = (outFrm * factor) + element;
           if (inFrm < audioIn->getFrameCount()) {
-            mean += audioIn->getSample(inFrm, ch) / factor;
+            mean += audioIn->getSample(inFrm, ch) / (float)factor;
           }
         }
         audioOut->setSample(outFrm, ch, mean);

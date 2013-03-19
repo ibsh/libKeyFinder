@@ -46,8 +46,7 @@ namespace KeyFinder {
     if (audio->getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
     unsigned int sampleCount = audio->getSampleCount();
-    unsigned int hops = (sampleCount / hopSize);
-    if (sampleCount % hopSize > 0) hops++;
+    unsigned int hops = ceil((float)sampleCount / (float)hopSize);
     Chromagram ch(hops, octaves, bandsPerSemitone);
     unsigned int fftFrameSize = fft->getFrameSize();
     for (unsigned int hop = 0; hop < hops; hop ++) {

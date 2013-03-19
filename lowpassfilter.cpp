@@ -31,7 +31,7 @@
 namespace KeyFinder {
 
   LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
-    // TODO: validate order is even
+    if (ord %2 != 0) throw Exception("LPF order must be an even number");
     order = ord;
     delay = order / 2;
     impulseLength = order + 1;
@@ -46,7 +46,7 @@ namespace KeyFinder {
         input = tau;
       }
       fft->setInput(i, input);
-      fft->setInput(fftFrameSize-i-1, input);
+      fft->setInput(fftFrameSize - i - 1, input);
     }
 
     // inverse FFT to determine time-domain response
@@ -85,16 +85,15 @@ namespace KeyFinder {
     p->l = q;
     q->r = p;
 
-    unsigned int oldFrameRate = audioIn->getFrameRate();
-    unsigned int oldFrameCount = audioIn->getFrameCount();
+    unsigned int frameCount = audioIn->getFrameCount();
     unsigned int channels = audioIn->getChannels();
 
     // prep output stream
     AudioData* audioOut = new AudioData();
-    audioOut ->setFrameRate(oldFrameRate);
+    audioOut ->setFrameRate(audioIn->getFrameRate());
     audioOut ->setChannels(channels);
     try{
-      audioOut ->addToFrameCount(oldFrameCount);
+      audioOut ->addToFrameCount(frameCount);
     }catch(const Exception& e) {
       delete audioOut ;
       throw e;
@@ -109,13 +108,13 @@ namespace KeyFinder {
         q = q->r;
       }
       // for each frame (running off the end of the sample stream by delay)
-      for (unsigned int frm = 0; frm < oldFrameCount + delay; frm++) {
+      for (unsigned int frm = 0; frm < frameCount + delay; frm++) {
 
         // shuffle old samples along delay buffer
         p = p->r;
 
         // load new sample into delay buffer
-        if (frm < oldFrameCount) {
+        if (frm < frameCount) {
           p->l->data = audioIn->getSample(frm, ch) / gain;
         } else {
           // zero pad once we're into the delay at the end of the file
@@ -126,16 +125,13 @@ namespace KeyFinder {
         // and, if shortcut != 1, only do the maths for the useful samples
         // (this is mathematically dodgy, but it's fast and it usually works)
         if ((frm >= delay) && (frm - delay) % shortcutFactor == 0) {
-
           float sum = 0.0;
           q = p;
           for (unsigned int k = 0; k < impulseLength; k++) {
             sum += coefficients[k] * q->data;
             q = q->r;
           }
-
           audioOut ->setSample(frm - delay, ch, sum);
-
         }
       }
     }
