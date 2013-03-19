@@ -42,17 +42,17 @@ TEST (FftAdapterTest, WorksForCleanOscillations) {
   for (unsigned int i = 0; i < frameSize / 2; i++) {
     float out = f.getOutputMagnitude(i);
     if (i == 2) {
-      ASSERT_EQ(10000 / 2 * frameSize, out);
+      ASSERT_FLOAT_EQ(10000 / 2 * frameSize, out);
     } else if (i == 4) {
-      ASSERT_EQ(8000 / 2 * frameSize, out);
+      ASSERT_FLOAT_EQ(8000 / 2 * frameSize, out);
     } else if (i == 5) {
-      ASSERT_EQ(6000 / 2 * frameSize, out);
+      ASSERT_FLOAT_EQ(6000 / 2 * frameSize, out);
     } else if (i == 7) {
-      ASSERT_EQ(4000 / 2 * frameSize, out);
+      ASSERT_FLOAT_EQ(4000 / 2 * frameSize, out);
     } else if (i == 13) {
-      ASSERT_EQ(2000 / 2 * frameSize, out);
+      ASSERT_FLOAT_EQ(2000 / 2 * frameSize, out);
     } else if (i == 20) {
-      ASSERT_EQ(500 / 2 * frameSize, out);
+      ASSERT_FLOAT_EQ(500 / 2 * frameSize, out);
     } else {
       ASSERT_GT(1, out);
     }

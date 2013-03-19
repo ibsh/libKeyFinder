@@ -47,11 +47,11 @@ TEST (AudioDataTest, SamplesBasic) {
   a.addToSampleCount(100);
   ASSERT_EQ(100, a.getSampleCount());
   // init values
-  for (int i=0; i<100; i++) {
-    ASSERT_EQ(0.0, a.getSample(i));
+  for (int i = 0; i < 100; i++) {
+    ASSERT_FLOAT_EQ(0.0, a.getSample(i));
   }
   a.setSample(0, 10.0);
-  ASSERT_EQ(10.0, a.getSample(0));
+  ASSERT_FLOAT_EQ(10.0, a.getSample(0));
 }
 
 TEST (AudioDataTest, Bounds) {
@@ -71,13 +71,13 @@ TEST (AudioDataTest, MakeMono) {
   KeyFinder::AudioData a;
   a.setChannels(2);
   a.addToSampleCount(20);
-  for (int i=0; i<10; i++) {
-    a.setSample(i*2, 100.0);
+  for (int i = 0; i < 10; i++) {
+    a.setSample(i * 2, 100.0);
   }
   a.reduceToMono();
   ASSERT_EQ(10, a.getSampleCount());
-  for (int i=0; i<10; i++) {
-    ASSERT_EQ(50.0, a.getSample(i));
+  for (int i = 0; i < 10; i++) {
+    ASSERT_FLOAT_EQ(50.0, a.getSample(i));
   }
 }
 
@@ -87,8 +87,8 @@ TEST (AudioDataTest, Frames) {
   ASSERT_THROW(a.getSample(0,0), KeyFinder::Exception);
 
   a.setChannels(2);
-  ASSERT_EQ(0.0, a.getSample(0,0));
-  ASSERT_EQ(0.0, a.getSample(0,1));
+  ASSERT_FLOAT_EQ(0.0, a.getSample(0, 0));
+  ASSERT_FLOAT_EQ(0.0, a.getSample(0, 1));
 
   ASSERT_THROW(a.getSample(-1, 0), KeyFinder::Exception);
   ASSERT_THROW(a.getSample(-1, 1), KeyFinder::Exception);
@@ -97,9 +97,9 @@ TEST (AudioDataTest, Frames) {
   ASSERT_THROW(a.getSample( 0,-1), KeyFinder::Exception);
   ASSERT_THROW(a.getSample( 0, 2), KeyFinder::Exception);
 
-  a.setSample(0,0, 10.0);
-  ASSERT_EQ(10.0, a.getSample(0,0));
+  a.setSample(0, 0, 10.0);
+  ASSERT_FLOAT_EQ(10.0, a.getSample(0,0));
 
-  a.setSample(1,0, 20.0);
-  ASSERT_EQ(20.0, a.getSample(2));
+  a.setSample(1, 0, 20.0);
+  ASSERT_FLOAT_EQ(20.0, a.getSample(2));
 }

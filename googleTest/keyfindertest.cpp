@@ -63,3 +63,27 @@ TEST (KeyFinderTest, KeyOfChromagramPassesThroughChromaData) {
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[11]);
   ASSERT_EQ(KeyFinder::C_MINOR, kdr.globalKeyEstimate);
 }
+
+TEST (KeyFinderTest, KeyOfChromagramCollapsesTimeDimension) {
+  KeyFinder::Chromagram ch(5,1,1);
+  for (int i = 0; i < 5; i++) {
+    ch.setMagnitude(i, 0, 1.0);
+    ch.setMagnitude(i, 3, 1.0);
+    ch.setMagnitude(i, 7, 1.0);
+  }
+  KeyFinder::KeyFinder kf;
+  KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(ch);
+  ASSERT_FLOAT_EQ(5.0, kdr.segments[0].chromaVector[0]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[1]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[2]);
+  ASSERT_FLOAT_EQ(5.0, kdr.segments[0].chromaVector[3]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[4]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[5]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[6]);
+  ASSERT_FLOAT_EQ(5.0, kdr.segments[0].chromaVector[7]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[8]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[9]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[10]);
+  ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[11]);
+  ASSERT_EQ(KeyFinder::C_MINOR, kdr.globalKeyEstimate);
+}

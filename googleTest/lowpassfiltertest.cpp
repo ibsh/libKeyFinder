@@ -51,7 +51,7 @@ TEST (LowPassFilterTest, KillsHigherFreqs) {
 
   // test for near silence
   for (unsigned int i = 0; i < samples; i++) {
-    ASSERT_GT(tolerance, a->getSample(i));
+    ASSERT_NEAR(0.0, a->getSample(i), tolerance);
   }
 }
 
@@ -72,10 +72,7 @@ TEST (LowPassFilterTest, MaintainsLowerFreqs) {
   // test for near perfect reproduction
   for (unsigned int i = 0; i < samples; i++) {
     float expected = sine_wave(i, lowFrequency, samples, magnitude);
-    float min = expected - tolerance;
-    float max = expected + tolerance;
-    ASSERT_LT(min, a->getSample(i));
-    ASSERT_GT(max, a->getSample(i));
+    ASSERT_NEAR(expected, a->getSample(i), tolerance);
   }
 }
 
@@ -101,10 +98,7 @@ TEST (LowPassFilterTest, DoesBothAtOnce) {
   // test for lower wave only
   for (unsigned int i = 0; i < samples; i++) {
     float expected = sine_wave(i, lowFrequency, samples, magnitude);
-    float min = expected - tolerance;
-    float max = expected + tolerance;
-    ASSERT_LT(min, a->getSample(i));
-    ASSERT_GT(max, a->getSample(i));
+    ASSERT_NEAR(expected, a->getSample(i), tolerance);
   }
 }
 
@@ -130,13 +124,10 @@ TEST (LowPassFilterTest, WorksWithShortcutFactor) {
   // test for lower wave only
   for (unsigned int i = 0; i < samples; i++) {
     if (i % 3 != 0) {
-      ASSERT_EQ(0.0, a->getSample(i));
+      ASSERT_FLOAT_EQ(0.0, a->getSample(i));
     } else {
       float expected = sine_wave(i, lowFrequency, samples, magnitude);
-      float min = expected - tolerance;
-      float max = expected + tolerance;
-      ASSERT_LT(min, a->getSample(i));
-      ASSERT_GT(max, a->getSample(i));
+      ASSERT_NEAR(expected, a->getSample(i), tolerance);
     }
   }
 }

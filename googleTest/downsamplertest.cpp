@@ -38,8 +38,8 @@ TEST (DownsamplerTest, ResamplesOneChannel) {
 
   ASSERT_EQ(20, a->getFrameRate());
   ASSERT_EQ(2, a->getSampleCount());
-  ASSERT_EQ(100.0, a->getSample(0));
-  ASSERT_EQ(500.0, a->getSample(1));
+  ASSERT_FLOAT_EQ(100.0, a->getSample(0));
+  ASSERT_FLOAT_EQ(500.0, a->getSample(1));
 }
 
 TEST (DownsamplerTest, ResamplesNonintegralRelationship) {
@@ -61,9 +61,9 @@ TEST (DownsamplerTest, ResamplesNonintegralRelationship) {
   ds.downsample(a, 5);
 
   ASSERT_EQ(3, a->getSampleCount());
-  ASSERT_EQ(100.0, a->getSample(0));
-  ASSERT_EQ(500.0, a->getSample(1));
-  ASSERT_EQ(400.0, a->getSample(2));
+  ASSERT_FLOAT_EQ(100.0, a->getSample(0));
+  ASSERT_FLOAT_EQ(500.0, a->getSample(1));
+  ASSERT_FLOAT_EQ(400.0, a->getSample(2));
 }
 
 TEST (DownsamplerTest, ResamplesTwoChannels) {
@@ -80,10 +80,10 @@ TEST (DownsamplerTest, ResamplesTwoChannels) {
   ds.downsample(a, 5);
 
   ASSERT_EQ(2, a->getFrameCount());
-  ASSERT_EQ(100.0, a->getSample(0));
-  ASSERT_EQ(200.0, a->getSample(1));
-  ASSERT_EQ(20.0, a->getSample(2));
-  ASSERT_EQ(40.0, a->getSample(3));
+  ASSERT_FLOAT_EQ(100.0, a->getSample(0));
+  ASSERT_FLOAT_EQ(200.0, a->getSample(1));
+  ASSERT_FLOAT_EQ(20.0, a->getSample(2));
+  ASSERT_FLOAT_EQ(40.0, a->getSample(3));
 }
 
 
@@ -105,14 +105,14 @@ TEST (DownsamplerTest, ResamplesMoreChannels) {
 
   ASSERT_EQ(2, a->getFrameCount());
 
-  ASSERT_EQ(100.0, a->getSample(0, 0));
-  ASSERT_EQ(200.0, a->getSample(0, 1));
-  ASSERT_EQ(300.0, a->getSample(0, 2));
-  ASSERT_EQ(400.0, a->getSample(0, 3));
-  ASSERT_EQ(500.0, a->getSample(0, 4));
-  ASSERT_EQ( 20.0, a->getSample(1, 0));
-  ASSERT_EQ( 40.0, a->getSample(1, 1));
-  ASSERT_EQ( 60.0, a->getSample(1, 2));
-  ASSERT_EQ( 80.0, a->getSample(1, 3));
-  ASSERT_EQ(100.0, a->getSample(1, 4));
+  ASSERT_FLOAT_EQ(100.0, a->getSample(0, 0));
+  ASSERT_FLOAT_EQ(200.0, a->getSample(0, 1));
+  ASSERT_FLOAT_EQ(300.0, a->getSample(0, 2));
+  ASSERT_FLOAT_EQ(400.0, a->getSample(0, 3));
+  ASSERT_FLOAT_EQ(500.0, a->getSample(0, 4));
+  ASSERT_FLOAT_EQ( 20.0, a->getSample(1, 0));
+  ASSERT_FLOAT_EQ( 40.0, a->getSample(1, 1));
+  ASSERT_FLOAT_EQ( 60.0, a->getSample(1, 2));
+  ASSERT_FLOAT_EQ( 80.0, a->getSample(1, 3));
+  ASSERT_FLOAT_EQ(100.0, a->getSample(1, 4));
 }
