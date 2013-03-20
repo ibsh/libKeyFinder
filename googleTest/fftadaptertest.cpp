@@ -21,10 +21,12 @@
 
 #include "fftadaptertest.h"
 
-TEST (FftAdapterTest, WorksForCleanOscillations) {
+TEST (FftAdapterTest, Forward_And_Backward) {
 
   unsigned int frameSize = 2048;
-  KeyFinder::FftAdapter f(frameSize);
+  std::vector<float> original(frameSize);
+
+  KeyFinder::FftAdapter fft(frameSize);
 
   for (unsigned int i = 0; i < frameSize; i++) {
     float sample = 0.0;
@@ -34,13 +36,14 @@ TEST (FftAdapterTest, WorksForCleanOscillations) {
     sample += sine_wave(i,  7, frameSize,  4000);
     sample += sine_wave(i, 13, frameSize,  2000);
     sample += sine_wave(i, 20, frameSize,   500);
-    f.setInput(i, sample);
+    fft.setInput(i, sample);
+    original[i] = sample;
   }
 
-  f.execute();
+  fft.execute();
 
-  for (unsigned int i = 0; i < frameSize / 2; i++) {
-    float out = f.getOutputMagnitude(i);
+  for (unsigned int i = 0; i < frameSize; i++) {
+    float out = fft.getOutputMagnitude(i);
     if (i == 2) {
       ASSERT_FLOAT_EQ(10000 / 2 * frameSize, out);
     } else if (i == 4) {
@@ -54,7 +57,20 @@ TEST (FftAdapterTest, WorksForCleanOscillations) {
     } else if (i == 20) {
       ASSERT_FLOAT_EQ(500 / 2 * frameSize, out);
     } else {
-      ASSERT_GT(1, out);
+      ASSERT_GT(0.5, out);
     }
   }
+
+  KeyFinder::InverseFftAdapter ifft(frameSize);
+
+  for (unsigned int i = 0; i < frameSize; i++) {
+    ifft.setInput(i, fft.getOutputReal(i), fft.getOutputImaginary(i));
+  }
+
+  ifft.execute();
+
+  for (unsigned int i = 0; i < frameSize; i++) {
+    ASSERT_NEAR(original[i], ifft.getOutput(i), 0.001);
+  }
+
 }

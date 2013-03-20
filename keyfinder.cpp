@@ -8,8 +8,9 @@ namespace KeyFinder {
 
     workingAudio->reduceToMono();
 
-    // TODO: there is presumably some good maths to determine filter frequencies
-    float lpfCutoff = params.getLastFrequency() * 1.05;
+    // TODO: there is presumably some good maths to determine filter frequencies.
+    // For now, this approximates original experiment values for default params.
+    float lpfCutoff = params.getLastFrequency() * 1.012;
     float dsCutoff = params.getLastFrequency() * 1.10;
     unsigned int downsampleFactor = (int)floor( workingAudio->getFrameRate() / 2 / dsCutoff );
 

@@ -40,7 +40,7 @@ namespace KeyFinder {
       unsigned int fftFrameSize
     );
     void filter(AudioData*& audio, unsigned int shortcutFactor = 1) const;
-  private:
+  protected:
     unsigned int order;
     unsigned int delay;         // always order / 2
     unsigned int impulseLength; // always order + 1

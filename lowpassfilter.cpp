@@ -36,7 +36,7 @@ namespace KeyFinder {
     delay = order / 2;
     impulseLength = order + 1;
     float cutoffPoint = cornerFrequency / frameRate;
-    FftAdapter* fft = new FftAdapter(fftFrameSize);
+    InverseFftAdapter* ifft = new InverseFftAdapter(fftFrameSize);
 
     // Build frequency domain response
     float tau = 0.5 / cutoffPoint;
@@ -45,12 +45,12 @@ namespace KeyFinder {
       if (i / (float) fftFrameSize <= cutoffPoint) {
         input = tau;
       }
-      fft->setInput(i, input);
-      fft->setInput(fftFrameSize - i - 1, input);
+      ifft->setInput(i, input, 0.0);
+      ifft->setInput(fftFrameSize - i - 1, input, 0.0);
     }
 
     // inverse FFT to determine time-domain response
-    fft->execute();
+    ifft->execute();
 
     // TODO determine whether to handle bad_alloc
     coefficients.resize(impulseLength, 0.0);
@@ -61,13 +61,13 @@ namespace KeyFinder {
     for (unsigned int i = 0; i < impulseLength; i++) {
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
-      float coeff = fft->getOutputReal(index) / (float) fftFrameSize;
-      coeff *= win.window(WINDOW_BLACKMAN, i, impulseLength);
+      float coeff = ifft->getOutput(index);
+      coeff *= win.window(WINDOW_HAMMING, i, impulseLength);
       coefficients[i] = coeff;
       gain += coeff;
     }
 
-    delete fft;
+    delete ifft;
   }
 
   void LowPassFilter::filter(AudioData*& audioIn, unsigned int shortcutFactor) const {
@@ -90,10 +90,10 @@ namespace KeyFinder {
 
     // prep output stream
     AudioData* audioOut = new AudioData();
-    audioOut ->setFrameRate(audioIn->getFrameRate());
-    audioOut ->setChannels(channels);
+    audioOut->setFrameRate(audioIn->getFrameRate());
+    audioOut->setChannels(channels);
     try{
-      audioOut ->addToFrameCount(frameCount);
+      audioOut->addToFrameCount(frameCount);
     }catch(const Exception& e) {
       delete audioOut ;
       throw e;
@@ -131,7 +131,7 @@ namespace KeyFinder {
             sum += coefficients[k] * q->data;
             q = q->r;
           }
-          audioOut ->setSample(frm - delay, ch, sum);
+          audioOut->setSample(frm - delay, ch, sum);
         }
       }
     }

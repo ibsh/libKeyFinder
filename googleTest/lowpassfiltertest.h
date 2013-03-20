@@ -25,6 +25,12 @@
 #include "_testhelpers.h"
 #include "keyfinder/lowpassfilter.h"
 
+class DefaultLowPassFilterWithPublicCoefficients : public KeyFinder::LowPassFilter {
+public:
+  DefaultLowPassFilterWithPublicCoefficients() : KeyFinder::LowPassFilter(160, 44100, 2000.0, 2048) {}
+  std::vector<float> getCoefficients() const;
+};
+
 class LowPassFilterTest : public ::testing::Test { };
 
 #endif // LOWPASSFILTERTEST_H

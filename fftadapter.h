@@ -31,21 +31,34 @@ namespace KeyFinder {
 
   class FftAdapter {
   public:
-    FftAdapter(
-      unsigned int frameSize
-    );
+    FftAdapter(unsigned int frameSize);
     ~FftAdapter();
     unsigned int getFrameSize() const;
-    void setInput(unsigned int sample, float real) const;
+    void setInput(unsigned int sample, float real);
     void execute();
     float getOutputReal(unsigned int bin) const;
     float getOutputImaginary(unsigned int bin) const;
     float getOutputMagnitude(unsigned int bin) const;
   protected:
     unsigned int frameSize;
-    fftw_complex* input;
-    fftw_complex* output;
-    fftw_plan     plan;
+    double* inputReal;
+    fftw_complex* outputComplex;
+    fftw_plan plan;
+  };
+
+  class InverseFftAdapter {
+  public:
+    InverseFftAdapter(unsigned int frameSize);
+    ~InverseFftAdapter();
+    unsigned int getFrameSize() const;
+    void setInput(unsigned int sample, float real, float imaginary);
+    void execute();
+    float getOutput(unsigned int bin) const;
+  protected:
+    unsigned int frameSize;
+    fftw_complex* inputComplex;
+    double* outputReal;
+    fftw_plan plan;
   };
 
 }

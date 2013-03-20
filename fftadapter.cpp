@@ -25,22 +25,22 @@ namespace KeyFinder {
 
   FftAdapter::FftAdapter(unsigned int fs) {
     frameSize = fs;
-    input  = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*frameSize);
-    output = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*frameSize);
-    plan = fftw_plan_dft_1d(frameSize, input, output, FFTW_FORWARD, FFTW_ESTIMATE);
+    inputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
+    outputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
+    plan = fftw_plan_dft_r2c_1d(frameSize, inputReal, outputComplex, FFTW_ESTIMATE);
   }
 
   FftAdapter::~FftAdapter() {
     fftw_destroy_plan(plan);
-    fftw_free(input);
-    fftw_free(output);
+    fftw_free(inputReal);
+    fftw_free(outputComplex);
   }
 
   unsigned int FftAdapter::getFrameSize() const {
     return frameSize;
   }
 
-  void FftAdapter::setInput(unsigned int i, float real) const {
+  void FftAdapter::setInput(unsigned int i, float real) {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -49,8 +49,7 @@ namespace KeyFinder {
     if (!boost::math::isfinite(real)) {
       throw Exception("Cannot set sample to NaN");
     }
-    input[i][0] = real;
-    input[i][1] = 0.0;
+    inputReal[i] = real;
   }
 
   float FftAdapter::getOutputReal(unsigned int i) const {
@@ -59,7 +58,7 @@ namespace KeyFinder {
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    return output[i][0];
+    return outputComplex[i][0];
   }
 
   float FftAdapter::getOutputImaginary(unsigned int i) const {
@@ -68,7 +67,7 @@ namespace KeyFinder {
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    return output[i][1];
+    return outputComplex[i][1];
   }
 
   float FftAdapter::getOutputMagnitude(unsigned int i) const {
@@ -81,6 +80,52 @@ namespace KeyFinder {
   }
 
   void FftAdapter::execute() {
+    fftw_execute(plan);
+  }
+
+  // ================================= INVERSE =================================
+
+  InverseFftAdapter::InverseFftAdapter(unsigned int fs) {
+    frameSize = fs;
+    inputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
+    outputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
+    plan = fftw_plan_dft_c2r_1d(frameSize, inputComplex, outputReal, FFTW_ESTIMATE);
+  }
+
+  InverseFftAdapter::~InverseFftAdapter() {
+    fftw_destroy_plan(plan);
+    fftw_free(inputComplex);
+    fftw_free(outputReal);
+  }
+
+  unsigned int InverseFftAdapter::getFrameSize() const {
+    return frameSize;
+  }
+
+  void InverseFftAdapter::setInput(unsigned int i, float real, float imag) {
+    if (i >= frameSize) {
+      std::ostringstream ss;
+      ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
+      throw Exception(ss.str().c_str());
+    }
+    if (!boost::math::isfinite(real) || !boost::math::isfinite(imag)) {
+      throw Exception("Cannot set sample to NaN");
+    }
+    inputComplex[i][0] = real;
+    inputComplex[i][1] = imag;
+  }
+
+  float InverseFftAdapter::getOutput(unsigned int i) const {
+    if (i >= frameSize) {
+      std::ostringstream ss;
+      ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
+      throw Exception(ss.str().c_str());
+    }
+    // divide by frameSize to normalise
+    return outputReal[i] / frameSize;
+  }
+
+  void InverseFftAdapter::execute() {
     fftw_execute(plan);
   }
 
