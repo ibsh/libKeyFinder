@@ -35,3 +35,25 @@ TEST (WindowFunctionTest, GaussianFn) {
     ASSERT_LT(g[i], g[i-1]);
   ASSERT_NEAR(0.0, g[width - 1], 0.01);
 }
+
+TEST (WindowFunctionTest, AllTemporalWindowsAreSymmetricalAndRangeFrom0To1) {
+  KeyFinder::WindowFunction win;
+  unsigned int evenWidth = 24;
+  unsigned int oddWidth = 25;
+  for (unsigned int w = 0; w < 6; w++) {
+    KeyFinder::temporal_window_t type;
+    if (w % 3 == 0) type = KeyFinder::WINDOW_HANN;
+    else if (w % 3 == 1) type = KeyFinder::WINDOW_HAMMING;
+    else if (w % 3 == 2) type = KeyFinder::WINDOW_BLACKMAN;
+    unsigned int width;
+    if (w % 2 == 0) width = evenWidth;
+    else if (w % 2 == 1) width = oddWidth;
+
+    ASSERT_NEAR(0.0, win.window(type,         0, width), 0.1);
+    ASSERT_NEAR(1.0, win.window(type, width / 2, width), 0.1);
+    ASSERT_NEAR(0.0, win.window(type, width - 1, width), 0.1);
+    for (unsigned int n = 0; n < width / 2; n++) {
+      ASSERT_FLOAT_EQ(win.window(type, n, width), win.window(type, width - 1 - n, width));
+    }
+  }
+}
