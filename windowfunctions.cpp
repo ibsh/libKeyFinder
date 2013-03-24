@@ -50,7 +50,7 @@ namespace KeyFinder {
       for (unsigned int k = 0; k < window.size(); k++) {
         int frm = (signed)sample - (signed)padding + (signed)k;
         if (frm >= 0 && frm < (signed)inputSize) // don't run off either end
-          convolution += input[frm] * window[k];
+          convolution += input[frm] * window[k] / window.size();
       }
       convolved[sample] = convolution;
     }
