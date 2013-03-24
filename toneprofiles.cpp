@@ -106,6 +106,7 @@ namespace KeyFinder {
         p[10]=3.34; p[11]=3.17;
       }
     } else { // Custom
+      if (customProfile.size() != 24) throw Exception("Custom tone profile must have 24 elements");
       if (scale == SCALE_MAJOR) {
         for (unsigned int i = 0; i < SEMITONES; i++)
           p[i] = (float)customProfile[i];

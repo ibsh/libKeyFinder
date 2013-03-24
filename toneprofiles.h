@@ -27,6 +27,7 @@
 
 #include "binode.h"
 #include "constants.h"
+#include "exception.h"
 
 namespace KeyFinder {
 
