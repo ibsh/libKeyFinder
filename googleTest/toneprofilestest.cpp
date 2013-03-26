@@ -54,3 +54,6 @@ TEST (ToneProfilesTest, PerfectCosineDissimilarity) {
   float result = tp.similarity(KeyFinder::SIMILARITY_COSINE, vec2, 0, 0.0);
   ASSERT_FLOAT_EQ(0.0, result);
 }
+
+// TODO: Less extreme cosine tests
+// TODO: Correlation tests

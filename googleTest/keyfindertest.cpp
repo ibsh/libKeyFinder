@@ -21,6 +21,8 @@
 
 #include "keyfindertest.h"
 
+// TODO: tests for chromagramOfAudio
+
 TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
   KeyFinder::Chromagram ch(1,1,1);
   KeyFinder::KeyFinder kf;
@@ -87,3 +89,5 @@ TEST (KeyFinderTest, KeyOfChromagramCollapsesTimeDimension) {
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[11]);
   ASSERT_EQ(KeyFinder::C_MINOR, kdr.globalKeyEstimate);
 }
+
+// TODO: tests for keyOfAudio

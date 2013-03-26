@@ -23,7 +23,7 @@
 
 TEST (BinodeTest, ConstructorDefaultsWork) {
   KeyFinder::Binode<float> bf;
-  ASSERT_EQ(0.0, bf.data);
+  ASSERT_FLOAT_EQ(0.0, bf.data);
   ASSERT_EQ(NULL, bf.l);
   ASSERT_EQ(NULL, bf.r);
 

@@ -21,3 +21,5 @@
 
 #include "chromatransformtest.h"
 
+// TODO: test exception cases in constructor
+// TODO: call chromaVector with unity spectrum to test kernel

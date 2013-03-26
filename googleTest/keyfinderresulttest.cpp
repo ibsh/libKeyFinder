@@ -21,3 +21,15 @@
 
 #include "keyfinderresulttest.h"
 
+TEST (KeyFinderResultTest, ConstructorDefaultsWork) {
+  KeyFinder::KeyDetectionResultSegment kdrs;
+  ASSERT_EQ(0, kdrs.firstHop);
+  ASSERT_EQ(0, kdrs.lastHop);
+  ASSERT_EQ(0, kdrs.chromaVector.size());
+  ASSERT_FLOAT_EQ(0.0, kdrs.energy);
+  ASSERT_EQ(KeyFinder::SILENCE, kdrs.key);
+
+  KeyFinder::KeyDetectionResult kdr;
+  ASSERT_EQ(0, kdr.segments.size());
+  ASSERT_EQ(KeyFinder::SILENCE, kdr.globalKeyEstimate);
+}
