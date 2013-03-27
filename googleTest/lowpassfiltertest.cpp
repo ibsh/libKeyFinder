@@ -22,9 +22,11 @@
 #include "lowpassfiltertest.h"
 
 // Inheritance so we can check the coefficients. Probably best to refactor instead.
-std::vector<float> DefaultLowPassFilterWithPublicCoefficients::getCoefficients() const {
-  return coefficients;
-}
+class DefaultLowPassFilterWithPublicCoefficients : public KeyFinder::LowPassFilter {
+public:
+  DefaultLowPassFilterWithPublicCoefficients() : KeyFinder::LowPassFilter(160, 44100, 2000.0, 2048) {}
+  std::vector<float> getCoefficients() const { return coefficients; }
+};
 
 unsigned int samples = 44100;
 float magnitude = 32768.0;

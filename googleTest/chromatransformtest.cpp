@@ -21,5 +21,74 @@
 
 #include "chromatransformtest.h"
 
-// TODO: test exception cases in constructor
-// TODO: call chromaVector with unity spectrum to test kernel
+TEST (ChromaTransformTest, InsistsOnPositiveFrameRate) {
+  KeyFinder::Parameters params;
+  KeyFinder::ChromaTransform* ct = NULL;
+  ASSERT_THROW(ct = new KeyFinder::ChromaTransform(0, params), KeyFinder::Exception);
+  ASSERT_EQ(NULL, ct);
+  ASSERT_NO_THROW(ct = new KeyFinder::ChromaTransform(4410, params));
+}
+
+TEST (ChromaTransformTest, InsistsOnNyquistHigherThanAnalysisFreqs) {
+  KeyFinder::Parameters params;
+  float high = params.getLastFrequency();
+  KeyFinder::ChromaTransform* ct = NULL;
+  ASSERT_THROW(ct = new KeyFinder::ChromaTransform(high * 2 - 1, params), KeyFinder::Exception);
+  ASSERT_EQ(NULL, ct);
+  ASSERT_NO_THROW(ct = new KeyFinder::ChromaTransform(high * 2 + 1, params));
+}
+
+TEST (ChromaTransformTest, InsistsOnSufficientBassResolution) {
+  KeyFinder::Parameters params;
+  float lowestDiff = params.getBandFrequency(1) - params.getBandFrequency(0);
+  unsigned int frameRate = 4410;
+  float minimumFftFrameSize = frameRate / lowestDiff;
+  KeyFinder::ChromaTransform* ct = NULL;
+  params.setFftFrameSize(minimumFftFrameSize - 1);
+  ASSERT_THROW(ct = new KeyFinder::ChromaTransform(frameRate, params), KeyFinder::Exception);
+  ASSERT_EQ(NULL, ct);
+  params.setFftFrameSize(minimumFftFrameSize + 1);
+  ASSERT_NO_THROW(ct = new KeyFinder::ChromaTransform(frameRate, params));
+}
+
+// Inheritance so we can get the (private) kernel out.
+class MyChromaTransform : public KeyFinder::ChromaTransform {
+public:
+  MyChromaTransform(unsigned int f, const KeyFinder::Parameters p)
+    : KeyFinder::ChromaTransform(f, p) { }
+  std::vector<unsigned int> getChromaBandFftBinOffsets() { return chromaBandFftBinOffsets; }
+  std::vector< std::vector<float> > getDirectSpectralKernel() { return directSpectralKernel; }
+};
+
+TEST (ChromaTransformTest, TestSpectralKernel) {
+  KeyFinder::Parameters params;
+  MyChromaTransform* myCt = NULL;
+  myCt = new MyChromaTransform(4410, params);
+  std::vector<unsigned int> cbfbo = myCt->getChromaBandFftBinOffsets();
+  std::vector< std::vector<float> > dsk = myCt->getDirectSpectralKernel();
+  unsigned int chromaBands = params.getOctaves() * params.getBandsPerOctave();
+
+  // ensure correct element sizes
+  ASSERT_EQ(chromaBands, cbfbo.size());
+  ASSERT_EQ(chromaBands, dsk.size());
+
+  // ensure offsets and sizes increase as frequency increases
+  for (unsigned int i = 1; i < chromaBands; i++) {
+    ASSERT_GT(cbfbo[i], cbfbo[i-1]);
+    ASSERT_GE(dsk[i].size(), dsk[i-1].size());
+  }
+
+  // ensure that each kernel element is an up-and-down curve
+  // and that the peak is the vector's centre +/- 1
+  for (unsigned int i = 0; i < chromaBands; i++) {
+    int peak = -1;
+    for (unsigned int j = 1; j < dsk[i].size(); j++) {
+      if (peak < 0) {
+        if(dsk[i][j] <= dsk[i][j-1]) peak = j-1;
+      } else {
+        ASSERT_LT(dsk[i][j], dsk[i][j-1]);
+      }
+    }
+    ASSERT_NEAR(dsk[i].size() / 2, peak, 1);
+  }
+}

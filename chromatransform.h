@@ -22,6 +22,7 @@
 #ifndef CHROMATRANSFORM_H
 #define CHROMATRANSFORM_H
 
+#include "exception.h"
 #include "parameters.h"
 #include "fftadapter.h"
 
@@ -31,7 +32,7 @@ namespace KeyFinder {
   public:
     ChromaTransform(unsigned int frameRate, const Parameters& params);
     std::vector<float> chromaVector(const FftAdapter* fft) const;
-  private:
+  protected:
     unsigned int chromaBands;
     unsigned int frameRate;
     // ragged 2D array; narrow for bass, wide for treble.
