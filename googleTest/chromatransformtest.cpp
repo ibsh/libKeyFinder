@@ -78,6 +78,12 @@ TEST (ChromaTransformTest, TestSpectralKernel) {
     ASSERT_GE(dsk[i].size(), dsk[i-1].size());
   }
 
+  // ensure that the relationship between frequency and bandwidth is constantish
+  float q = params.getLastFrequency() / dsk[dsk.size() - 1].size();
+  for (unsigned int i = 0; i < chromaBands; i++) {
+    ASSERT_NEAR(q, params.getBandFrequency(i) / dsk[i].size(), q / 6);
+  }
+
   // ensure that each kernel element is an up-and-down curve
   // and that the peak is the vector's centre +/- 1
   // and that the peak is at the expected frequency
