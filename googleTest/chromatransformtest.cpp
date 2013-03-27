@@ -80,6 +80,7 @@ TEST (ChromaTransformTest, TestSpectralKernel) {
 
   // ensure that each kernel element is an up-and-down curve
   // and that the peak is the vector's centre +/- 1
+  // and that the peak is at the expected frequency
   for (unsigned int i = 0; i < chromaBands; i++) {
     int peak = -1;
     for (unsigned int j = 1; j < dsk[i].size(); j++) {
@@ -90,5 +91,7 @@ TEST (ChromaTransformTest, TestSpectralKernel) {
       }
     }
     ASSERT_NEAR(dsk[i].size() / 2, peak, 1);
+    float peakFrequency = (cbfbo[i] + peak) * 4410.0 / params.getFftFrameSize();
+    ASSERT_NEAR(params.getBandFrequency(i), peakFrequency, 0.2);
   }
 }
