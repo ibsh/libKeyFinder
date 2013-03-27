@@ -43,16 +43,11 @@ namespace KeyFinder {
     float similarity(
       similarity_measure_t similarityMeasure,
       const std::vector<float>& chromaVector,
-      int offset,
-      float inputMean
+      int offset
     ) const;
   private:
     float cosine(const std::vector<float>& chromaVector, int offset) const;
-    float correlation(
-      const std::vector<float>& chromaVector,
-      int offset,
-      float inputMean
-    ) const;
+    float correlation(const std::vector<float>& chromaVector, int offset) const;
     void free();
     Binode<float>* tonic;
     float profileMean;

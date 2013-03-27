@@ -152,9 +152,12 @@ namespace KeyFinder {
     } while (p!=tonic);
   }
 
-  float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset, float inputMean) const {
+  // TODO: maybe factor out the vector similarity methods. They're not exactly
+  // specific to tone profiling.
+  float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset) const {
+    if (input.size() != 12) throw Exception("Input vector for similarity must have 12 elements");
     if (measure == SIMILARITY_CORRELATION)
-      return correlation(input, offset, inputMean);
+      return correlation(input, offset);
     else
       return cosine(input, offset);
   }
@@ -191,7 +194,10 @@ namespace KeyFinder {
   offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
   inputMean = mean input value
   */
-  float ToneProfile::correlation(const std::vector<float>& input, int offset, float inputMean) const {
+  float ToneProfile::correlation(const std::vector<float>& input, int offset) const {
+    float inputMean = 0.0;
+    for (unsigned int i=0; i<input.size(); i++)
+      inputMean += input[i] / input.size();
     Binode<float>* p = tonic;
     for (int i=0; i<offset; i++)
       p = p->l;

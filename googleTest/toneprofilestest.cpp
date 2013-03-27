@@ -21,8 +21,10 @@
 
 #include "toneprofilestest.h"
 
-KeyFinder::tone_profile_t pr = KeyFinder::TONE_PROFILE_CUSTOM;
-KeyFinder::scale_t sc        = KeyFinder::SCALE_MAJOR;
+KeyFinder::tone_profile_t pr       = KeyFinder::TONE_PROFILE_CUSTOM;
+KeyFinder::scale_t sc              = KeyFinder::SCALE_MAJOR;
+KeyFinder::similarity_measure_t cs = KeyFinder::SIMILARITY_COSINE;
+KeyFinder::similarity_measure_t cr = KeyFinder::SIMILARITY_CORRELATION;
 
 TEST (ToneProfilesTest, ExceptionOnWrongCustomSize) {
   std::vector<float> vec(23, 0.0);
@@ -31,29 +33,71 @@ TEST (ToneProfilesTest, ExceptionOnWrongCustomSize) {
   ASSERT_NO_THROW(KeyFinder::ToneProfile tp(pr, sc, false, vec2));
 }
 
-TEST (ToneProfilesTest, PerfectCosineSimilarity) {
+TEST (ToneProfilesTest, ExceptionOnWrongInputSize) {
+  std::vector<float> vec(24, 0.0);
+  KeyFinder::ToneProfile tp(pr, sc, false, vec);
+  std::vector<float> vec2(13, 0.0);
+  ASSERT_THROW(tp.similarity(cs, vec2, 0), KeyFinder::Exception);
+  vec2.resize(12);
+  ASSERT_NO_THROW(tp.similarity(cs, vec2, 0));
+}
+
+TEST (ToneProfilesTest, PerfectSimilarity) {
   std::vector<float> vec(24, 0.0);
   vec[0] = 1.0;
   vec[3] = 1.0;
   vec[7] = 1.0;
   KeyFinder::ToneProfile tp(pr, sc, false, vec);
-  float result = tp.similarity(KeyFinder::SIMILARITY_COSINE, vec, 0, 0.0);
-  ASSERT_FLOAT_EQ(1.0, result);
+  vec.resize(12);
+  float rslt_cos = tp.similarity(cs, vec, 0);
+  ASSERT_FLOAT_EQ(1.0, rslt_cos);
+  float rslt_cor = tp.similarity(cr, vec, 0);
+  ASSERT_FLOAT_EQ(1.0, rslt_cor);
 }
 
-TEST (ToneProfilesTest, PerfectCosineDissimilarity) {
+TEST (ToneProfilesTest, SimilarityNormalisesMagnitude) {
+  std::vector<float> vec(24, 0.0);
+  vec[0] = 1.0;
+  vec[3] = 1.0;
+  vec[7] = 1.0;
+  KeyFinder::ToneProfile tp(pr, sc, false, vec);
+  vec.resize(12);
+  vec[0] = 1000.0;
+  vec[3] = 1000.0;
+  vec[7] = 1000.0;
+  float rslt_cos = tp.similarity(cs, vec, 0);
+  ASSERT_FLOAT_EQ(1.0, rslt_cos);
+  float rslt_cor = tp.similarity(cr, vec, 0);
+  ASSERT_FLOAT_EQ(1.0, rslt_cor);
+}
+
+TEST (ToneProfilesTest, PerfectDissimilarity) {
   std::vector<float> vec1(24, 0.0);
   vec1[0] = 1.0;
   vec1[3] = 1.0;
   vec1[7] = 1.0;
-  std::vector<float> vec2(24, 1.0);
+  std::vector<float> vec2(12, 1.0);
   vec2[0] = 0.0;
   vec2[3] = 0.0;
   vec2[7] = 0.0;
   KeyFinder::ToneProfile tp(pr, sc, false, vec1);
-  float result = tp.similarity(KeyFinder::SIMILARITY_COSINE, vec2, 0, 0.0);
-  ASSERT_FLOAT_EQ(0.0, result);
+  float rslt_cos = tp.similarity(cs, vec2, 0);
+  ASSERT_FLOAT_EQ(0.0, rslt_cos);
+  float rslt_cor = tp.similarity(cr, vec2, 0);
+  ASSERT_FLOAT_EQ(-1.0, rslt_cor);
 }
 
-// TODO: Less extreme cosine tests
-// TODO: Correlation tests
+TEST (ToneProfilesTest, PartialSimilarity) {
+  std::vector<float> vec1(24, 0.0);
+  vec1[0] = 1.0;
+  vec1[1] = 3.0;
+  std::vector<float> vec2(12, 0.0);
+  vec2[0] = 3.0;
+  vec2[1] = 1.0;
+  KeyFinder::ToneProfile tp(pr, sc, false, vec1);
+  float rslt_cos = tp.similarity(cs, vec2, 0);
+  ASSERT_FLOAT_EQ(0.6, rslt_cos);
+  float rslt_cor = tp.similarity(cr, vec2, 0);
+  ASSERT_NEAR(0.54, rslt_cor, 0.005);
+}
+

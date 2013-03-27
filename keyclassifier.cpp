@@ -40,18 +40,14 @@ namespace KeyFinder {
   key_t KeyClassifier::classify(const std::vector<float>& chroma) {
     std::vector<float> scores(24);
     float bestScore = 0.0;
-    float chromaMean = 0.0;
-    for (unsigned int i = 0; i < chroma.size(); i++)
-      chromaMean += chroma[i];
-    chromaMean /= chroma.size();
     for (unsigned int i = 0; i < SEMITONES; i++) {
       float score;
-      score = major->similarity(similarityMeasure, chroma, i, chromaMean); // major
+      score = major->similarity(similarityMeasure, chroma, i); // major
       scores[i*2] = score;
-      score = minor->similarity(similarityMeasure, chroma, i, chromaMean); // minor
+      score = minor->similarity(similarityMeasure, chroma, i); // minor
       scores[(i*2)+1] = score;
     }
-    bestScore = silence->similarity(similarityMeasure, chroma, 0, chromaMean);
+    bestScore = silence->similarity(similarityMeasure, chroma, 0);
     // find best match, defaulting to silence
     key_t bestMatch = SILENCE;
     for (unsigned int i = 0; i < 24; i++) {
