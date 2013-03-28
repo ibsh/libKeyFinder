@@ -21,7 +21,34 @@
 
 #include "keyfindertest.h"
 
-// TODO: tests for chromagramOfAudio
+TEST (KeyFinderTest, ChromagramOfAudioDetectsAMinorTriad) {
+    unsigned int sampleRate = 44100;
+    KeyFinder::AudioData a;
+    a.setChannels(1);
+    a.setFrameRate(sampleRate);
+    a.addToSampleCount(sampleRate);
+    for (unsigned int i = 0; i < sampleRate; i++) {
+      float sample = 0.0;
+      sample += sine_wave(i, 440.0000, sampleRate, 1);
+      sample += sine_wave(i, 523.2511, sampleRate, 1);
+      sample += sine_wave(i, 659.2551, sampleRate, 1);
+      a.setSample(i, sample);
+    }
+
+    KeyFinder::KeyFinder kf;
+    KeyFinder::Parameters p;
+    p.setFftFrameSize(sampleRate);
+    p.setOffsetToC(false);
+    KeyFinder::Chromagram ch(kf.chromagramOfAudio(a, p));
+    ASSERT_EQ(1, ch.getHops());
+    ASSERT_EQ(72, ch.getBands());
+    for (unsigned int b = 0; b < ch.getBands(); b++){
+      if (b == 48 || b == 51 || b == 55)
+        ASSERT_LT(175.0, ch.getMagnitude(0, b));
+      else
+        ASSERT_GT(16.0, ch.getMagnitude(0, b));
+    }
+}
 
 TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
   KeyFinder::Chromagram ch(1,1,1);
@@ -90,4 +117,23 @@ TEST (KeyFinderTest, KeyOfChromagramCollapsesTimeDimension) {
   ASSERT_EQ(KeyFinder::C_MINOR, kdr.globalKeyEstimate);
 }
 
-// TODO: tests for keyOfAudio
+TEST (KeyFinderTest, KeyOfAudioDetectsAMinorTriad) {
+    unsigned int sampleRate = 44100;
+    KeyFinder::AudioData a;
+    a.setChannels(1);
+    a.setFrameRate(sampleRate);
+    a.addToSampleCount(sampleRate);
+    for (unsigned int i = 0; i < sampleRate; i++) {
+      float sample = 0.0;
+      sample += sine_wave(i, 440.0000, sampleRate, 1);
+      sample += sine_wave(i, 523.2511, sampleRate, 1);
+      sample += sine_wave(i, 659.2551, sampleRate, 1);
+      a.setSample(i, sample);
+    }
+
+    KeyFinder::KeyFinder kf;
+    KeyFinder::Parameters p;
+    p.setFftFrameSize(sampleRate);
+    KeyFinder::KeyDetectionResult kdr(kf.keyOfAudio(a, p));
+    ASSERT_EQ(KeyFinder::A_MINOR, kdr.globalKeyEstimate);
+}
