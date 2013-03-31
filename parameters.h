@@ -37,7 +37,6 @@ namespace KeyFinder {
     Parameters& operator=(const Parameters&);
     bool equivalentSpectralKernels(const Parameters&) const;
 
-    // getters
     bool getOffsetToC() const;
     unsigned int getFftFrameSize() const;
     unsigned int getHopsPerFrame() const;
@@ -61,7 +60,26 @@ namespace KeyFinder {
     tuning_method_t getTuningMethod() const;
     std::vector<float> getCustomToneProfile() const;
 
-    // setters
+    bool getOffsetToCDefault() const;
+    unsigned int getFftFrameSizeDefault() const;
+    unsigned int getHopsPerFrameDefault() const;
+    unsigned int getHopSizeDefault() const;
+    unsigned int getOctavesDefault() const;
+    unsigned int getBandsPerSemitoneDefault() const;
+    unsigned int getBandsPerOctaveDefault() const;
+    unsigned int getArbitrarySegmentsDefault() const;
+    unsigned int getSegPeakPickingNeighboursDefault() const;
+    unsigned int getSegGaussianSizeDefault() const;
+    float getSegGaussianSigmaDefault() const;
+    float getStartingFreqADefault() const;
+    float getDirectSkStretchDefault() const;
+    float getDetunedBandWeightDefault() const;
+    temporal_window_t getTemporalWindowDefault() const;
+    segmentation_t getSegmentationDefault() const;
+    similarity_measure_t getSimilarityMeasureDefault() const;
+    tone_profile_t getToneProfileDefault() const;
+    tuning_method_t getTuningMethodDefault() const;
+
     void setOffsetToC(bool offsetToC);
     void setFftFrameSize(unsigned int fftFrameSize);
     void setHopsPerFrame(unsigned int hopsPerFrame);

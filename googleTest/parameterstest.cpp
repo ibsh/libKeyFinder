@@ -21,32 +21,63 @@
 
 #include "parameterstest.h"
 
-TEST (ParametersTest, DefaultsAndAccessors) {
+TEST (ParametersTest, DefaultAccessors) {
+  KeyFinder::Parameters p;
+  // bools
+  ASSERT_EQ(true, p.getOffsetToCDefault());
+  // unsigned ints
+  ASSERT_EQ(16384, p.getFftFrameSizeDefault());
+  ASSERT_EQ(4,     p.getHopsPerFrameDefault());
+  ASSERT_EQ(4096,  p.getHopSizeDefault());
+  ASSERT_EQ(6,     p.getOctavesDefault());
+  ASSERT_EQ(1,     p.getBandsPerSemitoneDefault());
+  ASSERT_EQ(12,    p.getBandsPerOctaveDefault());
+  ASSERT_EQ(4,     p.getSegPeakPickingNeighboursDefault());
+  ASSERT_EQ(3,     p.getArbitrarySegmentsDefault());
+  ASSERT_EQ(35,    p.getSegGaussianSizeDefault());
+  // floats
+  ASSERT_FLOAT_EQ(8.0,  p.getSegGaussianSigmaDefault());
+  ASSERT_FLOAT_EQ(27.5, p.getStartingFreqADefault());
+  ASSERT_FLOAT_EQ(0.8,  p.getDirectSkStretchDefault());
+  ASSERT_FLOAT_EQ(0.2,  p.getDetunedBandWeightDefault());
+  // enums
+  ASSERT_EQ(KeyFinder::WINDOW_BLACKMAN,     p.getTemporalWindowDefault());
+  ASSERT_EQ(KeyFinder::SEGMENTATION_NONE,   p.getSegmentationDefault());
+  ASSERT_EQ(KeyFinder::SIMILARITY_COSINE,   p.getSimilarityMeasureDefault());
+  ASSERT_EQ(KeyFinder::TONE_PROFILE_SHAATH, p.getToneProfileDefault());
+  ASSERT_EQ(KeyFinder::TUNING_HARTE,        p.getTuningMethodDefault());
+}
+
+TEST (ParametersTest, DefaultsEmployedByConstructor) {
   KeyFinder::Parameters p;
 
   // bools
-  ASSERT_EQ(true, p.getOffsetToC());
-  // enums
-  ASSERT_EQ(KeyFinder::WINDOW_BLACKMAN,     p.getTemporalWindow());
-  ASSERT_EQ(KeyFinder::SEGMENTATION_NONE,   p.getSegmentation());
-  ASSERT_EQ(KeyFinder::SIMILARITY_COSINE,   p.getSimilarityMeasure());
-  ASSERT_EQ(KeyFinder::TONE_PROFILE_SHAATH, p.getToneProfile());
-  ASSERT_EQ(KeyFinder::TUNING_HARTE,        p.getTuningMethod());
+  ASSERT_EQ(p.getOffsetToCDefault(),  p.getOffsetToC());
   // unsigned ints
-  ASSERT_EQ(16384, p.getFftFrameSize());
-  ASSERT_EQ(4,     p.getHopsPerFrame());
-  ASSERT_EQ(4096,  p.getHopSize());
-  ASSERT_EQ(6,     p.getOctaves());
-  ASSERT_EQ(1,     p.getBandsPerSemitone());
-  ASSERT_EQ(12,    p.getBandsPerOctave());
-  ASSERT_EQ(4,     p.getSegPeakPickingNeighbours());
-  ASSERT_EQ(3,     p.getArbitrarySegments());
-  ASSERT_EQ(35,    p.getSegGaussianSize());
+  ASSERT_EQ(p.getFftFrameSizeDefault(),             p.getFftFrameSize());
+  ASSERT_EQ(p.getHopsPerFrameDefault(),             p.getHopsPerFrame());
+  ASSERT_EQ(p.getHopSizeDefault(),                  p.getHopSize());
+  ASSERT_EQ(p.getOctavesDefault(),                  p.getOctaves());
+  ASSERT_EQ(p.getBandsPerSemitoneDefault(),         p.getBandsPerSemitone());
+  ASSERT_EQ(p.getBandsPerOctaveDefault(),           p.getBandsPerOctave());
+  ASSERT_EQ(p.getSegPeakPickingNeighboursDefault(), p.getSegPeakPickingNeighbours());
+  ASSERT_EQ(p.getArbitrarySegmentsDefault(),        p.getArbitrarySegments());
+  ASSERT_EQ(p.getSegGaussianSizeDefault(),          p.getSegGaussianSize());
   // floats
-  ASSERT_FLOAT_EQ(8.0,  p.getSegGaussianSigma());
-  ASSERT_FLOAT_EQ(27.5, p.getStartingFreqA());
-  ASSERT_FLOAT_EQ(0.8,  p.getDirectSkStretch());
-  ASSERT_FLOAT_EQ(0.2,  p.getDetunedBandWeight());
+  ASSERT_FLOAT_EQ(p.getSegGaussianSigmaDefault(),  p.getSegGaussianSigma());
+  ASSERT_FLOAT_EQ(p.getStartingFreqADefault(),     p.getStartingFreqA());
+  ASSERT_FLOAT_EQ(p.getDirectSkStretchDefault(),   p.getDirectSkStretch());
+  ASSERT_FLOAT_EQ(p.getDetunedBandWeightDefault(), p.getDetunedBandWeight());
+  // enums
+  ASSERT_EQ(p.getTemporalWindowDefault(),    p.getTemporalWindow());
+  ASSERT_EQ(p.getSegmentationDefault(),      p.getSegmentation());
+  ASSERT_EQ(p.getSimilarityMeasureDefault(), p.getSimilarityMeasure());
+  ASSERT_EQ(p.getToneProfileDefault(),       p.getToneProfile());
+  ASSERT_EQ(p.getTuningMethodDefault(),      p.getTuningMethod());
+}
+
+TEST (ParametersTest, constructorCTP) {
+  KeyFinder::Parameters p;
   // custom tone profile
   std::vector<float> ctp = p.getCustomToneProfile();
   // major
@@ -75,7 +106,10 @@ TEST (ParametersTest, DefaultsAndAccessors) {
   ASSERT_FLOAT_EQ(0.0, ctp[21]);
   ASSERT_FLOAT_EQ(1.0, ctp[22]);
   ASSERT_FLOAT_EQ(0.0, ctp[23]);
-  // Some band frequencies
+}
+
+TEST (ParametersTest, aFewDefaultBandFreqs) {
+  KeyFinder::Parameters p;
   ASSERT_NEAR(32.7,    p.getBandFrequency(0), 0.01);
   ASSERT_NEAR(55.0,    p.getBandFrequency(9), 0.01);
   ASSERT_NEAR(1975.53, p.getLastFrequency(),  0.01);

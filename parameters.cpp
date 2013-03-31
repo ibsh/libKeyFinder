@@ -23,25 +23,46 @@
 
 namespace KeyFinder {
 
+  bool                 Parameters::getOffsetToCDefault()                const { return true; }
+  unsigned int         Parameters::getFftFrameSizeDefault()             const { return 16384; }
+  unsigned int         Parameters::getHopsPerFrameDefault()             const { return 4; }
+  unsigned int         Parameters::getHopSizeDefault()                  const { return getFftFrameSizeDefault() / getHopsPerFrameDefault(); }
+  unsigned int         Parameters::getOctavesDefault()                  const { return 6; }
+  unsigned int         Parameters::getBandsPerSemitoneDefault()         const { return 1; }
+  unsigned int         Parameters::getBandsPerOctaveDefault()           const { return getBandsPerSemitoneDefault() * SEMITONES; }
+  unsigned int         Parameters::getSegPeakPickingNeighboursDefault() const { return 4; }
+  unsigned int         Parameters::getArbitrarySegmentsDefault()        const { return 3; }
+  unsigned int         Parameters::getSegGaussianSizeDefault()          const { return 35; }
+  float                Parameters::getSegGaussianSigmaDefault()         const { return 8.0; }
+  float                Parameters::getStartingFreqADefault()            const { return 27.5; }
+  float                Parameters::getDirectSkStretchDefault()          const { return 0.8; }
+  float                Parameters::getDetunedBandWeightDefault()        const { return 0.2; }
+  temporal_window_t    Parameters::getTemporalWindowDefault()           const { return WINDOW_BLACKMAN; }
+  segmentation_t       Parameters::getSegmentationDefault()             const { return SEGMENTATION_NONE; }
+  similarity_measure_t Parameters::getSimilarityMeasureDefault()        const { return SIMILARITY_COSINE; }
+  tone_profile_t       Parameters::getToneProfileDefault()              const { return TONE_PROFILE_SHAATH; }
+  tuning_method_t      Parameters::getTuningMethodDefault()             const { return TUNING_HARTE; }
+
   Parameters::Parameters() {
     // defaults
-    stFreq = 27.5;
-    offsetToC = true;
-    octaves = 6;
-    bps = 1;
-    temporalWindow = WINDOW_BLACKMAN;
-    fftFrameSize = 16384;
-    hopsPerFrame = 4;
-    directSkStretch = 0.8;
-    tuningMethod = TUNING_HARTE;
-    detunedBandWeight = 0.2;
-    segmentation = SEGMENTATION_NONE;
-    segGaussianSize = 35;
-    segGaussianSigma = 8.0;
-    segPeakPickingNeighbours = 4;
-    arbitrarySegments = 3;
-    toneProfile = TONE_PROFILE_SHAATH;
-    similarityMeasure = SIMILARITY_COSINE;
+    offsetToC = getOffsetToCDefault();
+    fftFrameSize = getFftFrameSizeDefault();
+    hopsPerFrame = getHopsPerFrameDefault();
+    octaves = getOctavesDefault();
+    bps = getBandsPerSemitoneDefault();
+    segPeakPickingNeighbours = getSegPeakPickingNeighboursDefault();
+    arbitrarySegments = getArbitrarySegmentsDefault();
+    segGaussianSize = getSegGaussianSizeDefault();
+    segGaussianSigma = getSegGaussianSigmaDefault();
+    stFreq = getStartingFreqADefault();
+    directSkStretch = getDirectSkStretchDefault();
+    detunedBandWeight = getDetunedBandWeightDefault();
+    temporalWindow = getTemporalWindowDefault();
+    segmentation = getSegmentationDefault();
+    similarityMeasure = getSimilarityMeasureDefault();
+    toneProfile = getToneProfileDefault();
+    tuningMethod = getTuningMethodDefault();
+    // a basic CTP
     float custom[24] = {
       1,0,1,0,1,1,0,1,0,1,0,1, // major
       1,0,1,1,0,1,0,1,1,0,1,0  // minor
@@ -92,6 +113,7 @@ namespace KeyFinder {
     return true;
   }
 
+  // accessors
   bool                 Parameters::getOffsetToC()                const { return offsetToC; }
   temporal_window_t    Parameters::getTemporalWindow()           const { return temporalWindow; }
   segmentation_t       Parameters::getSegmentation()             const { return segmentation; }
