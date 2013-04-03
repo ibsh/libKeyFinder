@@ -137,3 +137,41 @@ TEST (KeyFinderTest, KeyOfAudioDetectsAMinorTriad) {
     KeyFinder::KeyDetectionResult kdr(kf.keyOfAudio(a, p));
     ASSERT_EQ(KeyFinder::A_MINOR, kdr.globalKeyEstimate);
 }
+
+TEST (KeyFinderTest, FlatBeatRegressionTest) {
+  KeyFinder::KeyFinder kf;
+  KeyFinder::Parameters p;
+  KeyFinder::KeyDetectionResult kdr;
+  KeyFinder::Chromagram ch(1,1,1);
+
+  // Flat Beat by Mr Oizo gets a different result from each of the tone
+  // profiles; this chroma vector represents it.
+  ch.setMagnitude(0,  0, 2236193024);
+  ch.setMagnitude(0,  1, 1869016576);
+  ch.setMagnitude(0,  2, 2052115584);
+  ch.setMagnitude(0,  3, 1794053632);
+  ch.setMagnitude(0,  4, 1920909568);
+  ch.setMagnitude(0,  5, 1918255616);
+  ch.setMagnitude(0,  6, 1902896640);
+  ch.setMagnitude(0,  7, 2394525184);
+  ch.setMagnitude(0,  8, 2541725952);
+  ch.setMagnitude(0,  9, 3349090304);
+  ch.setMagnitude(0, 10, 3699921408);
+  ch.setMagnitude(0, 11, 3248228096);
+
+  p.setToneProfile(KeyFinder::TONE_PROFILE_KRUMHANSL);
+  kdr = kf.keyOfChromagram(ch, p);
+  ASSERT_EQ(KeyFinder::G_MINOR, kdr.globalKeyEstimate);
+
+  p.setToneProfile(KeyFinder::TONE_PROFILE_TEMPERLEY);
+  kdr = kf.keyOfChromagram(ch, p);
+  ASSERT_EQ(KeyFinder::B_FLAT_MAJOR, kdr.globalKeyEstimate);
+
+  p.setToneProfile(KeyFinder::TONE_PROFILE_GOMEZ);
+  kdr = kf.keyOfChromagram(ch, p);
+  ASSERT_EQ(KeyFinder::E_FLAT_MINOR, kdr.globalKeyEstimate);
+
+  p.setToneProfile(KeyFinder::TONE_PROFILE_SHAATH);
+  kdr = kf.keyOfChromagram(ch, p);
+  ASSERT_EQ(KeyFinder::B_MINOR, kdr.globalKeyEstimate);
+}
