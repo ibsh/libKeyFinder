@@ -32,6 +32,7 @@ namespace KeyFinder {
 
   LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
     if (ord %2 != 0) throw Exception("LPF order must be an even number");
+    if (ord > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
     order = ord;
     delay = order / 2;
     impulseLength = order + 1;
