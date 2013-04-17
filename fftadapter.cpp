@@ -21,19 +21,32 @@
 
 #include "fftadapter.h"
 
+// Included here to allow substitution of a separate implementation .cpp
+#include <cmath>
+#include <fftw3.h>
+#include <boost/math/special_functions/fpclassify.hpp>
+
 namespace KeyFinder {
 
-  FftAdapter::FftAdapter(unsigned int fs) {
+  class FftAdapterPrivate {
+  public:
+    double* inputReal;
+    fftw_complex* outputComplex;
+    fftw_plan plan;
+  };
+
+  FftAdapter::FftAdapter(unsigned int fs) : priv(new FftAdapterPrivate) {
     frameSize = fs;
-    inputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
-    outputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
-    plan = fftw_plan_dft_r2c_1d(frameSize, inputReal, outputComplex, FFTW_ESTIMATE);
+    priv->inputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
+    priv->outputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
+    priv->plan = fftw_plan_dft_r2c_1d(frameSize, priv->inputReal, priv->outputComplex, FFTW_ESTIMATE);
   }
 
   FftAdapter::~FftAdapter() {
-    fftw_destroy_plan(plan);
-    fftw_free(inputReal);
-    fftw_free(outputComplex);
+    fftw_destroy_plan(priv->plan);
+    fftw_free(priv->inputReal);
+    fftw_free(priv->outputComplex);
+    delete priv;
   }
 
   unsigned int FftAdapter::getFrameSize() const {
@@ -49,7 +62,7 @@ namespace KeyFinder {
     if (!boost::math::isfinite(real)) {
       throw Exception("Cannot set sample to NaN");
     }
-    inputReal[i] = real;
+    priv->inputReal[i] = real;
   }
 
   float FftAdapter::getOutputReal(unsigned int i) const {
@@ -58,7 +71,7 @@ namespace KeyFinder {
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    return outputComplex[i][0];
+    return priv->outputComplex[i][0];
   }
 
   float FftAdapter::getOutputImaginary(unsigned int i) const {
@@ -67,7 +80,7 @@ namespace KeyFinder {
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    return outputComplex[i][1];
+    return priv->outputComplex[i][1];
   }
 
   float FftAdapter::getOutputMagnitude(unsigned int i) const {
@@ -80,22 +93,30 @@ namespace KeyFinder {
   }
 
   void FftAdapter::execute() {
-    fftw_execute(plan);
+    fftw_execute(priv->plan);
   }
 
   // ================================= INVERSE =================================
 
-  InverseFftAdapter::InverseFftAdapter(unsigned int fs) {
+  class InverseFftAdapterPrivate {
+  public:
+    fftw_complex* inputComplex;
+    double* outputReal;
+    fftw_plan plan;
+  };
+
+  InverseFftAdapter::InverseFftAdapter(unsigned int fs) : priv(new InverseFftAdapterPrivate) {
     frameSize = fs;
-    inputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
-    outputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
-    plan = fftw_plan_dft_c2r_1d(frameSize, inputComplex, outputReal, FFTW_ESTIMATE);
+    priv->inputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
+    priv->outputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
+    priv->plan = fftw_plan_dft_c2r_1d(frameSize, priv->inputComplex, priv->outputReal, FFTW_ESTIMATE);
   }
 
   InverseFftAdapter::~InverseFftAdapter() {
-    fftw_destroy_plan(plan);
-    fftw_free(inputComplex);
-    fftw_free(outputReal);
+    fftw_destroy_plan(priv->plan);
+    fftw_free(priv->inputComplex);
+    fftw_free(priv->outputReal);
+    delete priv;
   }
 
   unsigned int InverseFftAdapter::getFrameSize() const {
@@ -111,8 +132,8 @@ namespace KeyFinder {
     if (!boost::math::isfinite(real) || !boost::math::isfinite(imag)) {
       throw Exception("Cannot set sample to NaN");
     }
-    inputComplex[i][0] = real;
-    inputComplex[i][1] = imag;
+    priv->inputComplex[i][0] = real;
+    priv->inputComplex[i][1] = imag;
   }
 
   float InverseFftAdapter::getOutput(unsigned int i) const {
@@ -122,11 +143,11 @@ namespace KeyFinder {
       throw Exception(ss.str().c_str());
     }
     // divide by frameSize to normalise
-    return outputReal[i] / frameSize;
+    return priv->outputReal[i] / frameSize;
   }
 
   void InverseFftAdapter::execute() {
-    fftw_execute(plan);
+    fftw_execute(priv->plan);
   }
 
 }

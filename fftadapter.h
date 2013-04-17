@@ -22,12 +22,12 @@
 #ifndef FFTADAPTER_H
 #define FFTADAPTER_H
 
-#include <cmath>
-#include <fftw3.h>
-#include <boost/math/special_functions/fpclassify.hpp>
 #include "exception.h"
 
 namespace KeyFinder {
+
+  class FftAdapterPrivate;
+  class InverseFftAdapterPrivate;
 
   class FftAdapter {
   public:
@@ -41,9 +41,7 @@ namespace KeyFinder {
     float getOutputMagnitude(unsigned int bin) const;
   protected:
     unsigned int frameSize;
-    double* inputReal;
-    fftw_complex* outputComplex;
-    fftw_plan plan;
+    FftAdapterPrivate* priv;
   };
 
   class InverseFftAdapter {
@@ -56,9 +54,7 @@ namespace KeyFinder {
     float getOutput(unsigned int bin) const;
   protected:
     unsigned int frameSize;
-    fftw_complex* inputComplex;
-    double* outputReal;
-    fftw_plan plan;
+    InverseFftAdapterPrivate* priv;
   };
 
 }
