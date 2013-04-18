@@ -29,10 +29,10 @@ TEST (WindowFunctionTest, AllTemporalWindowsAreSymmetricalAndRangeFrom0To1) {
     KeyFinder::temporal_window_t type;
     if (w % 3 == 0) type = KeyFinder::WINDOW_HANN;
     else if (w % 3 == 1) type = KeyFinder::WINDOW_HAMMING;
-    else if (w % 3 == 2) type = KeyFinder::WINDOW_BLACKMAN;
+    else type = KeyFinder::WINDOW_BLACKMAN;
     unsigned int width;
     if (w % 2 == 0) width = evenWidth;
-    else if (w % 2 == 1) width = oddWidth;
+    else width = oddWidth;
 
     ASSERT_NEAR(0.0, win.window(type,         0, width), 0.1);
     ASSERT_NEAR(1.0, win.window(type, width / 2, width), 0.1);
