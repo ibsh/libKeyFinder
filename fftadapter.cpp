@@ -25,8 +25,11 @@
 #include <cmath>
 #include <fftw3.h>
 #include <boost/math/special_functions/fpclassify.hpp>
+#include <boost/thread/mutex.hpp>
 
 namespace KeyFinder {
+
+  boost::mutex fftwPlanMutex;
 
   class FftAdapterPrivate {
   public:
@@ -39,6 +42,7 @@ namespace KeyFinder {
     frameSize = fs;
     priv->inputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
     priv->outputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
+    boost::mutex::scoped_lock lock(fftwPlanMutex);
     priv->plan = fftw_plan_dft_r2c_1d(frameSize, priv->inputReal, priv->outputComplex, FFTW_ESTIMATE);
   }
 
@@ -109,6 +113,7 @@ namespace KeyFinder {
     frameSize = fs;
     priv->inputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
     priv->outputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
+    boost::mutex::scoped_lock lock(fftwPlanMutex);
     priv->plan = fftw_plan_dft_c2r_1d(frameSize, priv->inputComplex, priv->outputReal, FFTW_ESTIMATE);
   }
 
