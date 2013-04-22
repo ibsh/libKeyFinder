@@ -50,12 +50,12 @@ TEST (LowPassFilterTest, InsistsOnOrderNotGreaterThanOneQuarterFftFrameSize) {
 
 TEST (LowPassFilterTest, KillsHigherFreqs) {
   // make a high frequency sine wave, one second long
-  KeyFinder::AudioData* a = new KeyFinder::AudioData();
-  a->setChannels(1);
-  a->setFrameRate(samples);
-  a->addToSampleCount(samples);
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(samples);
+  a.addToSampleCount(samples);
   for (unsigned int i = 0; i < samples; i++) {
-    a->setSample(i, sine_wave(i, highFrequency, samples, magnitude));
+    a.setSample(i, sine_wave(i, highFrequency, samples, magnitude));
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, samples, cornerFrequency, filterFFT);
@@ -64,18 +64,18 @@ TEST (LowPassFilterTest, KillsHigherFreqs) {
 
   // test for near silence
   for (unsigned int i = 0; i < samples; i++) {
-    ASSERT_NEAR(0.0, a->getSample(i), tolerance);
+    ASSERT_NEAR(0.0, a.getSample(i), tolerance);
   }
 }
 
 TEST (LowPassFilterTest, MaintainsLowerFreqs) {
   // make a low frequency sine wave, one second long
-  KeyFinder::AudioData* a = new KeyFinder::AudioData();
-  a->setChannels(1);
-  a->setFrameRate(samples);
-  a->addToSampleCount(samples);
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(samples);
+  a.addToSampleCount(samples);
   for (unsigned int i = 0; i < samples; i++) {
-    a->setSample(i, sine_wave(i, lowFrequency, samples, magnitude));
+    a.setSample(i, sine_wave(i, lowFrequency, samples, magnitude));
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, samples, cornerFrequency, filterFFT);
@@ -85,23 +85,23 @@ TEST (LowPassFilterTest, MaintainsLowerFreqs) {
   // test for near perfect reproduction
   for (unsigned int i = 0; i < samples; i++) {
     float expected = sine_wave(i, lowFrequency, samples, magnitude);
-    ASSERT_NEAR(expected, a->getSample(i), tolerance);
+    ASSERT_NEAR(expected, a.getSample(i), tolerance);
   }
 }
 
 TEST (LowPassFilterTest, DoesBothAtOnce) {
   // make two sine waves, one second long
-  KeyFinder::AudioData* a = new KeyFinder::AudioData();
-  a->setChannels(1);
-  a->setFrameRate(samples);
-  a->addToSampleCount(samples);
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(samples);
+  a.addToSampleCount(samples);
   for (unsigned int i = 0; i < samples; i++) {
     float sample = 0;
     // high freq
     sample += sine_wave(i, highFrequency, samples, magnitude);
     // low freq
     sample += sine_wave(i, lowFrequency, samples, magnitude);
-    a->setSample(i, sample);
+    a.setSample(i, sample);
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, samples, cornerFrequency, filterFFT);
@@ -111,23 +111,23 @@ TEST (LowPassFilterTest, DoesBothAtOnce) {
   // test for lower wave only
   for (unsigned int i = 0; i < samples; i++) {
     float expected = sine_wave(i, lowFrequency, samples, magnitude);
-    ASSERT_NEAR(expected, a->getSample(i), tolerance);
+    ASSERT_NEAR(expected, a.getSample(i), tolerance);
   }
 }
 
 TEST (LowPassFilterTest, WorksWithShortcutFactor) {
   // make two sine waves, one second long
-  KeyFinder::AudioData* a = new KeyFinder::AudioData();
-  a->setChannels(1);
-  a->setFrameRate(samples);
-  a->addToSampleCount(samples);
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(samples);
+  a.addToSampleCount(samples);
   for (unsigned int i = 0; i < samples; i++) {
     float sample = 0;
     // high freq
     sample += sine_wave(i, highFrequency, samples, magnitude);
     // low freq
     sample += sine_wave(i, lowFrequency, samples, magnitude);
-    a->setSample(i, sample);
+    a.setSample(i, sample);
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, samples, cornerFrequency, filterFFT);
@@ -137,10 +137,10 @@ TEST (LowPassFilterTest, WorksWithShortcutFactor) {
   // test for lower wave only
   for (unsigned int i = 0; i < samples; i++) {
     if (i % 3 != 0) {
-      ASSERT_FLOAT_EQ(0.0, a->getSample(i));
+      ASSERT_FLOAT_EQ(0.0, a.getSample(i));
     } else {
       float expected = sine_wave(i, lowFrequency, samples, magnitude);
-      ASSERT_NEAR(expected, a->getSample(i), tolerance);
+      ASSERT_NEAR(expected, a.getSample(i), tolerance);
     }
   }
 }

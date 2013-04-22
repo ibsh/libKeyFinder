@@ -2,45 +2,42 @@
 
 namespace KeyFinder {
 
-  Chromagram KeyFinder::chromagramOfAudio(const AudioData& originalAudio, const Parameters& params) {
-
-    AudioData* workingAudio = new AudioData(originalAudio);
-
-    workingAudio->reduceToMono();
-
-    // TODO: there is presumably some good maths to determine filter frequencies.
-    // For now, this approximates original experiment values for default params.
-    float lpfCutoff = params.getLastFrequency() * 1.012;
-    float dsCutoff = params.getLastFrequency() * 1.10;
-    unsigned int downsampleFactor = (int)floor( workingAudio->getFrameRate() / 2 / dsCutoff );
-
-    // get filter
-    LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio->getFrameRate(), lpfCutoff, 2048);
-    // feeding in the downsampleFactor for a shortcut
-    lpf->filter(workingAudio, downsampleFactor);
-    // note we don't delete the LPF; it's stored in the factory for reuse
-
-    Downsampler ds;
-    ds.downsample(workingAudio, downsampleFactor);
-
-    // run spectral analysis
-    SpectrumAnalyser sa(workingAudio->getFrameRate(), params, &ctFactory);
-    Chromagram ch = sa.chromagram(workingAudio);
-
-    delete workingAudio;
-
-    // deal with tuning if necessary
-    if (ch.getBandsPerSemitone() > 1) {
-      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
-        ch.tuningBandAdaptive(params.getDetunedBandWeight());
-      } else if (params.getTuningMethod() == TUNING_HARTE) {
-        ch.tuningHarte();
-      }
-    }
-    return ch;
+  KeyDetectionResult KeyFinder::keyOfAudio(
+    const AudioData& originalAudio,
+    const Parameters& params
+  ) {
+    AudioData buffer;
+    Chromagram c = progressiveChromagramOfAudio(originalAudio, buffer, params);
+    c.append(finalChromagramOfAudio(buffer, params));
+    return keyOfChromagram(c, params);
   }
 
-  KeyDetectionResult KeyFinder::keyOfChromagram(const Chromagram& chromagram, const Parameters& params) {
+  Chromagram KeyFinder::progressiveChromagramOfAudio(
+    const AudioData& originalAudio,
+    AudioData& preprocessedBuffer,
+    const Parameters& params
+  ) {
+    AudioData workingAudio(originalAudio);
+    preprocess(workingAudio, params);
+    preprocessedBuffer.append(workingAudio);
+    return chromagramOfBufferedAudio(preprocessedBuffer, params);
+  }
+
+  Chromagram KeyFinder::finalChromagramOfAudio(
+    AudioData& preprocessedBuffer,
+    const Parameters& params
+  ) {
+     // zero padding
+    unsigned int finalSampleLength = params.getFftFrameSize() + ((params.getHopsPerFrame() - 1) * params.getHopSize());
+    while (preprocessedBuffer.getSampleCount() < finalSampleLength)
+      preprocessedBuffer.addToSampleCount(1);
+    return chromagramOfBufferedAudio(preprocessedBuffer, params);
+  }
+
+  KeyDetectionResult KeyFinder::keyOfChromagram(
+    const Chromagram& chromagram,
+    const Parameters& params
+  ) {
 
     KeyDetectionResult result;
 
@@ -96,10 +93,47 @@ namespace KeyFinder {
     return result;
   }
 
-  // this method to be used for whole audio streams
-  KeyDetectionResult KeyFinder::keyOfAudio(const AudioData& originalAudio, const Parameters& params) {
-    Chromagram ch = chromagramOfAudio(originalAudio, params);
-    return keyOfChromagram(ch, params);
+  void KeyFinder::preprocess(
+    AudioData& workingAudio,
+    const Parameters& params
+  ) {
+    workingAudio.reduceToMono();
+
+    // TODO: there is presumably some good maths to determine filter frequencies.
+    // For now, this approximates original experiment values for default params.
+    float lpfCutoff = params.getLastFrequency() * 1.012;
+    float dsCutoff = params.getLastFrequency() * 1.10;
+    unsigned int downsampleFactor = (int)floor( workingAudio.getFrameRate() / 2 / dsCutoff );
+
+    // get filter
+    LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
+    lpf->filter(workingAudio, downsampleFactor); // downsampleFactor shortcut
+    // note we don't delete the LPF; it's stored in the factory for reuse
+
+    Downsampler ds;
+    ds.downsample(workingAudio, downsampleFactor);
+  }
+
+  Chromagram KeyFinder::chromagramOfBufferedAudio(
+    AudioData& preprocessedBuffer,
+    const Parameters& params
+  ) {
+    SpectrumAnalyser sa(preprocessedBuffer.getFrameRate(), params, ctFactory);
+    Chromagram c;
+    while (preprocessedBuffer.getSampleCount() > params.getFftFrameSize()) {
+      Chromagram working = sa.chromagramOfFirstFrame(preprocessedBuffer);
+      // deal with tuning if necessary
+      if (working.getBandsPerSemitone() > 1) {
+        if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
+          working.tuningBandAdaptive(params.getDetunedBandWeight());
+        } else if (params.getTuningMethod() == TUNING_HARTE) {
+          working.tuningHarte();
+        }
+      }
+      c.append(working);
+      preprocessedBuffer.discardFramesFromFront(params.getHopSize());
+    }
+    return c;
   }
 
 }

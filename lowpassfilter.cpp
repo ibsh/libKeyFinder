@@ -71,7 +71,7 @@ namespace KeyFinder {
     delete ifft;
   }
 
-  void LowPassFilter::filter(AudioData*& audioIn, unsigned int shortcutFactor) const {
+  void LowPassFilter::filter(AudioData& audioIn, unsigned int shortcutFactor) const {
 
     // create circular delay buffer
     // this must be done in here for thread safety
@@ -86,19 +86,14 @@ namespace KeyFinder {
     p->l = q;
     q->r = p;
 
-    unsigned int frameCount = audioIn->getFrameCount();
-    unsigned int channels = audioIn->getChannels();
+    unsigned int frameCount = audioIn.getFrameCount();
+    unsigned int channels = audioIn.getChannels();
 
     // prep output stream
-    AudioData* audioOut = new AudioData();
-    audioOut->setFrameRate(audioIn->getFrameRate());
-    audioOut->setChannels(channels);
-    try{
-      audioOut->addToFrameCount(frameCount);
-    }catch(const Exception& e) {
-      delete audioOut ;
-      throw e;
-    }
+    AudioData audioOut;
+    audioOut.setFrameRate(audioIn.getFrameRate());
+    audioOut.setChannels(channels);
+    audioOut.addToFrameCount(frameCount);
 
     // for each channel (should be mono by this point but just in case)
     for (unsigned int ch = 0; ch < channels; ch++) {
@@ -116,7 +111,7 @@ namespace KeyFinder {
 
         // load new sample into delay buffer
         if (frm < frameCount) {
-          p->l->data = audioIn->getSample(frm, ch) / gain;
+          p->l->data = audioIn.getSample(frm, ch) / gain;
         } else {
           // zero pad once we're into the delay at the end of the file
           p->l->data = 0.0;
@@ -132,7 +127,7 @@ namespace KeyFinder {
             sum += coefficients[k] * q->data;
             q = q->r;
           }
-          audioOut->setSample(frm - delay, ch, sum);
+          audioOut.setSample(frm - delay, ch, sum);
         }
       }
     }
@@ -144,7 +139,6 @@ namespace KeyFinder {
       delete q;
     }
 
-    delete audioIn;
     audioIn = audioOut ;
 
   }

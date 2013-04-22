@@ -23,11 +23,15 @@
 
 namespace KeyFinder {
 
-  SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory) {
+  SpectrumAnalyser::SpectrumAnalyser(
+    unsigned int f,
+    const Parameters& params,
+    ChromaTransformFactory& ctFactory
+  ) {
     octaves = params.getOctaves();
     bandsPerSemitone = params.getBandsPerSemitone();
     hopSize = params.getHopSize();
-    ct = spFactory->getChromaTransform(f, params);
+    ct = ctFactory.getChromaTransform(f, params);
     unsigned int fftFrameSize = params.getFftFrameSize();
     fft = new FftAdapter(fftFrameSize);
     WindowFunction win;
@@ -42,29 +46,22 @@ namespace KeyFinder {
     delete fft;
   }
 
-  Chromagram SpectrumAnalyser::chromagram(AudioData* audio) const {
-    if (audio->getChannels() != 1)
+  Chromagram SpectrumAnalyser::chromagramOfFirstFrame(
+    const AudioData& audio
+  ) const {
+    if (audio.getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
-    unsigned int sampleCount = audio->getSampleCount();
-    unsigned int hops = ceil((float)sampleCount / (float)hopSize);
-    Chromagram ch(hops, octaves, bandsPerSemitone);
+    Chromagram c(1, octaves, bandsPerSemitone);
     unsigned int fftFrameSize = fft->getFrameSize();
-    for (unsigned int hop = 0; hop < hops; hop ++) {
-      unsigned int sampleOffset = hop * hopSize;
-      for (unsigned int sample = 0; sample < fftFrameSize; sample++) {
-        if (sampleOffset + sample < sampleCount) {
-          fft->setInput(sample, audio->getSample(sampleOffset + sample) * temporalWindow[sample]); // real part, windowed
-        } else {
-          fft->setInput(sample, 0.0); // zero-pad if no PCM data remaining
-        }
-      }
-      fft->execute();
-      std::vector<float> cv = ct->chromaVector(fft);
-      for (unsigned int band = 0; band < ch.getBands(); band++) {
-        ch.setMagnitude(hop, band, cv[band]);
-      }
+    for (unsigned int sample = 0; sample < fftFrameSize; sample++) {
+      fft->setInput(sample, audio.getSample(sample) * temporalWindow[sample]);
     }
-    return ch;
+    fft->execute();
+    std::vector<float> cv = ct->chromaVector(fft);
+    for (unsigned int band = 0; band < c.getBands(); band++) {
+      c.setMagnitude(0, band, cv[band]);
+    }
+    return c;
   }
 
 }
