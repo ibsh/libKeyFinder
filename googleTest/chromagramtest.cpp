@@ -31,8 +31,8 @@ TEST (ChromagramTest, ConstructorArgumentsWork) {
   KeyFinder::Chromagram c(20, 1, 1);
   ASSERT_EQ(20, c.getHops());
   ASSERT_EQ(12, c.getBands());
-  for (int h=0; h<20; h++) {
-    for (int b=0; b<12; b++) {
+  for (int h = 0; h < 20; h++) {
+    for (int b = 0; b < 12; b++) {
       ASSERT_FLOAT_EQ(0.0, c.getMagnitude(h, b));
     }
   }
@@ -91,22 +91,39 @@ TEST (ChromagramTest, Bounds) {
   ASSERT_THROW(c.setMagnitude( 0,  0, NAN), KeyFinder::Exception);
 }
 
-TEST (ChromagramTest, Append) {
-  KeyFinder::Chromagram c1(5, 1, 1);
-  KeyFinder::Chromagram c2(2, 1, 2);
-  KeyFinder::Chromagram c3(2, 1, 1);
+TEST (ChromagramTest, AppendToNew) {
+  KeyFinder::Chromagram a;
+  KeyFinder::Chromagram b;
 
-  // fails when appending chromagram with a different number of bands
-  ASSERT_THROW(c1.append(c2), KeyFinder::Exception);
+  ASSERT_NO_THROW(a.append(b));
+  ASSERT_EQ(0, a.getHops());
+  ASSERT_EQ(0, a.getBands());
 
-  c1.setMagnitude(4, 0, 1.0);
-  c3.setMagnitude(1, 0, 200.0);
+  KeyFinder::Chromagram c(1, 1, 1);
+  ASSERT_NO_THROW(a.append(c));
+  ASSERT_EQ(1, a.getHops());
+  ASSERT_EQ(12, a.getBands());
+}
 
-  c1.append(c3);
-  ASSERT_EQ(7, c1.getHops());
-  ASSERT_EQ(12, c1.getBands());
-  ASSERT_FLOAT_EQ(1.0, c1.getMagnitude(4, 0));
-  ASSERT_FLOAT_EQ(200.0, c1.getMagnitude(6, 0));
+TEST (ChromagramTest, AppendToInitialised) {
+  KeyFinder::Chromagram a(1, 1, 1);
+  KeyFinder::Chromagram b;
+  ASSERT_THROW(a.append(b), KeyFinder::Exception);
+
+  KeyFinder::Chromagram c(1, 2, 1);
+  ASSERT_THROW(a.append(c), KeyFinder::Exception);
+
+  KeyFinder::Chromagram d(1, 1, 2);
+  ASSERT_THROW(a.append(d), KeyFinder::Exception);
+
+  KeyFinder::Chromagram e(1, 1, 1);
+  a.setMagnitude(0, 0, 10.0);
+  e.setMagnitude(0, 0, 20.0);
+  ASSERT_NO_THROW(a.append(e));
+  ASSERT_EQ(2, a.getHops());
+  ASSERT_FLOAT_EQ(10.0, a.getMagnitude(0, 0));
+  ASSERT_FLOAT_EQ(20.0, a.getMagnitude(1, 0));
+
 }
 
 TEST (ChromagramTest, ReduceToOneOctave) {

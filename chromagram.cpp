@@ -197,6 +197,10 @@ namespace KeyFinder {
   }
 
   void Chromagram::append(const Chromagram& that) {
+    if (octaves == 0 && bandsPerSemitone == 0) {
+      octaves = that.octaves;
+      bandsPerSemitone = that.bandsPerSemitone;
+    }
     if (that.octaves != octaves || that.bandsPerSemitone != bandsPerSemitone)
       throw Exception("Cannot append a chromagram with a different number of bands");
     unsigned int oldHops = getHops();
