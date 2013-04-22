@@ -23,7 +23,7 @@
 
 namespace KeyFinder {
 
-  AudioData::AudioData(): samples(0), channels(0), frameRate(0), sampleCount(0) { }
+  AudioData::AudioData(): samples(0), channels(0), frameRate(0) { }
 
   unsigned int AudioData::getChannels() const {
     return channels;
@@ -43,11 +43,26 @@ namespace KeyFinder {
     frameRate = newFrameRate;
   }
 
+  void AudioData::append(const AudioData& that) {
+    if (channels == 0 && frameRate == 0) {
+      channels = that.channels;
+      frameRate = that.frameRate;
+    }
+    if (that.channels != channels)
+      throw Exception("Cannot append audio data with a different number of channels");
+    if (that.frameRate != frameRate)
+      throw Exception("Cannot append audio data with a different frame rate");
+    unsigned int oldSampleCount = getSampleCount();
+    samples.resize(oldSampleCount + that.getSampleCount(), 0.0);
+    for (unsigned int s = 0; s < that.getSampleCount(); s++)
+      setSample(oldSampleCount + s, that.getSample(s));
+  }
+
   // get sample by absolute index
   float AudioData::getSample(unsigned int index) const {
-    if (index >= sampleCount) {
+    if (index >= getSampleCount()) {
       std::ostringstream ss;
-      ss << "Cannot get out-of-bounds sample (" << index << "/" << sampleCount << ")";
+      ss << "Cannot get out-of-bounds sample (" << index << "/" << getSampleCount() << ")";
       throw Exception(ss.str().c_str());
     }
     return samples[index];
@@ -70,9 +85,9 @@ namespace KeyFinder {
 
   // set sample by absolute index
   void AudioData::setSample(unsigned int index, float value) {
-    if (index >= sampleCount) {
+    if (index >= getSampleCount()) {
       std::ostringstream ss;
-      ss << "Cannot set out-of-bounds sample (" << index << "/" << sampleCount << ")";
+      ss << "Cannot set out-of-bounds sample (" << index << "/" << getSampleCount() << ")";
       throw Exception(ss.str().c_str());
     }
     if (!boost::math::isfinite(value)) {
@@ -98,17 +113,16 @@ namespace KeyFinder {
 
   void AudioData::addToSampleCount(unsigned int newSamples) {
     try{
-      samples.resize(sampleCount + newSamples, 0.0);
-      sampleCount += newSamples;
+      samples.resize(getSampleCount() + newSamples, 0.0);
       // TODO: turns out this doesn't work; bad_alloc never gets thrown on Mac,
       // presumably it tries to do everything in swap
     }catch(const std::exception& e) {
       std::ostringstream ss;
-      ss << "Exception adding " << newSamples << " samples to stream of " << sampleCount << ": " << e.what();
+      ss << "Exception adding " << newSamples << " samples to stream of " << getSampleCount() << ": " << e.what();
       throw Exception(ss.str().c_str());
     }catch(...) {
       std::ostringstream ss;
-      ss << "Unknown exception adding " << newSamples << " samples to stream of " << sampleCount;
+      ss << "Unknown exception adding " << newSamples << " samples to stream of " << getSampleCount();
       throw Exception(ss.str().c_str());
     }
   }
@@ -119,26 +133,40 @@ namespace KeyFinder {
   }
 
   unsigned int AudioData::getSampleCount() const {
-    return sampleCount;
+    return samples.size();
   }
 
   unsigned int AudioData::getFrameCount() const {
     if (channels < 1) throw Exception("Channels must be > 0");
-    return sampleCount / channels;
+    return getSampleCount() / channels;
   }
 
   void AudioData::reduceToMono() {
     if (channels == 1) return;
-    std::vector<float> newStream(sampleCount / channels);
-    for (unsigned int i = 0; i < sampleCount; i += channels) {
+    std::vector<float> newStream(getSampleCount() / channels);
+    for (unsigned int i = 0; i < getSampleCount(); i += channels) {
       for (unsigned int j = 0; j < channels; j++) {
         newStream[i/channels] += samples[i + j] / channels;
       }
     }
     samples = newStream;
-    sampleCount /= channels;
     channels = 1;
     return;
+  }
+
+  void AudioData::discardFramesFromFront(unsigned int discardFrameCount) {
+    if (discardFrameCount > getFrameCount()) {
+      std::ostringstream ss;
+      ss << "Cannot discard " << discardFrameCount << " frames of " << getFrameCount();
+      throw Exception(ss.str().c_str());
+    }
+    unsigned int discardSampleCount = discardFrameCount * channels;
+    unsigned int newSampleCount = getSampleCount() - discardSampleCount;
+    std::vector<float> newStream(newSampleCount);
+    for (unsigned int i = 0; i < newSampleCount; i ++) {
+      newStream[i] = samples[i + discardSampleCount];
+    }
+    samples = newStream;
   }
 
 }

@@ -46,13 +46,14 @@ namespace KeyFinder {
     void addToSampleCount(unsigned int newSamples);
     void addToFrameCount(unsigned int newFrames);
 
+    void append(const AudioData& that);
+    void discardFramesFromFront(unsigned int discardFrameCount);
     void reduceToMono();
 
   private:
     std::vector<float> samples;
     unsigned int channels;
     unsigned int frameRate;
-    unsigned int sampleCount;
   };
 
 }
