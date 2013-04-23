@@ -145,15 +145,18 @@ TEST (ParametersTest, StartingFrequencyMutator) {
   ASSERT_NO_THROW(p.setStartingFrequencyA(880.0));
   ASSERT_NO_THROW(p.setStartingFrequencyA(1760.0));
   ASSERT_NO_THROW(p.setStartingFrequencyA(3520.0));
+  ASSERT_THROW(p.setStartingFrequencyA(13.75), KeyFinder::Exception);
   ASSERT_THROW(p.setStartingFrequencyA(27.4), KeyFinder::Exception);
+  ASSERT_THROW(p.setStartingFrequencyA(3520.1), KeyFinder::Exception);
+  ASSERT_THROW(p.setStartingFrequencyA(7040.0), KeyFinder::Exception);
 }
 
 TEST (ParametersTest, CustomToneProfileMutator) {
   KeyFinder::Parameters p;
-  ASSERT_NO_THROW(p.setCustomToneProfile(std::vector<float>(24, 0.0)));
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(23, 0.0)), KeyFinder::Exception);
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(25, 0.0)), KeyFinder::Exception);
   ASSERT_THROW(p.setCustomToneProfile(std::vector<float>(24, -0.1)), KeyFinder::Exception);
+  ASSERT_NO_THROW(p.setCustomToneProfile(std::vector<float>(24, 0.0)));
 }
 
 TEST (ParametersTest, OtherMutatorsWithValidation) {
@@ -187,6 +190,6 @@ TEST (ParametersTest, FrequencyBandsForTuning) {
   ASSERT_NEAR(27.5,  p.getBandFrequency(1),  0.01);
   ASSERT_NEAR(28.03, p.getBandFrequency(2),  0.01);
   ASSERT_NEAR(50.92, p.getBandFrequency(33), 0.01);
-  ASSERT_NEAR(51.91,  p.getBandFrequency(34), 0.01);
+  ASSERT_NEAR(51.91, p.getBandFrequency(34), 0.01);
   ASSERT_NEAR(52.92, p.getBandFrequency(35), 0.01);
 }

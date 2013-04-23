@@ -76,6 +76,16 @@ TEST (KeyClassifierTest, DetectsAMinorTriad) {
   ASSERT_EQ(KeyFinder::A_MINOR, kc11.classify(chromaOffset));
   KeyFinder::KeyClassifier kc12(simCos, tpS, true);
   ASSERT_EQ(KeyFinder::A_MINOR, kc12.classify(chromaOffset));
+
+  // With offset, correlation
+  KeyFinder::KeyClassifier kc13(simCor, tpK, true);
+  ASSERT_EQ(KeyFinder::A_MINOR, kc13.classify(chromaOffset));
+  KeyFinder::KeyClassifier kc14(simCor, tpT, true);
+  ASSERT_EQ(KeyFinder::A_MINOR, kc14.classify(chromaOffset));
+  KeyFinder::KeyClassifier kc15(simCor, tpG, true);
+  ASSERT_EQ(KeyFinder::A_MINOR, kc15.classify(chromaOffset));
+  KeyFinder::KeyClassifier kc16(simCor, tpS, true);
+  ASSERT_EQ(KeyFinder::A_MINOR, kc16.classify(chromaOffset));
 }
 
 TEST (KeyClassifierTest, DetectsOtherTriads) {

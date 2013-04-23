@@ -25,7 +25,6 @@ TEST (FftAdapterTest, Forward_And_Backward) {
 
   unsigned int frameSize = 2048;
   std::vector<float> original(frameSize);
-
   KeyFinder::FftAdapter fft(frameSize);
 
   for (unsigned int i = 0; i < frameSize; i++) {

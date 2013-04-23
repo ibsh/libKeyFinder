@@ -84,9 +84,9 @@ TEST (ChromaTransformTest, TestSpectralKernel) {
     ASSERT_NEAR(q, params.getBandFrequency(i) / dsk[i].size(), q / 6);
   }
 
-  // ensure that each kernel element is an up-and-down curve
-  // and that the peak is the vector's centre +/- 1
-  // and that the peak is at the expected frequency
+  // ensure that each kernel element is an up-and-down curve,
+  // and that the peak is the vector's centre +/- 1,
+  // and that the peak is at the expected frequency.
   for (unsigned int i = 0; i < chromaBands; i++) {
     int peak = -1;
     for (unsigned int j = 1; j < dsk[i].size(); j++) {
