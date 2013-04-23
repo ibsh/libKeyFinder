@@ -21,6 +21,69 @@
 
 #include "keyfindertest.h"
 
+TEST (KeyFinderTest, BasicUseCase) {
+  unsigned int sampleRate = 44100;
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(sampleRate);
+  a.addToSampleCount(sampleRate);
+  for (unsigned int i = 0; i < sampleRate; i++) {
+    float sample = 0.0;
+    sample += sine_wave(i, 440.0000, sampleRate, 1);
+    sample += sine_wave(i, 523.2511, sampleRate, 1);
+    sample += sine_wave(i, 659.2551, sampleRate, 1);
+    a.setSample(i, sample);
+  }
+  KeyFinder::KeyFinder kf;
+  ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(a).globalKeyEstimate);
+}
+
+TEST (KeyFinderTest, ProgressiveUseCase) {
+
+  /*
+   * Build a second of audio to be added ten times. The default settings will
+   * lead to a downsample factor of 10, so there'll be 44100 samples of audio
+   * after pre-processing. That'll be 7 hops, with 15428 samples left in the
+   * buffer. Then finish that off with finalChromagramOfAudio, which should add
+   * 4 more hops and leave 12288 zeroed samples in the buffer.
+   */
+
+  unsigned int sampleRate = 44100;
+  KeyFinder::AudioData a;
+  a.setFrameRate(sampleRate);
+  a.setChannels(1);
+  a.addToSampleCount(sampleRate);
+  for (unsigned int i = 0; i < sampleRate; i++) {
+    float sample = 0.0;
+    sample += sine_wave(i, 440.0000, sampleRate, 1);
+    sample += sine_wave(i, 523.2511, sampleRate, 1);
+    sample += sine_wave(i, 659.2551, sampleRate, 1);
+    a.setSample(i, sample);
+  }
+
+  KeyFinder::KeyFinder k;
+  KeyFinder::Chromagram c;
+  KeyFinder::AudioData buffer;
+  for (unsigned int i = 0; i < 10; i++)
+    c.append(k.progressiveChromagramOfAudio(a, buffer));
+
+  ASSERT_EQ(4410, buffer.getFrameRate());
+  ASSERT_EQ(1, buffer.getChannels());
+
+  // progressive result without emptying buffer
+  ASSERT_EQ(7, c.getHops());
+  ASSERT_EQ(15428, buffer.getSampleCount());
+
+  // after emptying buffer
+  c.append(k.finalChromagramOfAudio(buffer));
+  ASSERT_EQ(11, c.getHops());
+  ASSERT_EQ(12288, buffer.getSampleCount());
+  for (unsigned int i = 0; i < buffer.getSampleCount(); i++)
+    ASSERT_FLOAT_EQ(0.0, buffer.getSample(i));
+
+  ASSERT_EQ(KeyFinder::A_MINOR, k.keyOfChromagram(c).globalKeyEstimate);
+}
+
 TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
   KeyFinder::Chromagram ch(1,1,1);
   KeyFinder::KeyFinder kf;
@@ -88,25 +151,6 @@ TEST (KeyFinderTest, KeyOfChromagramCollapsesTimeDimension) {
   ASSERT_EQ(KeyFinder::C_MINOR, kdr.globalKeyEstimate);
 }
 
-TEST (KeyFinderTest, KeyOfAudioDetectsAMinorTriad) {
-  unsigned int sampleRate = 44100;
-  KeyFinder::AudioData a;
-  a.setChannels(1);
-  a.setFrameRate(sampleRate);
-  a.addToSampleCount(sampleRate);
-  for (unsigned int i = 0; i < sampleRate; i++) {
-    float sample = 0.0;
-    sample += sine_wave(i, 440.0000, sampleRate, 1);
-    sample += sine_wave(i, 523.2511, sampleRate, 1);
-    sample += sine_wave(i, 659.2551, sampleRate, 1);
-    a.setSample(i, sample);
-  }
-  KeyFinder::KeyFinder kf;
-  KeyFinder::Parameters p;
-  p.setFftFrameSize(sampleRate);
-  ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(a, p).globalKeyEstimate);
-}
-
 TEST (KeyFinderTest, FlatBeatRegressionTest) {
   KeyFinder::KeyFinder kf;
   KeyFinder::Parameters p;
@@ -143,40 +187,4 @@ TEST (KeyFinderTest, FlatBeatRegressionTest) {
   p.setToneProfile(KeyFinder::TONE_PROFILE_SHAATH);
   kdr = kf.keyOfChromagram(ch, p);
   ASSERT_EQ(KeyFinder::B_MINOR, kdr.globalKeyEstimate);
-}
-
-TEST (KeyFinderTest, progressiveChromagramOfAudioDetectsAMinorTriad) {
-
-  /*
-   * Build a second of audio to be added ten times. The default settings will
-   * lead to a downsample factor of 10, so there'll be 44100 samples of audio
-   * after pre-processing. That'll be 7 hops, with 15428 samples left in the
-   * buffer.
-   */
-
-  unsigned int sampleRate = 44100;
-  KeyFinder::AudioData a;
-  a.setFrameRate(sampleRate);
-  a.setChannels(1);
-  a.addToSampleCount(sampleRate);
-  for (unsigned int i = 0; i < sampleRate; i++) {
-    float sample = 0.0;
-    sample += sine_wave(i, 440.0000, sampleRate, 1);
-    sample += sine_wave(i, 523.2511, sampleRate, 1);
-    sample += sine_wave(i, 659.2551, sampleRate, 1);
-    a.setSample(i, sample);
-  }
-
-  KeyFinder::KeyFinder k;
-  KeyFinder::Chromagram c;
-  KeyFinder::AudioData buffer;
-  for (unsigned int i = 0; i < 10; i++)
-    c.append(k.progressiveChromagramOfAudio(a, buffer));
-
-  ASSERT_EQ(4410, buffer.getFrameRate());
-  ASSERT_EQ(1, buffer.getChannels());
-
-  ASSERT_EQ(7, c.getHops());
-  ASSERT_EQ(15428, buffer.getSampleCount());
-  ASSERT_EQ(KeyFinder::A_MINOR, k.keyOfChromagram(c).globalKeyEstimate);
 }

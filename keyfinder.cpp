@@ -27,8 +27,9 @@ namespace KeyFinder {
     AudioData& preprocessedBuffer,
     const Parameters& params
   ) {
-     // zero padding
-    unsigned int finalSampleLength = params.getFftFrameSize() + ((params.getHopsPerFrame() - 1) * params.getHopSize());
+    // zero padding
+    unsigned int paddedHopCount = ceil(preprocessedBuffer.getSampleCount() / (float)params.getHopSize());
+    unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
     while (preprocessedBuffer.getSampleCount() < finalSampleLength)
       preprocessedBuffer.addToSampleCount(1);
     return chromagramOfBufferedAudio(preprocessedBuffer, params);
@@ -120,7 +121,7 @@ namespace KeyFinder {
   ) {
     SpectrumAnalyser sa(preprocessedBuffer.getFrameRate(), params, ctFactory);
     Chromagram c;
-    while (preprocessedBuffer.getSampleCount() > params.getFftFrameSize()) {
+    while (preprocessedBuffer.getSampleCount() >= params.getFftFrameSize()) {
       Chromagram working = sa.chromagramOfFirstFrame(preprocessedBuffer);
       // deal with tuning if necessary
       if (working.getBandsPerSemitone() > 1) {
