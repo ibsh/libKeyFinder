@@ -6,39 +6,39 @@ namespace KeyFinder {
     const AudioData& originalAudio,
     const Parameters& params
   ) {
-    AudioData buffer;
-    Chromagram c = progressiveChromagramOfAudio(originalAudio, buffer, params);
-    c.append(finalChromagramOfAudio(buffer, params));
+    Workspace workspace;
+    Chromagram c = progressiveChromagramOfAudio(originalAudio, workspace, params);
+    c.append(finalChromagramOfAudio(workspace, params));
     return keyOfChromagram(c, params);
   }
 
   Chromagram KeyFinder::progressiveChromagramOfAudio(
     const AudioData& originalAudio,
-    AudioData& preprocessedBuffer,
+    Workspace& workspace,
     const Parameters& params
   ) {
     AudioData workingAudio(originalAudio);
     preprocess(workingAudio, params);
-    preprocessedBuffer.append(workingAudio);
-    return chromagramOfBufferedAudio(preprocessedBuffer, params);
+    workspace.buffer.append(workingAudio);
+    return chromagramOfBufferedAudio(workspace, params);
   }
 
   Chromagram KeyFinder::finalChromagramOfAudio(
-    AudioData& preprocessedBuffer,
+    Workspace& workspace,
     const Parameters& params
   ) {
     // zero padding
-    unsigned int paddedHopCount = ceil(preprocessedBuffer.getSampleCount() / (float)params.getHopSize());
+    unsigned int paddedHopCount = ceil(workspace.buffer.getSampleCount() / (float)params.getHopSize());
     unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
-    while (preprocessedBuffer.getSampleCount() < finalSampleLength)
-      preprocessedBuffer.addToSampleCount(1);
-    return chromagramOfBufferedAudio(preprocessedBuffer, params);
+    while (workspace.buffer.getSampleCount() < finalSampleLength)
+      workspace.buffer.addToSampleCount(1);
+    return chromagramOfBufferedAudio(workspace, params);
   }
 
   KeyDetectionResult KeyFinder::keyOfChromagram(
     const Chromagram& chromagram,
     const Parameters& params
-  ) {
+  ) const {
 
     KeyDetectionResult result;
 
@@ -104,7 +104,7 @@ namespace KeyFinder {
     // For now, this approximates original experiment values for default params.
     float lpfCutoff = params.getLastFrequency() * 1.012;
     float dsCutoff = params.getLastFrequency() * 1.10;
-    unsigned int downsampleFactor = (int)floor( workingAudio.getFrameRate() / 2 / dsCutoff );
+    unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
 
     // get filter
     LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
@@ -116,13 +116,17 @@ namespace KeyFinder {
   }
 
   Chromagram KeyFinder::chromagramOfBufferedAudio(
-    AudioData& preprocessedBuffer,
+    Workspace& workspace,
     const Parameters& params
   ) {
-    SpectrumAnalyser sa(preprocessedBuffer.getFrameRate(), params, ctFactory);
+    if (workspace.getFftAdapter() == NULL)
+      workspace.setFftAdapter(new FftAdapter(params.getFftFrameSize()));
+    SpectrumAnalyser sa(workspace.buffer.getFrameRate(), params, ctFactory);
     Chromagram c;
-    while (preprocessedBuffer.getSampleCount() >= params.getFftFrameSize()) {
-      Chromagram working = sa.chromagramOfFirstFrame(preprocessedBuffer);
+    while (workspace.buffer.getSampleCount() >= params.getFftFrameSize()) {
+      Chromagram working = sa.chromagramOfFirstFrame(
+        workspace.buffer, workspace.getFftAdapter()
+      );
       // deal with tuning if necessary
       if (working.getBandsPerSemitone() > 1) {
         if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
@@ -132,7 +136,7 @@ namespace KeyFinder {
         }
       }
       c.append(working);
-      preprocessedBuffer.discardFramesFromFront(params.getHopSize());
+      workspace.buffer.discardFramesFromFront(params.getHopSize());
     }
     return c;
   }

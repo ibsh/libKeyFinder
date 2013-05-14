@@ -45,7 +45,8 @@ HEADERS += \
     segmentationtest.h \
     spectrumanalysertest.h \
     toneprofilestest.h \
-    windowfunctiontest.h
+    windowfunctiontest.h \
+    workspacetest.h
 
 SOURCES += \
     main.cpp \
@@ -66,10 +67,12 @@ SOURCES += \
     segmentationtest.cpp \
     spectrumanalysertest.cpp \
     toneprofilestest.cpp \
-    windowfunctiontest.cpp
+    windowfunctiontest.cpp \
+    workspacetest.cpp
 
 DEPENDPATH  += /usr/local/lib
 INCLUDEPATH += /usr/local/include
 
 LIBS += -lkeyfinder
 LIBS += -lgtest
+LIBS += -lboost_system -lboost_thread

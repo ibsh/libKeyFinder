@@ -19,27 +19,25 @@
 
 *************************************************************************/
 
-#ifndef CHROMATRANSFORM_H
-#define CHROMATRANSFORM_H
+#ifndef WORKSPACE_H
+#define WORKSPACE_H
 
-#include "exception.h"
-#include "parameters.h"
+#include "audiodata.h"
+#include "chromagram.h"
 #include "fftadapter.h"
 
 namespace KeyFinder {
 
-  class ChromaTransform {
+  class Workspace {
   public:
-    ChromaTransform(unsigned int frameRate, const Parameters& params);
-    std::vector<float> chromaVector(const FftAdapter* const fft) const;
-  protected:
-    unsigned int chromaBands;
-    unsigned int frameRate;
-    // ragged 2D array; narrow for bass, wide for treble.
-    std::vector< std::vector<float> > directSpectralKernel;
-    // which fft bin to multiply by first coefficient.
-    std::vector<unsigned int> chromaBandFftBinOffsets;
-    float kernelWindow(float,float) const;
+    Workspace();
+    ~Workspace();
+    AudioData buffer;
+    Chromagram chroma;
+    FftAdapter* getFftAdapter();
+    void setFftAdapter(FftAdapter* const fftAdapter);
+  private:
+    FftAdapter* fftAdapter;
   };
 
 }

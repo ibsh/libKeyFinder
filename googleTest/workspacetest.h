@@ -19,29 +19,12 @@
 
 *************************************************************************/
 
-#ifndef CHROMATRANSFORM_H
-#define CHROMATRANSFORM_H
+#ifndef WORKSPACETEST_H
+#define WORKSPACETEST_H
 
-#include "exception.h"
-#include "parameters.h"
-#include "fftadapter.h"
+#include "_testhelpers.h"
+#include "keyfinder/workspace.h"
 
-namespace KeyFinder {
+class WorkspaceTest : public ::testing::Test { };
 
-  class ChromaTransform {
-  public:
-    ChromaTransform(unsigned int frameRate, const Parameters& params);
-    std::vector<float> chromaVector(const FftAdapter* const fft) const;
-  protected:
-    unsigned int chromaBands;
-    unsigned int frameRate;
-    // ragged 2D array; narrow for bass, wide for treble.
-    std::vector< std::vector<float> > directSpectralKernel;
-    // which fft bin to multiply by first coefficient.
-    std::vector<unsigned int> chromaBandFftBinOffsets;
-    float kernelWindow(float,float) const;
-  };
-
-}
-
-#endif
+#endif // WORKSPACETEST_H
