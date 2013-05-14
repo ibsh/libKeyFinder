@@ -10,6 +10,7 @@
 #include "keyfinderresult.h"
 #include "segmentation.h"
 #include "keyclassifier.h"
+#include "workspace.h"
 
 namespace KeyFinder {
 
@@ -17,17 +18,17 @@ namespace KeyFinder {
   public:
     Chromagram progressiveChromagramOfAudio(
       const AudioData& audio,
-      AudioData& preprocessedBuffer,
+      Workspace& workspace,
       const Parameters& params = Parameters()
     );
     Chromagram finalChromagramOfAudio(
-      AudioData& preprocessedBuffer,
+      Workspace& workspace,
       const Parameters& params = Parameters()
     );
     KeyDetectionResult keyOfChromagram(
       const Chromagram& chromagram,
       const Parameters& params = Parameters()
-    );
+    ) const;
     KeyDetectionResult keyOfAudio(
       const AudioData& audio,
       const Parameters& params = Parameters()
@@ -35,7 +36,7 @@ namespace KeyFinder {
   private:
     void preprocess(AudioData& workingAudio, const Parameters& params);
     Chromagram chromagramOfBufferedAudio(
-      AudioData& preprocessedBuffer,
+      Workspace& workspace,
       const Parameters& params = Parameters()
     );
     LowPassFilterFactory   lpfFactory;

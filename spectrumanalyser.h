@@ -39,14 +39,15 @@ namespace KeyFinder {
       const Parameters& params,
       ChromaTransformFactory& ctFactory
     );
-    Chromagram chromagramOfFirstFrame(const AudioData& audio) const;
-    ~SpectrumAnalyser();
+    Chromagram chromagramOfFirstFrame(
+      const AudioData& audio,
+      FftAdapter* const fft
+    ) const;
   protected:
     unsigned int octaves;
     unsigned int bandsPerSemitone;
     unsigned int hopSize;
-    ChromaTransform* ct;
-    FftAdapter* fft;
+    ChromaTransform* ct; // not to be freed on destruction; comes from factory
     std::vector<float> temporalWindow;
   };
 

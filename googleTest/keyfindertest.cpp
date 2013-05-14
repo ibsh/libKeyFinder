@@ -23,19 +23,19 @@
 
 TEST (KeyFinderTest, BasicUseCase) {
   unsigned int sampleRate = 44100;
-  KeyFinder::AudioData a;
-  a.setChannels(1);
-  a.setFrameRate(sampleRate);
-  a.addToSampleCount(sampleRate);
+  KeyFinder::AudioData inputAudio;
+  inputAudio.setChannels(1);
+  inputAudio.setFrameRate(sampleRate);
+  inputAudio.addToSampleCount(sampleRate);
   for (unsigned int i = 0; i < sampleRate; i++) {
     float sample = 0.0;
     sample += sine_wave(i, 440.0000, sampleRate, 1);
     sample += sine_wave(i, 523.2511, sampleRate, 1);
     sample += sine_wave(i, 659.2551, sampleRate, 1);
-    a.setSample(i, sample);
+    inputAudio.setSample(i, sample);
   }
   KeyFinder::KeyFinder kf;
-  ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(a).globalKeyEstimate);
+  ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(inputAudio).globalKeyEstimate);
 }
 
 TEST (KeyFinderTest, ProgressiveUseCase) {
@@ -49,37 +49,42 @@ TEST (KeyFinderTest, ProgressiveUseCase) {
    */
 
   unsigned int sampleRate = 44100;
-  KeyFinder::AudioData a;
-  a.setFrameRate(sampleRate);
-  a.setChannels(1);
-  a.addToSampleCount(sampleRate);
+  KeyFinder::AudioData inputAudio;
+  inputAudio.setFrameRate(sampleRate);
+  inputAudio.setChannels(1);
+  inputAudio.addToSampleCount(sampleRate);
   for (unsigned int i = 0; i < sampleRate; i++) {
     float sample = 0.0;
     sample += sine_wave(i, 440.0000, sampleRate, 1);
     sample += sine_wave(i, 523.2511, sampleRate, 1);
     sample += sine_wave(i, 659.2551, sampleRate, 1);
-    a.setSample(i, sample);
+    inputAudio.setSample(i, sample);
   }
 
   KeyFinder::KeyFinder k;
   KeyFinder::Chromagram c;
-  KeyFinder::AudioData buffer;
-  for (unsigned int i = 0; i < 10; i++)
-    c.append(k.progressiveChromagramOfAudio(a, buffer));
+  KeyFinder::Workspace w;
+  KeyFinder::FftAdapter* testFftPointer = NULL;
+  for (unsigned int i = 0; i < 10; i++) {
+    c.append(k.progressiveChromagramOfAudio(inputAudio, w));
+    // ensure we're using the same FFT adapter throughout
+    if (testFftPointer == NULL) testFftPointer = w.getFftAdapter();
+    ASSERT_EQ(testFftPointer, w.getFftAdapter());
+  }
 
-  ASSERT_EQ(4410, buffer.getFrameRate());
-  ASSERT_EQ(1, buffer.getChannels());
+  ASSERT_EQ(4410, w.buffer.getFrameRate());
+  ASSERT_EQ(1, w.buffer.getChannels());
 
   // progressive result without emptying buffer
   ASSERT_EQ(7, c.getHops());
-  ASSERT_EQ(15428, buffer.getSampleCount());
+  ASSERT_EQ(15428, w.buffer.getSampleCount());
 
   // after emptying buffer
-  c.append(k.finalChromagramOfAudio(buffer));
+  c.append(k.finalChromagramOfAudio(w));
   ASSERT_EQ(11, c.getHops());
-  ASSERT_EQ(12288, buffer.getSampleCount());
-  for (unsigned int i = 0; i < buffer.getSampleCount(); i++)
-    ASSERT_FLOAT_EQ(0.0, buffer.getSample(i));
+  ASSERT_EQ(12288, w.buffer.getSampleCount());
+  for (unsigned int i = 0; i < w.buffer.getSampleCount(); i++)
+    ASSERT_FLOAT_EQ(0.0, w.buffer.getSample(i));
 
   ASSERT_EQ(KeyFinder::A_MINOR, k.keyOfChromagram(c).globalKeyEstimate);
 }

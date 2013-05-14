@@ -35,20 +35,20 @@ Alternatively, you can transform a stream of audio into a chromatic representati
 
   static KeyFinder::KeyFinder k;
   KeyFinder::Chromagram c;
-  KeyFinder::AudioData buffer;
+  KeyFinder::Workspace w;
 
   while (yourPacket = newAudioPacket()) {
     while (int i = 0; i < newAudioPacket.length; i++) {
       a.setSample(i, newAudioPacket[i]);
     }
-    c.append(k.progressiveChromagramOfAudio(a, buffer));
+    c.append(k.progressiveChromagramOfAudio(a, w));
     // if you want to grab progressive key estimates...
     KeyFinder::KeyDetectionResult r = k.keyOfChromagram(c);
     doSomethingWithMostRecentKeyEstimate(r.globalKeyEstimate);
   }
 
   // if you want to squeeze every last bit of audio from the working buffer...
-  c.append(k.finalChromagramOfAudio(buffer));
+  c.append(k.finalChromagramOfAudio(w));
 
   // and finally...
   KeyFinder::KeyDetectionResult r = k.keyOfChromagram(c);
