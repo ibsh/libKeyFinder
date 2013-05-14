@@ -201,8 +201,12 @@ namespace KeyFinder {
       octaves = that.octaves;
       bandsPerSemitone = that.bandsPerSemitone;
     }
-    if (that.octaves != octaves || that.bandsPerSemitone != bandsPerSemitone)
-      throw Exception("Cannot append a chromagram with a different number of bands");
+    if (that.octaves != octaves || that.bandsPerSemitone != bandsPerSemitone) {
+      std::ostringstream ss;
+      ss << "Cannot append a chromagram with a different number of bands ";
+      ss << "(" << getBands() << " != " << that.getBands() << ")";
+      throw Exception(ss.str().c_str());
+    }
     unsigned int oldHops = getHops();
     chromaData.resize(getHops() + that.getHops(), std::vector<float>(getBands(), 0.0));
     for (unsigned int h = 0; h < that.getHops(); h++)
