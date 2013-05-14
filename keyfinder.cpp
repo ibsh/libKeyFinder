@@ -30,8 +30,7 @@ namespace KeyFinder {
     // zero padding
     unsigned int paddedHopCount = ceil(workspace.buffer.getSampleCount() / (float)params.getHopSize());
     unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
-    while (workspace.buffer.getSampleCount() < finalSampleLength)
-      workspace.buffer.addToSampleCount(1);
+    workspace.buffer.addToSampleCount(finalSampleLength - workspace.buffer.getSampleCount());
     return chromagramOfBufferedAudio(workspace, params);
   }
 
