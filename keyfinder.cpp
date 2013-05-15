@@ -121,22 +121,16 @@ namespace KeyFinder {
     if (workspace.getFftAdapter() == NULL)
       workspace.setFftAdapter(new FftAdapter(params.getFftFrameSize()));
     SpectrumAnalyser sa(workspace.buffer.getFrameRate(), params, ctFactory);
-    Chromagram c;
-    while (workspace.buffer.getSampleCount() >= params.getFftFrameSize()) {
-      Chromagram working = sa.chromagramOfFirstFrame(
-        workspace.buffer, workspace.getFftAdapter()
-      );
-      // deal with tuning if necessary
-      if (working.getBandsPerSemitone() > 1) {
-        if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
-          working.tuningBandAdaptive(params.getDetunedBandWeight());
-        } else if (params.getTuningMethod() == TUNING_HARTE) {
-          working.tuningHarte();
-        }
+    Chromagram c = sa.chromagramOfWholeFrames(workspace.buffer, workspace.getFftAdapter());
+    // deal with tuning if necessary
+    if (c.getBandsPerSemitone() > 1) {
+      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
+        c.tuningBandAdaptive(params.getDetunedBandWeight());
+      } else if (params.getTuningMethod() == TUNING_HARTE) {
+        c.tuningHarte();
       }
-      c.append(working);
-      workspace.buffer.discardFramesFromFront(params.getHopSize());
     }
+    workspace.buffer.discardFramesFromFront(params.getHopSize() * c.getHops());
     return c;
   }
 

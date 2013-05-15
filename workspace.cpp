@@ -23,7 +23,7 @@
 
 namespace KeyFinder {
 
-  Workspace::Workspace() : fftAdapter(NULL) { }
+  Workspace::Workspace() : buffer(), chroma(), fftAdapter(NULL) { }
 
   Workspace::~Workspace() {
     if (fftAdapter != NULL)

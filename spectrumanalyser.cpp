@@ -40,20 +40,26 @@ namespace KeyFinder {
     }
   }
 
-  Chromagram SpectrumAnalyser::chromagramOfFirstFrame(
+  Chromagram SpectrumAnalyser::chromagramOfWholeFrames(
     const AudioData& audio,
     FftAdapter* const fft
   ) const {
     if (audio.getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
-    Chromagram c(1, octaves, bandsPerSemitone);
-    for (unsigned int sample = 0; sample < fft->getFrameSize(); sample++) {
-      fft->setInput(sample, audio.getSample(sample) * temporalWindow[sample]);
-    }
-    fft->execute();
-    std::vector<float> cv = ct->chromaVector(fft);
-    for (unsigned int band = 0; band < c.getBands(); band++) {
-      c.setMagnitude(0, band, cv[band]);
+    unsigned int frmSize = fft->getFrameSize();
+    if (audio.getSampleCount() < frmSize)
+      return Chromagram(0, octaves, bandsPerSemitone);
+    unsigned int hops = 1 + ((audio.getSampleCount() - frmSize) / hopSize);
+    Chromagram c(hops, octaves, bandsPerSemitone);
+    for (unsigned int hop = 0; hop < hops; hop++) {
+      for (unsigned int sample = 0; sample < frmSize; sample++) {
+        fft->setInput(sample, audio.getSample((hop * hopSize) + sample) * temporalWindow[sample]);
+      }
+      fft->execute();
+      std::vector<float> cv = ct->chromaVector(fft);
+      for (unsigned int band = 0; band < c.getBands(); band++) {
+        c.setMagnitude(hop, band, cv[band]);
+      }
     }
     return c;
   }
