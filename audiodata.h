@@ -48,6 +48,7 @@ namespace KeyFinder {
 
     void append(const AudioData& that);
     void discardFramesFromFront(unsigned int discardFrameCount);
+    void discardFramesFromBack(unsigned int discardFrameCount);
     void reduceToMono();
 
   private:

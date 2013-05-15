@@ -157,15 +157,31 @@ TEST (AudioDataTest, DiscardFromFront) {
 
   a.setChannels(1);
   a.setFrameRate(1);
-  a.addToFrameCount(10);
 
+  ASSERT_THROW(a.discardFramesFromFront(1), KeyFinder::Exception);
+  a.addToFrameCount(10);
   ASSERT_THROW(a.discardFramesFromFront(11), KeyFinder::Exception);
   ASSERT_NO_THROW(a.discardFramesFromFront(0));
-
   a.setSample(5, 0, 10.0);
   ASSERT_NO_THROW(a.discardFramesFromFront(5));
   ASSERT_EQ(5, a.getFrameCount());
   ASSERT_FLOAT_EQ(10.0, a.getSample(0, 0));
+}
+
+TEST (AudioDataTest, DiscardFromBack) {
+  KeyFinder::AudioData a;
+
+  a.setChannels(1);
+  a.setFrameRate(1);
+
+  ASSERT_THROW(a.discardFramesFromBack(1), KeyFinder::Exception);
+  a.addToFrameCount(10);
+  ASSERT_THROW(a.discardFramesFromBack(11), KeyFinder::Exception);
+  ASSERT_NO_THROW(a.discardFramesFromBack(0));
+  a.setSample(2, 0, 10.0);
+  ASSERT_NO_THROW(a.discardFramesFromBack(5));
+  ASSERT_EQ(5, a.getFrameCount());
+  ASSERT_FLOAT_EQ(10.0, a.getSample(2, 0));
 }
 
 TEST (AudioDataTest, MakeMono) {

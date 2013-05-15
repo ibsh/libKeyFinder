@@ -24,17 +24,12 @@
 
 namespace KeyFinder {
 
-  void Downsampler::downsample(AudioData& audioIn, unsigned int factor) const {
+  void Downsampler::downsample(AudioData& audio, unsigned int factor) const {
     if (factor == 1) return;
 
-    unsigned int channels = audioIn.getChannels();
-    unsigned int oldFrameCount = audioIn.getFrameCount();
+    unsigned int channels = audio.getChannels();
+    unsigned int oldFrameCount = audio.getFrameCount();
     unsigned int newFrameCount = ceil((float)oldFrameCount / (float)factor);
-
-    AudioData audioOut;
-    audioOut.setFrameRate(audioIn.getFrameRate() / factor);
-    audioOut.setChannels(channels);
-    audioOut.addToFrameCount(newFrameCount);
 
     // for each frame of the output
     for (unsigned int outFrm = 0; outFrm < newFrameCount; outFrm++) {
@@ -44,15 +39,17 @@ namespace KeyFinder {
         float mean = 0.0;
         for (unsigned int element = 0; element < factor; element++) {
           unsigned int inFrm = (outFrm * factor) + element;
-          if (inFrm < audioIn.getFrameCount()) {
-            mean += audioIn.getSample(inFrm, ch) / (float)factor;
+          if (inFrm < audio.getFrameCount()) {
+            mean += audio.getSample(inFrm, ch) / (float)factor;
           }
         }
-        audioOut.setSample(outFrm, ch, mean);
+        // writing in place; this must take place AFTER reading from this frame
+        audio.setSample(outFrm, ch, mean);
       }
     }
 
-    audioIn = audioOut;
+    audio.setFrameRate(audio.getFrameRate() / factor);
+    audio.discardFramesFromBack(oldFrameCount - newFrameCount);
   }
 
 }

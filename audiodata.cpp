@@ -164,4 +164,14 @@ namespace KeyFinder {
     samples.erase(samples.begin(), samples.begin() + discardSampleCount);
   }
 
+  void AudioData::discardFramesFromBack(unsigned int discardFrameCount) {
+    if (discardFrameCount > getFrameCount()) {
+      std::ostringstream ss;
+      ss << "Cannot discard " << discardFrameCount << " frames of " << getFrameCount();
+      throw Exception(ss.str().c_str());
+    }
+    unsigned int discardSampleCount = discardFrameCount * channels;
+    samples.erase(samples.end() - discardSampleCount, samples.end());
+  }
+
 }
