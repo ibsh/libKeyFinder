@@ -31,10 +31,10 @@ DEFINES += LIBKEYFINDER_LIBRARY
 
 HEADERS += \
     audiodata.h \
-    binode.h \
     chromagram.h \
     chromatransform.h \
     chromatransformfactory.h \
+    circularbuffer.h \
     constants.h \
     downsampler.h \
     exception.h \
@@ -56,6 +56,7 @@ SOURCES += \
     chromagram.cpp \
     chromatransform.cpp \
     chromatransformfactory.cpp \
+    circularbuffer.cpp \
     downsampler.cpp \
     fftadapter.cpp \
     keyclassifier.cpp \

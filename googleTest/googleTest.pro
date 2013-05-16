@@ -30,10 +30,10 @@ CONFIG += x86 x86_64
 HEADERS += \
     _testhelpers.h \
     audiodatatest.h \
-    binodetest.h \
     chromagramtest.h \
     chromatransformtest.h \
     chromatransformfactorytest.h \
+    circularbuffertest.h \
     downsamplertest.h \
     fftadaptertest.h \
     keyclassifiertest.h \
@@ -52,10 +52,10 @@ SOURCES += \
     main.cpp \
     _testhelpers.cpp \
     audiodatatest.cpp \
-    binodetest.cpp \
     chromagramtest.cpp \
     chromatransformtest.cpp \
     chromatransformfactorytest.cpp \
+    circularbuffertest.cpp \
     downsamplertest.cpp \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \

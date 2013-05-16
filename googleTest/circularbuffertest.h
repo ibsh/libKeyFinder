@@ -19,26 +19,12 @@
 
 *************************************************************************/
 
-#include "binodetest.h"
+#ifndef CIRCULARBUFFERTEST_H
+#define CIRCULARBUFFERTEST_H
 
-TEST (BinodeTest, ConstructorDefaultsWork) {
-  KeyFinder::Binode<float> bf;
-  ASSERT_FLOAT_EQ(0.0, bf.data);
-  ASSERT_EQ(NULL, bf.l);
-  ASSERT_EQ(NULL, bf.r);
+#include "_testhelpers.h"
+#include "keyfinder/circularbuffer.h"
 
-  KeyFinder::Binode<int> bi;
-  ASSERT_EQ(0, bi.data);
-  ASSERT_EQ(NULL, bi.l);
-  ASSERT_EQ(NULL, bi.r);
-}
+class CircularBufferTest : public ::testing::Test { };
 
-TEST (BinodeTest, ConstructorArgumentsWork) {
-  KeyFinder::Binode<float> bf(365.25);
-  ASSERT_FLOAT_EQ(365.25, bf.data);
-  ASSERT_EQ(NULL, bf.l);
-  ASSERT_EQ(NULL, bf.r);
-
-  KeyFinder::Binode<int> bi(14);
-  ASSERT_EQ(14, bi.data);
-}
+#endif // CIRCULARBUFFERTEST_H

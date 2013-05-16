@@ -19,12 +19,35 @@
 
 *************************************************************************/
 
-#ifndef BINODETEST_H
-#define BINODETEST_H
+#ifndef CIRCULARBUFFER_H
+#define CIRCULARBUFFER_H
 
-#include "_testhelpers.h"
-#include "keyfinder/binode.h"
+#include "exception.h"
 
-class BinodeTest : public ::testing::Test { };
+namespace KeyFinder {
 
-#endif // BINODETEST_H
+  template <class T>
+  class Binode {
+  public:
+    Binode(T x = 0): l(0), r(0), data(x) {}
+    Binode* l, *r;
+    T data;
+  };
+
+  class CircularBuffer {
+  public:
+    CircularBuffer(unsigned int size);
+    ~CircularBuffer();
+    float getData(int index) const;
+    unsigned int getSize() const;
+    void setData(int index, float value);
+    void clear();
+    void shiftZeroIndex(int count);
+  protected:
+    Binode<float>* p;
+    unsigned int size;
+  };
+
+}
+
+#endif

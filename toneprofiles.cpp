@@ -116,21 +116,14 @@ namespace KeyFinder {
       }
     }
 
-    // copy into doubly-linked circular list
-    tonic = new Binode<float>(p[0]);
-    Binode<float> *q = tonic;
-    for (unsigned int i = 1; i<SEMITONES; i++) {
-      q->r = new Binode<float>(p[i]);
-      q->r->l = q;
-      q = q->r;
+    circle = new CircularBuffer(SEMITONES);
+    for (unsigned int i = 0; i<SEMITONES; i++) {
+      circle->setData(i, p[i]);
     }
-    q->r = tonic;
-    tonic->l = q;
 
     // offset from A to C (3 semitones) if specified
     if (offsetToC) {
-      for (unsigned int i=0; i<3; i++)
-        tonic = tonic->r;
+      circle->shiftZeroIndex(-3);
     }
 
     // get mean in preparation for correlation
@@ -140,16 +133,7 @@ namespace KeyFinder {
   }
 
   ToneProfile::~ToneProfile() {
-    free();
-  }
-
-  void ToneProfile::free() {
-    Binode<float>* p = tonic;
-    do {
-      Binode<float>* zap = p;
-      p = p->r;
-      delete zap;
-    } while (p!=tonic);
+    delete circle;
   }
 
   // TODO: maybe factor out the vector similarity methods. They're not exactly
@@ -168,19 +152,15 @@ namespace KeyFinder {
   offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
   */
   float ToneProfile::cosine(const std::vector<float>& input, int offset) const {
-    // Rotate starting pointer left for offset. Each step shifts the position
-    // of the tonic one step further right of the starting pointer (or one semitone up).
-    Binode<float>* p = tonic;
-    for (int i=0; i<offset; i++)
-      p = p->l;
     float intersection = 0.0;
     float profileNorm = 0.0;
     float inputNorm = 0.0;
+    offset *= -1; // set the appropriate starting index for the circular buffer
     for (unsigned int i = 0; i < SEMITONES; i++) {
-      intersection += input[i] * p->data;
-      profileNorm += pow((p->data),2);
+      intersection += input[i] * circle->getData(offset);
+      profileNorm += pow(circle->getData(offset),2);
       inputNorm += pow((input[i]),2);
-      p = p->r;
+      offset++;
     }
     if (profileNorm > 0 && inputNorm > 0) // div by zero check
       return intersection / (sqrt(profileNorm) * sqrt(inputNorm));
@@ -190,27 +170,22 @@ namespace KeyFinder {
 
   /*
   Krumhansl's correlation between input vector and profile scale.
-  input = array of 12 floats relating to an octave starting at A natural
-  offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
-  inputMean = mean input value
   */
   float ToneProfile::correlation(const std::vector<float>& input, int offset) const {
     float inputMean = 0.0;
     for (unsigned int i=0; i<input.size(); i++)
       inputMean += input[i] / input.size();
-    Binode<float>* p = tonic;
-    for (int i=0; i<offset; i++)
-      p = p->l;
     float sumTop = 0.0;
     float sumBottomLeft = 0.0;
     float sumBottomRight = 0.0;
+    offset *= -1;
     for (unsigned int i=0; i < SEMITONES; i++) {
-      float xMinusXBar = p->data - profileMean;
+      float xMinusXBar = circle->getData(offset) - profileMean;
       float yMinusYBar = input[i] - inputMean;
       sumTop += xMinusXBar * yMinusYBar;
       sumBottomLeft += pow(xMinusXBar,2);
       sumBottomRight += pow(yMinusYBar,2);
-      p = p->r;
+      offset++;
     }
     if (sumBottomRight > 0 && sumBottomLeft > 0) // div by zero check
       return sumTop / sqrt(sumBottomLeft * sumBottomRight);

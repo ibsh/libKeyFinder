@@ -25,7 +25,7 @@
 #include <cmath>
 #include <vector>
 
-#include "binode.h"
+#include "circularbuffer.h"
 #include "constants.h"
 #include "exception.h"
 
@@ -48,8 +48,7 @@ namespace KeyFinder {
   private:
     float cosine(const std::vector<float>& chromaVector, int offset) const;
     float correlation(const std::vector<float>& chromaVector, int offset) const;
-    void free();
-    Binode<float>* tonic;
+    CircularBuffer* circle;
     float profileMean;
   };
 

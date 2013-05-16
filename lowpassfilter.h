@@ -25,7 +25,7 @@
 #include <cmath>
 #include <vector>
 #include "audiodata.h"
-#include "binode.h"
+#include "circularbuffer.h"
 #include "fftadapter.h"
 #include "windowfunctions.h"
 
