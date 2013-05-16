@@ -21,11 +21,11 @@
 
 #include "fftadaptertest.h"
 
-TEST (FftAdapterTest, Forward_And_Backward) {
+TEST (FftAdapterTest, ForwardAndBackward) {
 
-  unsigned int frameSize = 2048;
+  unsigned int frameSize = 4096;
   std::vector<float> original(frameSize);
-  KeyFinder::FftAdapter fft(frameSize);
+  KeyFinder::FftAdapter forwards(frameSize);
 
   for (unsigned int i = 0; i < frameSize; i++) {
     float sample = 0.0;
@@ -35,14 +35,14 @@ TEST (FftAdapterTest, Forward_And_Backward) {
     sample += sine_wave(i,  7, frameSize,  4000);
     sample += sine_wave(i, 13, frameSize,  2000);
     sample += sine_wave(i, 20, frameSize,   500);
-    fft.setInput(i, sample);
+    forwards.setInput(i, sample);
     original[i] = sample;
   }
 
-  fft.execute();
+  forwards.execute();
 
   for (unsigned int i = 0; i < frameSize; i++) {
-    float out = fft.getOutputMagnitude(i);
+    float out = forwards.getOutputMagnitude(i);
     if (i == 2) {
       ASSERT_FLOAT_EQ(10000 / 2 * frameSize, out);
     } else if (i == 4) {
@@ -60,16 +60,16 @@ TEST (FftAdapterTest, Forward_And_Backward) {
     }
   }
 
-  KeyFinder::InverseFftAdapter ifft(frameSize);
+  KeyFinder::InverseFftAdapter backwards(frameSize);
 
   for (unsigned int i = 0; i < frameSize; i++) {
-    ifft.setInput(i, fft.getOutputReal(i), fft.getOutputImaginary(i));
+    backwards.setInput(i, forwards.getOutputReal(i), forwards.getOutputImaginary(i));
   }
 
-  ifft.execute();
+  backwards.execute();
 
   for (unsigned int i = 0; i < frameSize; i++) {
-    ASSERT_NEAR(original[i], ifft.getOutput(i), 0.001);
+    ASSERT_NEAR(original[i], backwards.getOutput(i), 0.001);
   }
 
 }

@@ -31,7 +31,7 @@
 namespace KeyFinder {
 
   LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
-    if (ord %2 != 0) throw Exception("LPF order must be an even number");
+    if (ord % 2 != 0) throw Exception("LPF order must be an even number");
     if (ord > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
     order = ord;
     delay = order / 2;
@@ -71,10 +71,10 @@ namespace KeyFinder {
     delete ifft;
   }
 
-  void LowPassFilter::filter(AudioData& audioIn, unsigned int shortcutFactor) const {
+  void LowPassFilter::filter(AudioData& audio, unsigned int shortcutFactor) const {
 
     // create circular delay buffer
-    // this must be done in here for thread safety
+    // this must be done in here for thread safety, or moved to Workspace
     Binode<float>* p = new Binode<float>(); // first node
     Binode<float>* q = p;
     for (unsigned int i=0; i<order; i++) {
@@ -86,16 +86,11 @@ namespace KeyFinder {
     p->l = q;
     q->r = p;
 
-    unsigned int frameCount = audioIn.getFrameCount();
-    unsigned int channels = audioIn.getChannels();
-
-    // prep output stream
-    AudioData audioOut;
-    audioOut.setFrameRate(audioIn.getFrameRate());
-    audioOut.setChannels(channels);
-    audioOut.addToFrameCount(frameCount);
+    unsigned int frameCount = audio.getFrameCount();
+    unsigned int channels = audio.getChannels();
 
     // for each channel (should be mono by this point but just in case)
+    float sum;
     for (unsigned int ch = 0; ch < channels; ch++) {
       Binode<float>* q = p;
       // clear delay buffer
@@ -105,29 +100,33 @@ namespace KeyFinder {
       }
       // for each frame (running off the end of the sample stream by delay)
       for (unsigned int frm = 0; frm < frameCount + delay; frm++) {
-
         // shuffle old samples along delay buffer
         p = p->r;
-
         // load new sample into delay buffer
         if (frm < frameCount) {
-          p->l->data = audioIn.getSample(frm, ch) / gain;
+          p->l->data = audio.getSample(frm, ch) / gain;
         } else {
           // zero pad once we're into the delay at the end of the file
           p->l->data = 0.0;
         }
-
         // start doing the maths once the delay has passed
-        // and, if shortcut != 1, only do the maths for the useful samples
-        // (this is mathematically dodgy, but it's fast and it usually works)
-        if ((frm >= delay) && (frm - delay) % shortcutFactor == 0) {
-          float sum = 0.0;
-          q = p;
-          for (unsigned int k = 0; k < impulseLength; k++) {
-            sum += coefficients[k] * q->data;
-            q = q->r;
+        if (frm >= delay) {
+          // and, if shortcut != 1, only do the maths for the useful samples,
+          // and then flatten the others to the same value (this is
+          // mathematically dodgy, but it's faster and it usually works);
+          if ((frm - delay) % shortcutFactor == 0) {
+            sum = 0.0;
+            q = p;
+            for (unsigned int k = 0; k < impulseLength; k++) {
+              sum += coefficients[k] * q->data;
+              q = q->r;
+            }
+            // writing in place; this must take place AFTER reading from this frame
+            audio.setSample(frm - delay, ch, sum);
+          } else {
+            // flatten useless frames when using a shortcut
+            audio.setSample(frm - delay, ch, sum);
           }
-          audioOut.setSample(frm - delay, ch, sum);
         }
       }
     }
@@ -138,9 +137,6 @@ namespace KeyFinder {
       p = p->r;
       delete q;
     }
-
-    audioIn = audioOut ;
-
   }
 
 }

@@ -111,3 +111,29 @@ TEST (DownsamplerTest, ResamplesMoreChannels) {
   ASSERT_FLOAT_EQ( 80.0, a.getSample(1, 3));
   ASSERT_FLOAT_EQ(100.0, a.getSample(1, 4));
 }
+
+TEST (DownsamplerTest, ResamplesSineWave) {
+  unsigned int frameRate = 10000;
+  unsigned int frames = frameRate * 4;
+  float freq = 20;
+  float magnitude = 32768.0;
+  unsigned int factor = 5;
+
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(frameRate);
+  a.addToSampleCount(frames);
+  for (unsigned int i = 0; i < frames; i++)
+    a.setSample(i, sine_wave(i, freq, frameRate, magnitude));
+
+  KeyFinder::Downsampler ds;
+  ds.downsample(a, factor);
+
+  unsigned int newFrameRate = frameRate / factor;
+  unsigned int newFrames = frames / factor;
+
+  ASSERT_EQ(newFrameRate, a.getFrameRate());
+  ASSERT_EQ(newFrames, a.getSampleCount());
+  for (unsigned int i = 0; i < newFrames; i++)
+    ASSERT_NEAR(sine_wave(i, freq, newFrameRate, magnitude), a.getSample(i), magnitude * 0.05);
+}
