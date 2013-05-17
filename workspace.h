@@ -24,7 +24,7 @@
 
 #include "audiodata.h"
 #include "chromagram.h"
-#include "circularbuffer.h"
+#include "ringbuffer.h"
 #include "fftadapter.h"
 
 namespace KeyFinder {
@@ -35,7 +35,7 @@ namespace KeyFinder {
     ~Workspace();
     AudioData buffer;
     Chromagram* chroma;
-    CircularBuffer* lpfBuffer;
+    RingBuffer* lpfBuffer;
     FftAdapter* getFftAdapter();
     void setFftAdapter(FftAdapter* const fftAdapter);
   private:

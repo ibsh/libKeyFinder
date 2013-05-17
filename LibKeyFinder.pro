@@ -34,7 +34,6 @@ HEADERS += \
     chromagram.h \
     chromatransform.h \
     chromatransformfactory.h \
-    circularbuffer.h \
     constants.h \
     downsampler.h \
     exception.h \
@@ -45,6 +44,7 @@ HEADERS += \
     lowpassfilter.h \
     lowpassfilterfactory.h \
     parameters.h \
+    ringbuffer.h \
     segmentation.h \
     spectrumanalyser.h \
     toneprofiles.h \
@@ -56,7 +56,6 @@ SOURCES += \
     chromagram.cpp \
     chromatransform.cpp \
     chromatransformfactory.cpp \
-    circularbuffer.cpp \
     downsampler.cpp \
     fftadapter.cpp \
     keyclassifier.cpp \
@@ -64,6 +63,7 @@ SOURCES += \
     lowpassfilter.cpp \
     lowpassfilterfactory.cpp \
     parameters.cpp \
+    ringbuffer.cpp \
     segmentation.cpp \
     spectrumanalyser.cpp \
     toneprofiles.cpp \

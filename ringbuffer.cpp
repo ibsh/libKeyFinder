@@ -19,11 +19,11 @@
 
 *************************************************************************/
 
-#include "circularbuffer.h"
+#include "ringbuffer.h"
 
 namespace KeyFinder {
 
-  CircularBuffer::CircularBuffer(unsigned int s) {
+  RingBuffer::RingBuffer(unsigned int s) {
     if (s == 0) throw Exception("Size must be > 0");
     size = s;
     p = new Binode<float>(); // first node
@@ -38,7 +38,7 @@ namespace KeyFinder {
     q->r = p;
   }
 
-  CircularBuffer::~CircularBuffer() {
+  RingBuffer::~RingBuffer() {
     Binode<float>* current = p;
     do {
       Binode<float>* zap = current;
@@ -47,11 +47,11 @@ namespace KeyFinder {
     } while (current != p);
   }
 
-  unsigned int CircularBuffer::getSize() const {
+  unsigned int RingBuffer::getSize() const {
     return size;
   }
 
-  void CircularBuffer::clear() {
+  void RingBuffer::clear() {
     Binode<float>* q = p;
     for (unsigned int k = 0; k < size; k++) {
       q->data = 0.0;
@@ -59,7 +59,7 @@ namespace KeyFinder {
     }
   }
 
-  void CircularBuffer::shiftZeroIndex(int count) {
+  void RingBuffer::shiftZeroIndex(int count) {
     if (count < 0) {
       for (int i = 0; i > count; i--)
         p = p->r;
@@ -69,7 +69,7 @@ namespace KeyFinder {
     }
   }
 
-  float CircularBuffer::getData(int index) const {
+  float RingBuffer::getData(int index) const {
     Binode<float>* q = p;
     if (index < 0) {
       for (int i = 0; i > index; i--)
@@ -81,7 +81,7 @@ namespace KeyFinder {
     return q->data;
   }
 
-  void CircularBuffer::setData(int index, float value) {
+  void RingBuffer::setData(int index, float value) {
     Binode<float>* q = p;
     if (index < 0) {
       for (int i = 0; i > index; i--)

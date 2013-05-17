@@ -116,14 +116,14 @@ namespace KeyFinder {
       }
     }
 
-    circle = new CircularBuffer(SEMITONES);
+    ring = new RingBuffer(SEMITONES);
     for (unsigned int i = 0; i<SEMITONES; i++) {
-      circle->setData(i, p[i]);
+      ring->setData(i, p[i]);
     }
 
     // offset from A to C (3 semitones) if specified
     if (offsetToC) {
-      circle->shiftZeroIndex(-3);
+      ring->shiftZeroIndex(-3);
     }
 
     // get mean in preparation for correlation
@@ -133,7 +133,7 @@ namespace KeyFinder {
   }
 
   ToneProfile::~ToneProfile() {
-    delete circle;
+    delete ring;
   }
 
   // TODO: maybe factor out the vector similarity methods. They're not exactly
@@ -155,10 +155,10 @@ namespace KeyFinder {
     float intersection = 0.0;
     float profileNorm = 0.0;
     float inputNorm = 0.0;
-    offset *= -1; // set the appropriate starting index for the circular buffer
+    offset *= -1; // set the appropriate starting index for the Ring buffer
     for (unsigned int i = 0; i < SEMITONES; i++) {
-      intersection += input[i] * circle->getData(offset);
-      profileNorm += pow(circle->getData(offset),2);
+      intersection += input[i] * ring->getData(offset);
+      profileNorm += pow(ring->getData(offset),2);
       inputNorm += pow((input[i]),2);
       offset++;
     }
@@ -180,7 +180,7 @@ namespace KeyFinder {
     float sumBottomRight = 0.0;
     offset *= -1;
     for (unsigned int i=0; i < SEMITONES; i++) {
-      float xMinusXBar = circle->getData(offset) - profileMean;
+      float xMinusXBar = ring->getData(offset) - profileMean;
       float yMinusYBar = input[i] - inputMean;
       sumTop += xMinusXBar * yMinusYBar;
       sumBottomLeft += pow(xMinusXBar,2);

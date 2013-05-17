@@ -71,12 +71,12 @@ namespace KeyFinder {
     delete ifft;
   }
 
-  void LowPassFilter::filter(AudioData& audio, CircularBuffer*& buffer, unsigned int shortcutFactor) const {
+  void LowPassFilter::filter(AudioData& audio, RingBuffer*& buffer, unsigned int shortcutFactor) const {
 
     if (buffer == NULL) {
-      buffer = new CircularBuffer(impulseLength);
+      buffer = new RingBuffer(impulseLength);
     } else if (buffer->getSize() != impulseLength) {
-      throw Exception("Mismatched circular buffer length");
+      throw Exception("Mismatched Ring buffer length");
     }
 
     unsigned int frameCount = audio.getFrameCount();

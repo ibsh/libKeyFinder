@@ -59,7 +59,7 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::CircularBuffer* buffer = NULL;
+  KeyFinder::RingBuffer* buffer = NULL;
   lpf->filter(a, buffer, factor);
   delete lpf;
   delete buffer;

@@ -19,20 +19,20 @@
 
 *************************************************************************/
 
-#include "circularbuffertest.h"
+#include "Ringbuffertest.h"
 
-TEST (CircularBufferTest, ConstructorWorks) {
-  KeyFinder::CircularBuffer b(10);
+TEST (RingBufferTest, ConstructorWorks) {
+  KeyFinder::RingBuffer b(10);
   ASSERT_EQ(10, b.getSize());
 }
 
-TEST (CircularBufferTest, CantInitialiseZeroLength) {
-  ASSERT_THROW(KeyFinder::CircularBuffer b(0), KeyFinder::Exception);
+TEST (RingBufferTest, CantInitialiseZeroLength) {
+  ASSERT_THROW(KeyFinder::RingBuffer b(0), KeyFinder::Exception);
 }
 
-TEST (CircularBufferTest, AccessorsMutatorsAndClear) {
+TEST (RingBufferTest, AccessorsMutatorsAndClear) {
   unsigned int size = 5;
-  KeyFinder::CircularBuffer b(size);
+  KeyFinder::RingBuffer b(size);
   ASSERT_EQ(size, b.getSize());
   for (unsigned int i = 0; i < size; i++)
     ASSERT_FLOAT_EQ(0.0, b.getData(i));
@@ -50,9 +50,9 @@ TEST (CircularBufferTest, AccessorsMutatorsAndClear) {
     ASSERT_FLOAT_EQ(0.0, b.getData(i));
 }
 
-TEST (CircularBufferTest, ShiftZeroIndex) {
+TEST (RingBufferTest, ShiftZeroIndex) {
   unsigned int size = 5;
-  KeyFinder::CircularBuffer b(size);
+  KeyFinder::RingBuffer b(size);
   ASSERT_EQ(size, b.getSize());
   for (unsigned int i = 0; i < size; i++)
     ASSERT_FLOAT_EQ(0.0, b.getData(i));

@@ -25,7 +25,7 @@
 #include <cmath>
 #include <vector>
 
-#include "circularbuffer.h"
+#include "ringbuffer.h"
 #include "constants.h"
 #include "exception.h"
 
@@ -48,7 +48,7 @@ namespace KeyFinder {
   private:
     float cosine(const std::vector<float>& chromaVector, int offset) const;
     float correlation(const std::vector<float>& chromaVector, int offset) const;
-    CircularBuffer* circle;
+    RingBuffer* ring;
     float profileMean;
   };
 

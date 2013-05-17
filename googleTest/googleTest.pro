@@ -33,7 +33,6 @@ HEADERS += \
     chromagramtest.h \
     chromatransformtest.h \
     chromatransformfactorytest.h \
-    circularbuffertest.h \
     downsamplertest.h \
     downsamplershortcuttest.h \
     fftadaptertest.h \
@@ -43,6 +42,7 @@ HEADERS += \
     lowpassfiltertest.h \
     lowpassfilterfactorytest.h \
     parameterstest.h \
+    ringbuffertest.h \
     segmentationtest.h \
     spectrumanalysertest.h \
     toneprofilestest.h \
@@ -56,7 +56,6 @@ SOURCES += \
     chromagramtest.cpp \
     chromatransformtest.cpp \
     chromatransformfactorytest.cpp \
-    circularbuffertest.cpp \
     downsamplertest.cpp \
     downsamplershortcuttest.cpp \
     fftadaptertest.cpp \
@@ -66,6 +65,7 @@ SOURCES += \
     lowpassfiltertest.cpp \
     lowpassfilterfactorytest.cpp \
     parameterstest.cpp \
+    ringbuffertest.cpp \
     segmentationtest.cpp \
     spectrumanalysertest.cpp \
     toneprofilestest.cpp \
