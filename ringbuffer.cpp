@@ -21,44 +21,76 @@
 
 #include "ringbuffer.h"
 
-#include <iostream>
-
 namespace KeyFinder {
 
-  RingBuffer::RingBuffer(unsigned int s) : buffer(s) {
+  RingBuffer::RingBuffer(unsigned int s) {
     if (s == 0) throw Exception("Size must be > 0");
-    zeroIndex = 0;
+    size = s;
+    p = new Binode<float>(); // first node
+    Binode<float>* q = p;
+    for (unsigned int i = 0; i < size - 1; i++) {
+      q->r = new Binode<float>(); // subsequent nodes
+      q->r->l = q;
+      q = q->r;
+    }
+    // join first and last nodes
+    p->l = q;
+    q->r = p;
+  }
+
+  RingBuffer::~RingBuffer() {
+    Binode<float>* current = p;
+    do {
+      Binode<float>* zap = current;
+      current = current->r;
+      delete zap;
+    } while (current != p);
   }
 
   unsigned int RingBuffer::getSize() const {
-    return buffer.size();
+    return size;
   }
 
   void RingBuffer::clear() {
-    for (unsigned int i = 0; i < buffer.size(); i++) {
-        buffer[i] = 0.0;
+    Binode<float>* q = p;
+    for (unsigned int k = 0; k < size; k++) {
+      q->data = 0.0;
+      q = q->r;
     }
-    zeroIndex = 0;
   }
 
   void RingBuffer::shiftZeroIndex(int count) {
-    zeroIndex += count;
-    while (zeroIndex < 0) zeroIndex += buffer.size();
-    zeroIndex %= buffer.size();
+    if (count < 0) {
+      for (int i = 0; i > count; i--)
+        p = p->r;
+    } else if (count > 0) {
+      for (int i = 0; i < count; i++)
+        p = p->l;
+    }
   }
 
   float RingBuffer::getData(int index) const {
-    index += zeroIndex;
-    while (index < 0) index += buffer.size();
-    index %= buffer.size();
-    return buffer[index];
+    Binode<float>* q = p;
+    if (index < 0) {
+      for (int i = 0; i > index; i--)
+        q = q->l;
+    } else if (index > 0) {
+      for (int i = 0; i < index; i++)
+        q = q->r;
+    }
+    return q->data;
   }
 
   void RingBuffer::setData(int index, float value) {
-    index += zeroIndex;
-    while (index < 0) index += buffer.size();
-    index %= buffer.size();
-    buffer[index] = value;
+    Binode<float>* q = p;
+    if (index < 0) {
+      for (int i = 0; i > index; i--)
+        q = q->l;
+    } else if (index > 0) {
+      for (int i = 0; i < index; i++)
+        q = q->r;
+    }
+    q->data = value;
   }
 
 }

@@ -89,9 +89,9 @@ namespace KeyFinder {
       // for each frame (running off the end of the sample stream by delay)
       for (unsigned int frm = 0; frm < frameCount + delay; frm++) {
         // shuffle old samples along delay buffer
-        buffer->shiftZeroIndex(1);
+        buffer->shiftZeroIndex(-1);
 
-        // load new sample into back of delay buffer
+        // load new sample into delay buffer
         if (frm < frameCount) {
           buffer->setData(-1, audio.getSample(frm, ch) / gain);
         } else {

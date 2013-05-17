@@ -123,7 +123,7 @@ namespace KeyFinder {
 
     // offset from A to C (3 semitones) if specified
     if (offsetToC) {
-      ring->shiftZeroIndex(3);
+      ring->shiftZeroIndex(-3);
     }
 
     // get mean in preparation for correlation
