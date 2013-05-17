@@ -47,7 +47,7 @@ namespace KeyFinder {
     unsigned int octaves;
     unsigned int bandsPerSemitone;
     unsigned int hopSize;
-    ChromaTransform* ct; // not to be freed on destruction; comes from factory
+    const ChromaTransform* ct; // not to be freed on destruction; comes from factory
     std::vector<float> temporalWindow;
   };
 

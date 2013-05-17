@@ -34,7 +34,7 @@ namespace KeyFinder {
   public:
     ChromaTransformFactory();
     ~ChromaTransformFactory();
-    ChromaTransform* getChromaTransform(
+    const ChromaTransform* getChromaTransform(
       unsigned int frameRate,
       const Parameters& params
     );
@@ -44,22 +44,21 @@ namespace KeyFinder {
     boost::mutex chromaTransformFactoryMutex;
   };
 
-  // Keeps a reference to a spectrum analyser with distinguishing information
   class ChromaTransformFactory::ChromaTransformWrapper {
   public:
     ChromaTransformWrapper(
       unsigned int frameRate,
       const Parameters& params,
-      ChromaTransform* transform
+      const ChromaTransform* const transform
     );
     ~ChromaTransformWrapper();
-    ChromaTransform* getChromaTransform() const;
-    Parameters getParameters() const;
+    const ChromaTransform* getChromaTransform() const;
+    const Parameters& getParameters() const;
     unsigned int getFrameRate() const;
   private:
     unsigned int frameRate;
     Parameters params;
-    ChromaTransform* ct;
+    const ChromaTransform* const ct;
   };
 
 }
