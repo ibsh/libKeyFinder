@@ -22,7 +22,7 @@ namespace KeyFinder {
     const Parameters& params
   ) {
     AudioData workingAudio(originalAudio);
-    preprocess(workingAudio, params);
+    preprocess(workingAudio, workspace, params);
     workspace.buffer.append(workingAudio);
     chromagramOfBufferedAudio(workspace, params);
   }
@@ -99,6 +99,7 @@ namespace KeyFinder {
 
   void KeyFinder::preprocess(
     AudioData& workingAudio,
+    Workspace& workspace,
     const Parameters& params
   ) {
     workingAudio.reduceToMono();
@@ -111,7 +112,7 @@ namespace KeyFinder {
 
     // get filter
     const LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
-    lpf->filter(workingAudio, downsampleFactor); // downsampleFactor shortcut
+    lpf->filter(workingAudio, workspace.lpfBuffer, downsampleFactor); // downsampleFactor shortcut
     // note we don't delete the LPF; it's stored in the factory for reuse
 
     Downsampler ds;

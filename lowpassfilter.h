@@ -40,7 +40,11 @@ namespace KeyFinder {
       float cornerFrequency,
       unsigned int fftFrameSize
     );
-    void filter(AudioData& audio, unsigned int shortcutFactor = 1) const;
+    void filter(
+      AudioData& audio,
+      CircularBuffer*& buffer,
+      unsigned int shortcutFactor = 1
+    ) const;
   protected:
     unsigned int order;
     unsigned int delay;         // always order / 2

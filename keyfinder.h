@@ -34,7 +34,11 @@ namespace KeyFinder {
       const Parameters& params = Parameters()
     );
   private:
-    void preprocess(AudioData& workingAudio, const Parameters& params);
+    void preprocess(
+      AudioData& workingAudio,
+      Workspace& workspace,
+      const Parameters& params
+    );
     void chromagramOfBufferedAudio(
       Workspace& workspace,
       const Parameters& params = Parameters()

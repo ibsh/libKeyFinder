@@ -59,8 +59,10 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  lpf->filter(a, factor);
+  KeyFinder::CircularBuffer* buffer = NULL;
+  lpf->filter(a, buffer, factor);
   delete lpf;
+  delete buffer;
 
   // test for lower wave only, and for flattening of non-useful samples
   for (unsigned int i = 0; i < frames; i++) {

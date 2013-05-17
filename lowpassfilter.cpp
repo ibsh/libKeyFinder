@@ -71,9 +71,13 @@ namespace KeyFinder {
     delete ifft;
   }
 
-  void LowPassFilter::filter(AudioData& audio, unsigned int shortcutFactor) const {
+  void LowPassFilter::filter(AudioData& audio, CircularBuffer*& buffer, unsigned int shortcutFactor) const {
 
-    CircularBuffer buffer(impulseLength);
+    if (buffer == NULL) {
+      buffer = new CircularBuffer(impulseLength);
+    } else if (buffer->getSize() != impulseLength) {
+      throw Exception("Mismatched circular buffer length");
+    }
 
     unsigned int frameCount = audio.getFrameCount();
     unsigned int channels = audio.getChannels();
@@ -81,18 +85,18 @@ namespace KeyFinder {
     // for each channel (should be mono by this point but just in case)
     float sum;
     for (unsigned int ch = 0; ch < channels; ch++) {
-      buffer.clear();
+      buffer->clear();
       // for each frame (running off the end of the sample stream by delay)
       for (unsigned int frm = 0; frm < frameCount + delay; frm++) {
         // shuffle old samples along delay buffer
-        buffer.shiftZeroIndex(-1);
+        buffer->shiftZeroIndex(-1);
 
         // load new sample into delay buffer
         if (frm < frameCount) {
-          buffer.setData(-1, audio.getSample(frm, ch) / gain);
+          buffer->setData(-1, audio.getSample(frm, ch) / gain);
         } else {
           // zero pad once we're into the delay at the end of the file
-          buffer.setData(-1, 0.0);
+          buffer->setData(-1, 0.0);
         }
         // start doing the maths once the delay has passed
         if (frm >= delay) {
@@ -102,7 +106,7 @@ namespace KeyFinder {
           if ((frm - delay) % shortcutFactor == 0) {
             sum = 0.0;
             for (unsigned int k = 0; k < impulseLength; k++) {
-              sum += coefficients[k] * buffer.getData(k);
+              sum += coefficients[k] * buffer->getData(k);
             }
             // writing in place; this must take place AFTER reading from this frame
             audio.setSample(frm - delay, ch, sum);

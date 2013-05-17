@@ -23,13 +23,16 @@
 
 namespace KeyFinder {
 
-  Workspace::Workspace() : buffer(), chroma(NULL), fftAdapter(NULL) { }
+Workspace::Workspace() :
+  buffer(), chroma(NULL), lpfBuffer(NULL), fftAdapter(NULL) { }
 
   Workspace::~Workspace() {
     if (fftAdapter != NULL)
       delete fftAdapter;
     if (chroma != NULL)
       delete chroma;
+    if (lpfBuffer != NULL)
+      delete lpfBuffer;
   }
 
   FftAdapter* Workspace::getFftAdapter() {

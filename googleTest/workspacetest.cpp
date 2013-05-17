@@ -29,7 +29,7 @@ TEST (WorkspaceTest, ConstructorDefaultsWork) {
   ASSERT_EQ(0, w.buffer.getSampleCount());
 
   ASSERT_EQ(NULL, w.chroma);
-
+  ASSERT_EQ(NULL, w.lpfBuffer);
   ASSERT_EQ(NULL, w.getFftAdapter());
 }
 
