@@ -35,7 +35,7 @@ namespace KeyFinder {
   }
 
   void RingBuffer::clear() {
-    for (unsigned int i = 0; i < getSize(); i++) {
+    for (unsigned int i = 0; i < buffer.size(); i++) {
         buffer[i] = 0.0;
     }
     zeroIndex = 0;
@@ -43,21 +43,21 @@ namespace KeyFinder {
 
   void RingBuffer::shiftZeroIndex(int count) {
     zeroIndex += count;
-    while (zeroIndex < 0) zeroIndex += getSize();
-    zeroIndex %= getSize();
+    while (zeroIndex < 0) zeroIndex += buffer.size();
+    zeroIndex %= buffer.size();
   }
 
   float RingBuffer::getData(int index) const {
     index += zeroIndex;
-    while (index < 0) index += getSize();
-    index %= getSize();
+    while (index < 0) index += buffer.size();
+    index %= buffer.size();
     return buffer[index];
   }
 
   void RingBuffer::setData(int index, float value) {
     index += zeroIndex;
-    while (index < 0) index += getSize();
-    index %= getSize();
+    while (index < 0) index += buffer.size();
+    index %= buffer.size();
     buffer[index] = value;
   }
 
