@@ -22,30 +22,23 @@
 #ifndef RINGBUFFER_H
 #define RINGBUFFER_H
 
+#include <vector>
+
 #include "exception.h"
 
 namespace KeyFinder {
 
-  template <class T>
-  class Binode {
-  public:
-    Binode(T x = 0): l(0), r(0), data(x) {}
-    Binode* l, *r;
-    T data;
-  };
-
   class RingBuffer {
   public:
     RingBuffer(unsigned int size);
-    ~RingBuffer();
     float getData(int index) const;
     unsigned int getSize() const;
     void setData(int index, float value);
     void clear();
     void shiftZeroIndex(int count);
   protected:
-    Binode<float>* p;
-    unsigned int size;
+    std::vector<float> buffer;
+    int zeroIndex;
   };
 
 }
