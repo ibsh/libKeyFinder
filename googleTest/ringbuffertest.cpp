@@ -24,27 +24,42 @@
 TEST (RingBufferTest, ConstructorWorks) {
   KeyFinder::RingBuffer b(10);
   ASSERT_EQ(10, b.getSize());
+  for (unsigned int i = 0; i < 10; i++)
+    ASSERT_FLOAT_EQ(0.0, b.getData(i));
 }
 
 TEST (RingBufferTest, CantInitialiseZeroLength) {
   ASSERT_THROW(KeyFinder::RingBuffer b(0), KeyFinder::Exception);
 }
 
-TEST (RingBufferTest, AccessorsMutatorsAndClear) {
+TEST (RingBufferTest, AccessorsMutatorsBasic) {
   unsigned int size = 5;
   KeyFinder::RingBuffer b(size);
-  ASSERT_EQ(size, b.getSize());
-  for (unsigned int i = 0; i < size; i++)
-    ASSERT_FLOAT_EQ(0.0, b.getData(i));
+  b.setData(1, 1.0);
+  b.setData(3, 10.0);
+  ASSERT_FLOAT_EQ(1.0, b.getData(1));
+  ASSERT_FLOAT_EQ(10.0, b.getData(3));
+}
 
+TEST (RingBufferTest, AccessorsMutatorsUseCyclicalIndicesRelativeToZero) {
+  unsigned int size = 5;
+  KeyFinder::RingBuffer b(size);
   b.setData(0, 1.0);
   b.setData(3, 10.0);
-  // accessors and mutators use indices relative to the current element in focus
-  ASSERT_FLOAT_EQ(1.0, b.getData(0));
-  ASSERT_FLOAT_EQ(1.0, b.getData(size));
-  ASSERT_FLOAT_EQ(10.0, b.getData(3));
-  ASSERT_FLOAT_EQ(10.0, b.getData(-2));
+  ASSERT_FLOAT_EQ(b.getData(0), b.getData(size));
+  ASSERT_FLOAT_EQ(b.getData(0), b.getData(size * 2));
+  ASSERT_FLOAT_EQ(b.getData(3), b.getData(-2));
+  ASSERT_FLOAT_EQ(b.getData(3), b.getData(size + 3));
+  ASSERT_FLOAT_EQ(b.getData(3), b.getData(size * 20 + 3));
+  ASSERT_FLOAT_EQ(b.getData(3), b.getData(size * 20 -2));
+}
 
+TEST (RingBufferTest, Clear) {
+  unsigned int size = 5;
+  KeyFinder::RingBuffer b(size);
+  b.setData(0, 1.0);
+  b.setData(1, 5.0);
+  b.setData(3, 10.0);
   b.clear();
   for (unsigned int i = 0; i < size; i++)
     ASSERT_FLOAT_EQ(0.0, b.getData(i));
