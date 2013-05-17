@@ -25,12 +25,13 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.6.1
+VERSION = 0.6.2
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
 HEADERS += \
     audiodata.h \
+    binode.h \
     chromagram.h \
     chromatransform.h \
     chromatransformfactory.h \

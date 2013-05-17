@@ -29,7 +29,7 @@ TEST (WorkspaceTest, ConstructorDefaultsWork) {
   ASSERT_EQ(0, w.buffer.getSampleCount());
 
   ASSERT_EQ(NULL, w.chroma);
-  ASSERT_EQ(NULL, w.lpfBuffer);
+  ASSERT_EQ(NULL, w.getLpfBuffer());
   ASSERT_EQ(NULL, w.getFftAdapter());
 }
 
@@ -39,6 +39,23 @@ TEST (WorkspaceTest, FftAdapterCanOnlyBeSetOnce) {
   ASSERT_NO_THROW(w.setFftAdapter(f));
   ASSERT_EQ(f, w.getFftAdapter());
   ASSERT_THROW(w.setFftAdapter(f), KeyFinder::Exception);
+}
+
+TEST (WorkspaceTest, LpfBufferConstructorRequiresPositiveImpulseLength) {
+  KeyFinder::Workspace w;
+  ASSERT_THROW(w.constructLpfBuffer(0), KeyFinder::Exception);
+}
+
+TEST (WorkspaceTest, LpfBufferCanOnlyBeConstructedOnce) {
+  KeyFinder::Workspace w;
+  ASSERT_NO_THROW(w.constructLpfBuffer(10));
+  unsigned int count = 1;
+  KeyFinder::Binode<float>* p = w.getLpfBuffer()->r;
+  for (; p != w.getLpfBuffer(); count++) {
+    p = p->r;
+  }
+  ASSERT_EQ(10, count);
+  ASSERT_THROW(w.constructLpfBuffer(1), KeyFinder::Exception);
 }
 
 TEST (WorkspaceTest, DestructorIsSafeBeforeFftAdapterInitialisation) {

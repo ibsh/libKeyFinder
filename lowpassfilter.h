@@ -26,9 +26,11 @@
 #include <vector>
 
 #include "audiodata.h"
+#include "binode.h"
 #include "ringbuffer.h"
 #include "fftadapter.h"
 #include "windowfunctions.h"
+#include "workspace.h"
 
 namespace KeyFinder {
 
@@ -42,7 +44,7 @@ namespace KeyFinder {
     );
     void filter(
       AudioData& audio,
-      RingBuffer*& buffer,
+      Workspace& workspace,
       unsigned int shortcutFactor = 1
     ) const;
   protected:

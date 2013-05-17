@@ -19,30 +19,17 @@
 
 *************************************************************************/
 
-#ifndef WORKSPACE_H
-#define WORKSPACE_H
-
-#include "audiodata.h"
-#include "binode.h"
-#include "chromagram.h"
-#include "ringbuffer.h"
-#include "fftadapter.h"
+#ifndef BINODE_H
+#define BINODE_H
 
 namespace KeyFinder {
 
-  class Workspace {
+  template <class T>
+  class Binode {
   public:
-    Workspace();
-    ~Workspace();
-    AudioData buffer;
-    Chromagram* chroma;
-    FftAdapter* getFftAdapter();
-    Binode<float>* getLpfBuffer();
-    void setFftAdapter(FftAdapter* const fftAdapter);
-    void constructLpfBuffer(unsigned int impulseLength);
-  private:
-    FftAdapter* fftAdapter;
-    Binode<float>* lpfBuffer;
+    Binode(T x = 0): l(0), r(0), data(x) {}
+    Binode* l, *r;
+    T data;
   };
 
 }

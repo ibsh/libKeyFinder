@@ -24,15 +24,21 @@
 namespace KeyFinder {
 
 Workspace::Workspace() :
-  buffer(), chroma(NULL), lpfBuffer(NULL), fftAdapter(NULL) { }
+  buffer(), chroma(NULL), fftAdapter(NULL), lpfBuffer(NULL) { }
 
   Workspace::~Workspace() {
     if (fftAdapter != NULL)
       delete fftAdapter;
     if (chroma != NULL)
       delete chroma;
-    if (lpfBuffer != NULL)
-      delete lpfBuffer;
+    if (lpfBuffer != NULL) {
+      Binode<float>* current = lpfBuffer;
+      do {
+        Binode<float>* zap = current;
+        current = current->r;
+        delete zap;
+      } while (current != lpfBuffer);
+    }
   }
 
   FftAdapter* Workspace::getFftAdapter() {
@@ -43,6 +49,29 @@ Workspace::Workspace() :
     if (fftAdapter != NULL)
       throw Exception("Can only set FFT adapter pointer once");
     fftAdapter = fft;
+  }
+
+  Binode<float>* Workspace::getLpfBuffer() {
+    return lpfBuffer;
+  }
+
+  void Workspace::constructLpfBuffer(unsigned int impulseLength) {
+    if (lpfBuffer != NULL)
+      throw Exception("Can only construct LPF buffer once");
+    if (impulseLength < 1) throw Exception("Impulse length must be > 0");
+    // first node
+    Binode<float>* p = new Binode<float>();
+    Binode<float>* q = p;
+    // subsequent nodes, for a total of impulseLength
+    for (unsigned int i = 0; i < impulseLength - 1; i++) {
+      q->r = new Binode<float>();
+      q->r->l = q;
+      q = q->r;
+    }
+    // join first and last nodes
+    p->l = q;
+    q->r = p;
+    lpfBuffer = p;
   }
 
 }

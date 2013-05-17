@@ -55,23 +55,16 @@ TEST (LowPassFilterTest, InitialisesNullRingBuffer) {
   a.addToSampleCount(frameRate);
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::RingBuffer* buffer = NULL;
-  KeyFinder::RingBuffer* nullBuffer = NULL;
-  lpf->filter(a, buffer);
-  ASSERT_NE(nullBuffer, buffer);
-  ASSERT_EQ(filterOrder + 1, buffer->getSize());
-  delete lpf;
-  delete buffer;
-}
-
-TEST (LowPassFilterTest, InsistsOnRingBufferOfCorrectSize) {
-  KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::AudioData a;
-  a.setChannels(1);
-  a.setFrameRate(frameRate);
-  a.addToSampleCount(frameRate);
-  KeyFinder::RingBuffer* b = new KeyFinder::RingBuffer(filterOrder - 5);
-  ASSERT_THROW(lpf->filter(a, b), KeyFinder::Exception);
+  KeyFinder::Workspace w;
+  KeyFinder::Binode<float>* p = NULL;
+  lpf->filter(a, w);
+  ASSERT_NE(p, w.getLpfBuffer());
+  unsigned int count = 1;
+  p = w.getLpfBuffer()->r;
+  for (; p != w.getLpfBuffer(); count++) {
+    p = p->r;
+  }
+  ASSERT_EQ(filterOrder + 1, count);
   delete lpf;
 }
 
@@ -82,10 +75,9 @@ TEST (LowPassFilterTest, DoesntAlterAudioMetadata) {
   a.addToSampleCount(frameRate);
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::RingBuffer* buffer = NULL;
-  lpf->filter(a, buffer);
+  KeyFinder::Workspace w;
+  lpf->filter(a, w);
   delete lpf;
-  delete buffer;
 
   ASSERT_EQ(1, a.getChannels());
   ASSERT_EQ(frameRate, a.getFrameRate());
@@ -103,10 +95,9 @@ TEST (LowPassFilterTest, KillsHigherFreqs) {
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::RingBuffer* buffer = NULL;
-  lpf->filter(a, buffer);
+  KeyFinder::Workspace w;
+  lpf->filter(a, w);
   delete lpf;
-  delete buffer;
 
   // test for near silence
   for (unsigned int i = 0; i < frameRate; i++) {
@@ -125,10 +116,9 @@ TEST (LowPassFilterTest, MaintainsLowerFreqs) {
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::RingBuffer* buffer = NULL;
-  lpf->filter(a, buffer);
+  KeyFinder::Workspace w;
+  lpf->filter(a, w);
   delete lpf;
-  delete buffer;
 
   // test for near perfect reproduction
   for (unsigned int i = 0; i < frameRate; i++) {
@@ -151,10 +141,9 @@ TEST (LowPassFilterTest, DoesBothAtOnce) {
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::RingBuffer* buffer = NULL;
-  lpf->filter(a, buffer);
+  KeyFinder::Workspace w;
+  lpf->filter(a, w);
   delete lpf;
-  delete buffer;
 
   // test for lower wave only
   for (unsigned int i = 0; i < frameRate; i++) {
@@ -182,10 +171,9 @@ TEST (LowPassFilterTest, WorksOnRepetitiveWaves) {
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::RingBuffer* buffer = NULL;
-  lpf->filter(a, buffer);
+  KeyFinder::Workspace w;
+  lpf->filter(a, w);
   delete lpf;
-  delete buffer;
 
   // test for lower wave only
   for (unsigned int i = 0; i < frames; i++) {
@@ -211,10 +199,9 @@ TEST (LowPassFilterTest, WorksOnMultipleChannels) {
   }
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::RingBuffer* buffer = NULL;
-  lpf->filter(a, buffer);
+  KeyFinder::Workspace w;
+  lpf->filter(a, w);
   delete lpf;
-  delete buffer;
 
   // test for lower wave only
   for (unsigned int i = 0; i < frameRate; i++) {
