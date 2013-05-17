@@ -35,9 +35,7 @@ namespace KeyFinder {
   }
 
   void RingBuffer::clear() {
-    for (unsigned int i = 0; i < getSize(); i++) {
-        buffer[i] = 0.0;
-    }
+    for (unsigned int i = 0; i < getSize(); i++) buffer[i] = 0.0;
     zeroIndex = 0;
   }
 
