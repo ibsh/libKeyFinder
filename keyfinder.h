@@ -2,14 +2,14 @@
 #define KEYFINDER_H
 
 #include "audiodata.h"
-#include "parameters.h"
-#include "lowpassfilterfactory.h"
 #include "chromatransformfactory.h"
 #include "downsampler.h"
-#include "spectrumanalyser.h"
-#include "keyfinderresult.h"
-#include "segmentation.h"
 #include "keyclassifier.h"
+#include "keyfinderresult.h"
+#include "lowpassfilterfactory.h"
+#include "parameters.h"
+#include "segmentation.h"
+#include "spectrumanalyser.h"
 #include "workspace.h"
 
 namespace KeyFinder {

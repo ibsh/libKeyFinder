@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include <vector>
+
 #include "audiodata.h"
 #include "circularbuffer.h"
 #include "fftadapter.h"
