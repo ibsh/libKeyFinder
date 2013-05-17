@@ -113,7 +113,7 @@ namespace KeyFinder {
 
   void AudioData::addToSampleCount(unsigned int newSamples) {
     try{
-      for (unsigned int i = 0; i < newSamples; i++) samples.push_back(0.0);
+      samples.resize(getSampleCount() + newSamples);
       // TODO: turns out this doesn't work; bad_alloc never gets thrown on Mac,
       // presumably it tries to do everything in swap
     }catch(const std::exception& e) {
