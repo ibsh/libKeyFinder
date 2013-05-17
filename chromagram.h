@@ -31,7 +31,11 @@ namespace KeyFinder {
 
   class Chromagram {
   public:
-    Chromagram(unsigned int hops = 0, unsigned int octaves = 0, unsigned int bandsPerSemitone = 0);
+    Chromagram(
+      unsigned int hops = 0,
+      unsigned int octaves = 0,
+      unsigned int bandsPerSemitone = 0
+    );
     void append(const Chromagram& that);
     void setMagnitude(unsigned int hop, unsigned int band, float value);
     float getMagnitude(unsigned int hop, unsigned int band) const;

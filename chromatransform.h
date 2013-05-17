@@ -39,7 +39,7 @@ namespace KeyFinder {
     std::vector< std::vector<float> > directSpectralKernel;
     // which fft bin to multiply by first coefficient.
     std::vector<unsigned int> chromaBandFftBinOffsets;
-    float kernelWindow(float,float) const;
+    float kernelWindow(float n, float N) const;
   };
 
 }

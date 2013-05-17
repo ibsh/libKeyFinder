@@ -37,7 +37,7 @@ namespace KeyFinder {
       tone_profile_t toneProfile,
       scale_t scale,
       bool offsetToC,
-      const std::vector<float>& customProfile = std::vector<float>(24, 0.0)
+      const std::vector<float>& customProfile = std::vector<float>(SEMITONES * 2, 0.0)
     );
     ~ToneProfile();
     float similarity(
