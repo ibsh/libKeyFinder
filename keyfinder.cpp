@@ -7,12 +7,16 @@ namespace KeyFinder {
     const Parameters& params
   ) {
     Workspace workspace;
-    Chromagram c = progressiveChromagramOfAudio(originalAudio, workspace, params);
-    c.append(finalChromagramOfAudio(workspace, params));
-    return keyOfChromagram(c, params);
+
+    progressiveChromagram(originalAudio, workspace, params);
+    finalChromagram(workspace, params);
+
+    KeyDetectionResult result(keyOfChromagram(workspace, params));
+
+    return result;
   }
 
-  Chromagram KeyFinder::progressiveChromagramOfAudio(
+  void KeyFinder::progressiveChromagram(
     const AudioData& originalAudio,
     Workspace& workspace,
     const Parameters& params
@@ -20,10 +24,10 @@ namespace KeyFinder {
     AudioData workingAudio(originalAudio);
     preprocess(workingAudio, params);
     workspace.buffer.append(workingAudio);
-    return chromagramOfBufferedAudio(workspace, params);
+    chromagramOfBufferedAudio(workspace, params);
   }
 
-  Chromagram KeyFinder::finalChromagramOfAudio(
+  void KeyFinder::finalChromagram(
     Workspace& workspace,
     const Parameters& params
   ) {
@@ -31,24 +35,24 @@ namespace KeyFinder {
     unsigned int paddedHopCount = ceil(workspace.buffer.getSampleCount() / (float)params.getHopSize());
     unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
     workspace.buffer.addToSampleCount(finalSampleLength - workspace.buffer.getSampleCount());
-    return chromagramOfBufferedAudio(workspace, params);
+    chromagramOfBufferedAudio(workspace, params);
   }
 
   KeyDetectionResult KeyFinder::keyOfChromagram(
-    const Chromagram& chromagram,
+    Workspace& workspace,
     const Parameters& params
   ) const {
 
     KeyDetectionResult result;
 
     // working copy of chromagram
-    Chromagram ch = Chromagram(chromagram);
-    ch.reduceToOneOctave();
+    Chromagram* ch = new Chromagram(*workspace.chroma);
+    ch->reduceToOneOctave();
 
     // get harmonic change signal and segment
     Segmentation segmenter;
     std::vector<unsigned int> segmentBoundaries = segmenter.getSegmentationBoundaries(ch, params);
-    segmentBoundaries.push_back(ch.getHops()); // sentinel
+    segmentBoundaries.push_back(ch->getHops()); // sentinel
 
     // get key estimates for each segment
     KeyClassifier classifier(
@@ -65,10 +69,10 @@ namespace KeyFinder {
       segment.firstHop = segmentBoundaries[s];
       segment.lastHop  = segmentBoundaries[s+1] - 1;
       // collapse segment's time dimension
-      std::vector<float> segmentChroma(ch.getBands(), 0.0);
+      std::vector<float> segmentChroma(ch->getBands(), 0.0);
       for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {
-        for (unsigned int band = 0; band < ch.getBands(); band++) {
-          float value = ch.getMagnitude(hop, band);
+        for (unsigned int band = 0; band < ch->getBands(); band++) {
+          float value = ch->getMagnitude(hop, band);
           segmentChroma[band] += value;
           segment.energy += value;
         }
@@ -114,24 +118,29 @@ namespace KeyFinder {
     ds.downsample(workingAudio, downsampleFactor);
   }
 
-  Chromagram KeyFinder::chromagramOfBufferedAudio(
+  void KeyFinder::chromagramOfBufferedAudio(
     Workspace& workspace,
     const Parameters& params
   ) {
     if (workspace.getFftAdapter() == NULL)
       workspace.setFftAdapter(new FftAdapter(params.getFftFrameSize()));
     SpectrumAnalyser sa(workspace.buffer.getFrameRate(), params, ctFactory);
-    Chromagram c = sa.chromagramOfWholeFrames(workspace.buffer, workspace.getFftAdapter());
+    Chromagram* c = sa.chromagramOfWholeFrames(workspace.buffer, workspace.getFftAdapter());
     // deal with tuning if necessary
-    if (c.getBandsPerSemitone() > 1) {
+    if (c->getBandsPerSemitone() > 1) {
       if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
-        c.tuningBandAdaptive(params.getDetunedBandWeight());
+        c->tuningBandAdaptive(params.getDetunedBandWeight());
       } else if (params.getTuningMethod() == TUNING_HARTE) {
-        c.tuningHarte();
+        c->tuningHarte();
       }
     }
-    workspace.buffer.discardFramesFromFront(params.getHopSize() * c.getHops());
-    return c;
+    workspace.buffer.discardFramesFromFront(params.getHopSize() * c->getHops());
+    if (workspace.chroma == NULL) {
+      workspace.chroma = c;
+    } else {
+      workspace.chroma->append(*c);
+      delete c;
+    }
   }
 
 }

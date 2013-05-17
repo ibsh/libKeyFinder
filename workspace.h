@@ -33,7 +33,7 @@ namespace KeyFinder {
     Workspace();
     ~Workspace();
     AudioData buffer;
-    Chromagram chroma;
+    Chromagram* chroma;
     FftAdapter* getFftAdapter();
     void setFftAdapter(FftAdapter* const fftAdapter);
   private:

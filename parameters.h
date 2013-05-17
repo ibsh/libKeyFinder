@@ -58,7 +58,7 @@ namespace KeyFinder {
     similarity_measure_t getSimilarityMeasure() const;
     tone_profile_t getToneProfile() const;
     tuning_method_t getTuningMethod() const;
-    std::vector<float> getCustomToneProfile() const;
+    const std::vector<float>& getCustomToneProfile() const;
 
     bool getOffsetToCDefault() const;
     unsigned int getFftFrameSizeDefault() const;

@@ -28,8 +28,7 @@ TEST (WorkspaceTest, ConstructorDefaultsWork) {
   ASSERT_EQ(0, w.buffer.getFrameRate());
   ASSERT_EQ(0, w.buffer.getSampleCount());
 
-  ASSERT_EQ(0, w.chroma.getBands());
-  ASSERT_EQ(0, w.chroma.getHops());
+  ASSERT_EQ(NULL, w.chroma);
 
   ASSERT_EQ(NULL, w.getFftAdapter());
 }

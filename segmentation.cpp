@@ -24,13 +24,13 @@
 namespace KeyFinder {
 
   std::vector<unsigned int> Segmentation::getSegmentationBoundaries(
-    const Chromagram& ch,
+    const Chromagram* const ch,
     const Parameters& params
   ) const {
     std::vector<unsigned int> segmentBoundaries(1, 0); // start vector with a 0 to enable first classification
     if (params.getSegmentation() == SEGMENTATION_ARBITRARY) {
       unsigned int segments = params.getArbitrarySegments();
-      float interval = ch.getHops() / segments;
+      float interval = ch->getHops() / segments;
       for (unsigned int i = 1; i < segments; i++) {
         segmentBoundaries.push_back((unsigned int)(interval * i + 0.5));
       }
@@ -53,12 +53,12 @@ namespace KeyFinder {
   }
 
   std::vector<float> Segmentation::cosineRateOfChange(
-    const Chromagram& ch,
+    const Chromagram* const ch,
     unsigned int gaussianSize,
     float gaussianSigma
   ) const {
-    unsigned int hops = ch.getHops();
-    unsigned int bands = ch.getBands();
+    unsigned int hops = ch->getHops();
+    unsigned int bands = ch->getBands();
     // initialise to 1.0 (implies vectors are exactly the same)
     std::vector<float> cosineChanges(hops, 1.0);
     // determine cosine similarity
@@ -70,8 +70,8 @@ namespace KeyFinder {
         float bottomRight = 0.0;
         for (unsigned int band = 0; band < bands; band++) {
           // add a tiny amount to each magnitude to guard against div by zero
-          float magA = ch.getMagnitude(hop - 1, band) + 0.001;
-          float magB = ch.getMagnitude(hop, band) + 0.001;
+          float magA = ch->getMagnitude(hop - 1, band) + 0.001;
+          float magB = ch->getMagnitude(hop, band) + 0.001;
           top += magA * magB;
           bottomLeft  += magA * magA;
           bottomRight += magB * magB;

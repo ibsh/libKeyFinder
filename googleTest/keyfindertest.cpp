@@ -41,7 +41,7 @@ TEST (KeyFinderTest, BasicUseCase) {
 TEST (KeyFinderTest, ProgressiveUseCase) {
 
   /*
-   * Build a second of audio to be added ten times. The default settings will
+   * Build a second of audio, to be added ten times. The default settings will
    * lead to a downsample factor of 10, so there'll be 44100 samples of audio
    * after pre-processing. That'll be 7 hops, with 15428 samples left in the
    * buffer. Then finish that off with finalChromagramOfAudio, which should add
@@ -62,11 +62,10 @@ TEST (KeyFinderTest, ProgressiveUseCase) {
   }
 
   KeyFinder::KeyFinder k;
-  KeyFinder::Chromagram c;
   KeyFinder::Workspace w;
   KeyFinder::FftAdapter* testFftPointer = NULL;
   for (unsigned int i = 0; i < 10; i++) {
-    c.append(k.progressiveChromagramOfAudio(inputAudio, w));
+    k.progressiveChromagram(inputAudio, w);
     // ensure we're using the same FFT adapter throughout
     if (testFftPointer == NULL) testFftPointer = w.getFftAdapter();
     ASSERT_EQ(testFftPointer, w.getFftAdapter());
@@ -76,23 +75,24 @@ TEST (KeyFinderTest, ProgressiveUseCase) {
   ASSERT_EQ(1, w.buffer.getChannels());
 
   // progressive result without emptying buffer
-  ASSERT_EQ(7, c.getHops());
+  ASSERT_EQ(7, w.chroma->getHops());
   ASSERT_EQ(15428, w.buffer.getSampleCount());
 
   // after emptying buffer
-  c.append(k.finalChromagramOfAudio(w));
-  ASSERT_EQ(11, c.getHops());
+  k.finalChromagram(w);
+  ASSERT_EQ(11, w.chroma->getHops());
   ASSERT_EQ(12288, w.buffer.getSampleCount());
   for (unsigned int i = 0; i < w.buffer.getSampleCount(); i++)
     ASSERT_FLOAT_EQ(0.0, w.buffer.getSample(i));
 
-  ASSERT_EQ(KeyFinder::A_MINOR, k.keyOfChromagram(c).globalKeyEstimate);
+  ASSERT_EQ(KeyFinder::A_MINOR, k.keyOfChromagram(w).globalKeyEstimate);
 }
 
 TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
-  KeyFinder::Chromagram ch(1,1,1);
+  KeyFinder::Workspace w;
+  w.chroma = new KeyFinder::Chromagram(1,1,1);
   KeyFinder::KeyFinder kf;
-  KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(ch);
+  KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(w);
   ASSERT_EQ(KeyFinder::SILENCE, kdr.globalKeyEstimate);
   ASSERT_EQ(1, kdr.segments.size());
   ASSERT_EQ(12, kdr.segments[0].chromaVector.size());
@@ -111,12 +111,14 @@ TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
 }
 
 TEST (KeyFinderTest, KeyOfChromagramPassesThroughChromaData) {
-  KeyFinder::Chromagram ch(1,1,1);
-  ch.setMagnitude(0, 0, 1.0);
-  ch.setMagnitude(0, 3, 1.0);
-  ch.setMagnitude(0, 7, 1.0);
+  KeyFinder::Workspace w;
+  w.chroma = new KeyFinder::Chromagram(1,1,1);
+  w.chroma->setMagnitude(0, 0, 1.0);
+  w.chroma->setMagnitude(0, 3, 1.0);
+  w.chroma->setMagnitude(0, 7, 1.0);
   KeyFinder::KeyFinder kf;
-  KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(ch);
+
+  KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(w);
   ASSERT_FLOAT_EQ(1.0, kdr.segments[0].chromaVector[0]);
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[1]);
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[2]);
@@ -133,14 +135,15 @@ TEST (KeyFinderTest, KeyOfChromagramPassesThroughChromaData) {
 }
 
 TEST (KeyFinderTest, KeyOfChromagramCollapsesTimeDimension) {
-  KeyFinder::Chromagram ch(5,1,1);
+  KeyFinder::Workspace w;
+  w.chroma = new KeyFinder::Chromagram(5,1,1);
   for (int i = 0; i < 5; i++) {
-    ch.setMagnitude(i, 0, 1.0);
-    ch.setMagnitude(i, 3, 1.0);
-    ch.setMagnitude(i, 7, 1.0);
+    w.chroma->setMagnitude(i, 0, 1.0);
+    w.chroma->setMagnitude(i, 3, 1.0);
+    w.chroma->setMagnitude(i, 7, 1.0);
   }
   KeyFinder::KeyFinder kf;
-  KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(ch);
+  KeyFinder::KeyDetectionResult kdr = kf.keyOfChromagram(w);
   ASSERT_FLOAT_EQ(5.0, kdr.segments[0].chromaVector[0]);
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[1]);
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[2]);
@@ -160,36 +163,37 @@ TEST (KeyFinderTest, FlatBeatRegressionTest) {
   KeyFinder::KeyFinder kf;
   KeyFinder::Parameters p;
   KeyFinder::KeyDetectionResult kdr;
-  KeyFinder::Chromagram ch(1,1,1);
+  KeyFinder::Workspace w;
+  w.chroma = new KeyFinder::Chromagram(1,1,1);
 
   // Flat Beat by Mr Oizo gets a different result from each of the tone
   // profiles; this chroma vector represents it.
-  ch.setMagnitude(0,  0, 2236193024);
-  ch.setMagnitude(0,  1, 1869016576);
-  ch.setMagnitude(0,  2, 2052115584);
-  ch.setMagnitude(0,  3, 1794053632);
-  ch.setMagnitude(0,  4, 1920909568);
-  ch.setMagnitude(0,  5, 1918255616);
-  ch.setMagnitude(0,  6, 1902896640);
-  ch.setMagnitude(0,  7, 2394525184);
-  ch.setMagnitude(0,  8, 2541725952);
-  ch.setMagnitude(0,  9, 3349090304);
-  ch.setMagnitude(0, 10, 3699921408);
-  ch.setMagnitude(0, 11, 3248228096);
+  w.chroma->setMagnitude(0,  0, 2236193024);
+  w.chroma->setMagnitude(0,  1, 1869016576);
+  w.chroma->setMagnitude(0,  2, 2052115584);
+  w.chroma->setMagnitude(0,  3, 1794053632);
+  w.chroma->setMagnitude(0,  4, 1920909568);
+  w.chroma->setMagnitude(0,  5, 1918255616);
+  w.chroma->setMagnitude(0,  6, 1902896640);
+  w.chroma->setMagnitude(0,  7, 2394525184);
+  w.chroma->setMagnitude(0,  8, 2541725952);
+  w.chroma->setMagnitude(0,  9, 3349090304);
+  w.chroma->setMagnitude(0, 10, 3699921408);
+  w.chroma->setMagnitude(0, 11, 3248228096);
 
   p.setToneProfile(KeyFinder::TONE_PROFILE_KRUMHANSL);
-  kdr = kf.keyOfChromagram(ch, p);
+  kdr = kf.keyOfChromagram(w, p);
   ASSERT_EQ(KeyFinder::G_MINOR, kdr.globalKeyEstimate);
 
   p.setToneProfile(KeyFinder::TONE_PROFILE_TEMPERLEY);
-  kdr = kf.keyOfChromagram(ch, p);
+  kdr = kf.keyOfChromagram(w, p);
   ASSERT_EQ(KeyFinder::B_FLAT_MAJOR, kdr.globalKeyEstimate);
 
   p.setToneProfile(KeyFinder::TONE_PROFILE_GOMEZ);
-  kdr = kf.keyOfChromagram(ch, p);
+  kdr = kf.keyOfChromagram(w, p);
   ASSERT_EQ(KeyFinder::E_FLAT_MINOR, kdr.globalKeyEstimate);
 
   p.setToneProfile(KeyFinder::TONE_PROFILE_SHAATH);
-  kdr = kf.keyOfChromagram(ch, p);
+  kdr = kf.keyOfChromagram(w, p);
   ASSERT_EQ(KeyFinder::B_MINOR, kdr.globalKeyEstimate);
 }

@@ -31,12 +31,12 @@ namespace KeyFinder {
   class Segmentation {
   public:
     std::vector<unsigned int> getSegmentationBoundaries(
-      const Chromagram& chromagram,
+      const Chromagram* const chromagram,
       const Parameters& params
     ) const;
   private:
     std::vector<float> cosineRateOfChange(
-      const Chromagram& chromagram,
+      const Chromagram* const chromagram,
       unsigned int gaussianSize,
       float gaussianSigma
     ) const;

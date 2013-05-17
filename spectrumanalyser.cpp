@@ -40,7 +40,7 @@ namespace KeyFinder {
     }
   }
 
-  Chromagram SpectrumAnalyser::chromagramOfWholeFrames(
+  Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(
     const AudioData& audio,
     FftAdapter* const fft
   ) const {
@@ -48,17 +48,17 @@ namespace KeyFinder {
       throw Exception("Audio must be monophonic to be analysed");
     unsigned int frmSize = fft->getFrameSize();
     if (audio.getSampleCount() < frmSize)
-      return Chromagram(0, octaves, bandsPerSemitone);
+      return new Chromagram(0, octaves, bandsPerSemitone);
     unsigned int hops = 1 + ((audio.getSampleCount() - frmSize) / hopSize);
-    Chromagram c(hops, octaves, bandsPerSemitone);
+    Chromagram* c = new Chromagram(hops, octaves, bandsPerSemitone);
     for (unsigned int hop = 0; hop < hops; hop++) {
       for (unsigned int sample = 0; sample < frmSize; sample++) {
         fft->setInput(sample, audio.getSample((hop * hopSize) + sample) * temporalWindow[sample]);
       }
       fft->execute();
       std::vector<float> cv = ct->chromaVector(fft);
-      for (unsigned int band = 0; band < c.getBands(); band++) {
-        c.setMagnitude(hop, band, cv[band]);
+      for (unsigned int band = 0; band < c->getBands(); band++) {
+        c->setMagnitude(hop, band, cv[band]);
       }
     }
     return c;
