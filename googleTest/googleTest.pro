@@ -30,6 +30,7 @@ CONFIG += x86 x86_64
 HEADERS += \
     _testhelpers.h \
     audiodatatest.h \
+    binodetest.h \
     chromagramtest.h \
     chromatransformtest.h \
     chromatransformfactorytest.h \
@@ -53,6 +54,7 @@ SOURCES += \
     main.cpp \
     _testhelpers.cpp \
     audiodatatest.cpp \
+    binodetest.cpp \
     chromagramtest.cpp \
     chromatransformtest.cpp \
     chromatransformfactorytest.cpp \
