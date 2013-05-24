@@ -1,0 +1,5 @@
+libkeyfinder (0.6.1-0ubuntu1) quantal; urgency=low
+
+  * First build for Ubuntu
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Fri, 24 May 2013 17:18:24 +0200
