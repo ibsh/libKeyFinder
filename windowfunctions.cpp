@@ -34,7 +34,7 @@ namespace KeyFinder {
   }
 
   float WindowFunction::gaussianWindow(int n, int N, float sigma) const {
-    return exp(-1 * (pow(n - (N / 2), 2) / (2 * sigma * sigma)));
+    return exp(-1 * (pow(double(n) - double(N / 2), 2) / (2 * sigma * sigma)));;
   }
 
   std::vector<float> WindowFunction::convolve(

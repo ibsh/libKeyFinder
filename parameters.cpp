@@ -276,7 +276,7 @@ namespace KeyFinder {
       }
       // tune down for bins before first concert pitch bin (if bps > 1)
       for (unsigned int j = 0; j < concertPitchBin; j++) {
-        bandFreqs.push_back(bandFreq / pow(freqRatio, concertPitchBin - j));
+        bandFreqs.push_back(bandFreq / pow(freqRatio, int(concertPitchBin - j)));
       }
       // and tune all other bins
       for (unsigned int j = concertPitchBin; j < bpo; j++) {
