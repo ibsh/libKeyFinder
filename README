@@ -60,7 +60,7 @@ Alternatively, you can transform a stream of audio into a chromatic representati
 *****************************************************************************
 
 [Ubuntu 32 or 64 bits]
-1. sudo apt-get installl build-esential
+1. sudo apt-get install build-esential qt4-dev-tools
 2. sudo apt-get install libboost1.50-all-dev
 3. sudo apt-get install libfftw3-dev
 4. qmake LibKeyFinder.pro
