@@ -2,3 +2,7 @@
 *.pro.user*
 *.autosave
 googleTest-build/
+Makefile*
+debug/
+release/
+*_resource.rc
