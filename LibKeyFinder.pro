@@ -80,7 +80,7 @@ unix|macx{
 }
 
 unix{
-  header.path = /usr/local/include
+  header.path = /usr/include
   header.files = keyfinder_api.h
   INSTALLS += header
 }
@@ -143,7 +143,7 @@ unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
     } else {
-        target.path = /usr/local/lib
+        target.path = /usr/lib
     }
     INSTALLS += target
 }
