@@ -43,7 +43,7 @@ echo ""
 echo ""
 
 echo "************************* Get version from .pro ************************"
-VERSION=$(cat ../libkeyfinder.pro | grep 'VERSION =' | cut -d'=' -f2 | tr -d ' ')
+VERSION=$(cat ../LibKeyFinder.pro | grep 'VERSION =' | cut -d'=' -f2 | tr -d ' ')
 echo VERSION = $VERSION
 check_error
 echo ""
@@ -73,7 +73,7 @@ echo "**************************** Copy source code ***************************"
 git checkout changelog
 check_error
 cd ..
-git archive --format zip --output $WORKINGPATH/archive.zip master
+git archive --format zip --output $WORKINGPATH/archive.zip `git rev-parse --abbrev-ref HEAD`
 unzip $WORKINGPATH/archive.zip -d $WORKINGPATH/$SOURCEDIR
 check_error
 cd debian
