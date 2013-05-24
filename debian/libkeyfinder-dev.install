@@ -1,2 +1,2 @@
-usr/include/*
-usr/lib/lib*.so
+usr/local/include/*
+usr/local/lib/lib*.so
