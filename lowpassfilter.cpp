@@ -79,7 +79,7 @@ namespace KeyFinder {
     unsigned int channels = audio.getChannels();
 
     // for each channel (should be mono by this point but just in case)
-    float sum;
+    float sum = 0.0;
     for (unsigned int ch = 0; ch < channels; ch++) {
       Binode<float>* q = p;
       // clear delay buffer
