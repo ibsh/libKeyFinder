@@ -6,3 +6,6 @@ Makefile*
 debug/
 release/
 *_resource.rc
+*.o
+*.so*
+*~
