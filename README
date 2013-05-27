@@ -56,7 +56,7 @@ Alternatively, you can transform a stream of audio into a chromatic representati
   doSomethingWithFinalKeyEstimate(r.globalKeyEstimate);
 
 *****************************************************************************
-** BUILD process
+** BUILD process (using Qmake and QtCreator)
 *****************************************************************************
 
 [Ubuntu 32 or 64 bits]
