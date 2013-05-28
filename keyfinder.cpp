@@ -82,6 +82,8 @@ namespace KeyFinder {
       result.segments.push_back(segment);
     }
 
+    delete ch;
+
     // get global key
     result.globalKeyEstimate = SILENCE;
     float mostCommonKeyWeight = 0.0;
