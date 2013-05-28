@@ -27,6 +27,7 @@ TEST (ChromaTransformTest, InsistsOnPositiveFrameRate) {
   ASSERT_THROW(ct = new KeyFinder::ChromaTransform(0, params), KeyFinder::Exception);
   ASSERT_EQ(NULL, ct);
   ASSERT_NO_THROW(ct = new KeyFinder::ChromaTransform(4410, params));
+  ASSERT_NO_THROW(delete ct);
 }
 
 TEST (ChromaTransformTest, InsistsOnNyquistHigherThanAnalysisFreqs) {
@@ -36,6 +37,7 @@ TEST (ChromaTransformTest, InsistsOnNyquistHigherThanAnalysisFreqs) {
   ASSERT_THROW(ct = new KeyFinder::ChromaTransform(high * 2 - 1, params), KeyFinder::Exception);
   ASSERT_EQ(NULL, ct);
   ASSERT_NO_THROW(ct = new KeyFinder::ChromaTransform(high * 2 + 1, params));
+  delete ct;
 }
 
 TEST (ChromaTransformTest, InsistsOnSufficientBassResolution) {
@@ -49,6 +51,7 @@ TEST (ChromaTransformTest, InsistsOnSufficientBassResolution) {
   ASSERT_EQ(NULL, ct);
   params.setFftFrameSize(minimumFftFrameSize + 1);
   ASSERT_NO_THROW(ct = new KeyFinder::ChromaTransform(frameRate, params));
+  delete ct;
 }
 
 // Inheritance so we can get the (private) kernel out.
@@ -66,6 +69,7 @@ TEST (ChromaTransformTest, TestSpectralKernel) {
   myCt = new MyChromaTransform(4410, params);
   std::vector<unsigned int> cbfbo = myCt->getChromaBandFftBinOffsets();
   std::vector< std::vector<float> > dsk = myCt->getDirectSpectralKernel();
+  delete myCt;
   unsigned int chromaBands = params.getOctaves() * params.getBandsPerOctave();
 
   // ensure correct element sizes
