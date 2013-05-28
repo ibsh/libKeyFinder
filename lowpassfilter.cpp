@@ -79,42 +79,43 @@ namespace KeyFinder {
     unsigned int channels = audio.getChannels();
 
     // for each channel (should be mono by this point but just in case)
-    float sum;
-    for (unsigned int ch = 0; ch < channels; ch++) {
+    for (unsigned int channel = 0; channel < channels; channel++) {
       Binode<float>* q = p;
       // clear delay buffer
       for (unsigned int k = 0; k < impulseLength; k++) {
         q->data = 0.0;
         q = q->r;
       }
+      float sum;
       // for each frame (running off the end of the sample stream by delay)
-      for (unsigned int frm = 0; frm < frameCount + delay; frm++) {
+      for (unsigned int inFrame = 0; inFrame < frameCount + delay; inFrame++) {
         // shuffle old samples along delay buffer
         p = p->r;
 
         // load new sample into back of delay buffer
-        if (frm < frameCount) {
-          p->l->data = audio.getSample(frm, ch) / gain;
+        if (inFrame < frameCount) {
+          p->l->data = audio.getSample(inFrame, channel) / gain;
         } else {
           // zero pad once we're into the delay at the end of the file
           p->l->data = 0.0;
         }
         // start doing the maths once the delay has passed
-        if (frm >= delay) {
+        int outFrame = inFrame - delay;
+        if (outFrame >= 0) {
           // and, if shortcut != 1, only do the maths for the useful samples,
           // and then flatten the others to the same value (this is
           // mathematically dodgy, but it's faster and it usually works);
-          if ((frm - delay) % shortcutFactor == 0) {
+          if (outFrame % shortcutFactor == 0) {
             sum = 0.0;
             q = p;
             for (unsigned int k = 0; k < impulseLength; k++) {
               sum += coefficients[k] * q->data;
               q = q->r;
             }
-            audio.setSample(frm - delay, ch, sum);
+            audio.setSample(outFrame, channel, sum);
           } else {
             // flatten useless frames when using a shortcut
-            audio.setSample(frm - delay, ch, sum);
+            audio.setSample(outFrame, channel, sum);
           }
         }
       }
