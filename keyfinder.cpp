@@ -11,9 +11,7 @@ namespace KeyFinder {
     progressiveChromagram(originalAudio, workspace, params);
     finalChromagram(workspace, params);
 
-    KeyDetectionResult result(keyOfChromagram(workspace, params));
-
-    return result;
+    return keyOfChromagram(workspace, params);
   }
 
   void KeyFinder::progressiveChromagram(
