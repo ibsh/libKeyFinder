@@ -198,9 +198,9 @@ namespace KeyFinder {
     detunedBandWeight = weight;
   }
   void Parameters::setCustomToneProfile(const std::vector<float>& v) {
-    if (v.size() != 24) throw Exception("Custom tone profile must have 24 elements");
-    for (unsigned int i = 0; i < 24; i++)
-      if (v[i] < 0)
+    if (v.size() != SEMITONES * 2) throw Exception("Custom tone profile must have 24 elements");
+    for (unsigned int i = 0; i < SEMITONES * 2; i++)
+      if (v[i] < 0.0)
         throw Exception("Custom tone profile elements must be >= 0");
     customToneProfile = v;
   }

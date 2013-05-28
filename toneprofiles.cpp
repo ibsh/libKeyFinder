@@ -139,7 +139,7 @@ namespace KeyFinder {
   // TODO: maybe factor out the vector similarity methods. They're not exactly
   // specific to tone profiling.
   float ToneProfile::similarity(similarity_measure_t measure, const std::vector<float>& input, int offset) const {
-    if (input.size() != 12) throw Exception("Input vector for similarity must have 12 elements");
+    if (input.size() != SEMITONES) throw Exception("Input vector for similarity must have 12 elements");
     if (measure == SIMILARITY_CORRELATION)
       return correlation(input, offset);
     else
