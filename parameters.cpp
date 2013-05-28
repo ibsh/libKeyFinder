@@ -202,14 +202,7 @@ namespace KeyFinder {
     for (unsigned int i = 0; i < 24; i++)
       if (v[i] < 0)
         throw Exception("Custom tone profile elements must be >= 0");
-    // Exception handling for occasional problem on OSX Leopard.
-    try{
-      customToneProfile = v;
-    }catch(const std::exception& e) {
-      throw Exception(e.what());
-    }catch(...) {
-      throw Exception("Unknown exception setting custom tone profile");
-    }
+    customToneProfile = v;
   }
 
   void Parameters::generateBandFreqs() {

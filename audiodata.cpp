@@ -112,19 +112,7 @@ namespace KeyFinder {
   }
 
   void AudioData::addToSampleCount(unsigned int newSamples) {
-    try{
-      samples.resize(getSampleCount() + newSamples);
-      // TODO: turns out this doesn't work; bad_alloc never gets thrown on Mac,
-      // presumably it tries to do everything in swap
-    }catch(const std::exception& e) {
-      std::ostringstream ss;
-      ss << "Exception adding " << newSamples << " samples to stream of " << getSampleCount() << ": " << e.what();
-      throw Exception(ss.str().c_str());
-    }catch(...) {
-      std::ostringstream ss;
-      ss << "Unknown exception adding " << newSamples << " samples to stream of " << getSampleCount();
-      throw Exception(ss.str().c_str());
-    }
+    samples.resize(getSampleCount() + newSamples);
   }
 
   void AudioData::addToFrameCount(unsigned int newFrames) {
