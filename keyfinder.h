@@ -17,7 +17,7 @@ namespace KeyFinder {
   class KeyFinder {
   public:
     void progressiveChromagram(
-      const AudioData& audio,
+      AudioData audio,
       Workspace& workspace,
       const Parameters& params = Parameters()
     );

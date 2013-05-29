@@ -15,13 +15,12 @@ namespace KeyFinder {
   }
 
   void KeyFinder::progressiveChromagram(
-    const AudioData& originalAudio,
+    AudioData audio,
     Workspace& workspace,
     const Parameters& params
   ) {
-    AudioData workingAudio(originalAudio);
-    preprocess(workingAudio, workspace, params);
-    workspace.buffer.append(workingAudio);
+    preprocess(audio, workspace, params);
+    workspace.buffer.append(audio);
     chromagramOfBufferedAudio(workspace, params);
   }
 
