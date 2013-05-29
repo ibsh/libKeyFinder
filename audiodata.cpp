@@ -159,7 +159,7 @@ namespace KeyFinder {
       throw Exception(ss.str().c_str());
     }
     unsigned int discardSampleCount = discardFrameCount * channels;
-    samples.erase(samples.end() - discardSampleCount, samples.end());
+    samples.resize(getSampleCount() - discardSampleCount);
   }
 
 }
