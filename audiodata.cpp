@@ -131,12 +131,14 @@ namespace KeyFinder {
 
   void AudioData::reduceToMono() {
     if (channels == 1) return;
-    for (unsigned int i = 0; i < getSampleCount(); i += channels) {
+    std::deque<float>::iterator read = samples.begin();
+    std::deque<float>::iterator write = samples.begin();
+    while(read != samples.end()) {
       float sum = 0.0;
-      for (unsigned int j = 0; j < channels; j++) {
-        sum += samples[i + j] / channels;
+      for (unsigned int c = 0; c < channels; c++) {
+        sum += *read++ / channels;
       }
-      samples[i/channels] = sum;
+      *write++ = sum;
     }
     samples.resize(getSampleCount() / channels);
     channels = 1;
