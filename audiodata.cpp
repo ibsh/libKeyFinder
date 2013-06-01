@@ -131,14 +131,15 @@ namespace KeyFinder {
 
   void AudioData::reduceToMono() {
     if (channels == 1) return;
-    std::deque<float>::iterator read = samples.begin();
-    std::deque<float>::iterator write = samples.begin();
-    while (read != samples.end()) {
+    resetIterators();
+    while (readIteratorWithinUpperBound()) {
       float mean = 0.0;
       for (unsigned int c = 0; c < channels; c++) {
-        mean += *read++ / channels;
+        mean += getSampleAtReadIterator() / channels;
+        advanceReadIterator();
       }
-      *write++ = mean;
+      setSampleAtWriteIterator(mean);
+      advanceWriteIterator();
     }
     samples.resize(getSampleCount() / channels);
     channels = 1;
@@ -150,19 +151,22 @@ namespace KeyFinder {
   void AudioData::downsample(unsigned int factor, bool shortcut) {
     if (factor == 1) return;
     if (channels > 1) throw Exception("Apply to monophonic only");
-    std::deque<float>::iterator read = samples.begin();
-    std::deque<float>::iterator write = samples.begin();
-    while (read < samples.end()) {
+    resetIterators();
+    while (readIteratorWithinUpperBound()) {
       float mean = 0.0;
       if (shortcut) {
-        mean = *read;
-        read += factor;
+        mean = getSampleAtReadIterator();
+        advanceReadIterator(factor);
       } else {
         for (unsigned int s = 0; s < factor; s++) {
-          if (read < samples.end()) mean += *read++ / (float)factor;
+          if (readIteratorWithinUpperBound()) {
+            mean += getSampleAtReadIterator() / (float)factor;
+            advanceReadIterator();
+          }
         }
       }
-      *write++ = mean;
+      setSampleAtWriteIterator(mean);
+      advanceWriteIterator();
     }
     setFrameRate(getFrameRate() / factor);
     samples.resize(ceil((float)getSampleCount() / (float)factor));
@@ -186,6 +190,35 @@ namespace KeyFinder {
     }
     unsigned int discardSampleCount = discardFrameCount * channels;
     samples.resize(getSampleCount() - discardSampleCount);
+  }
+
+  void AudioData::resetIterators() {
+    readIterator = samples.begin();
+    writeIterator = samples.begin();
+  }
+
+  bool AudioData::readIteratorWithinUpperBound() const {
+    return (readIterator < samples.end());
+  }
+
+  bool AudioData::writeIteratorWithinUpperBound() const {
+    return (writeIterator < samples.end());
+  }
+
+  void AudioData::advanceReadIterator(unsigned int by) {
+    readIterator += by;
+  }
+
+  void AudioData::advanceWriteIterator(unsigned int by) {
+    writeIterator += by;
+  }
+
+  float AudioData::getSampleAtReadIterator() const {
+    return *readIterator;
+  }
+
+  void AudioData::setSampleAtWriteIterator(float value) {
+    *writeIterator = value;
   }
 
 }
