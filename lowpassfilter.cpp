@@ -88,6 +88,7 @@ namespace KeyFinder {
     Binode<float>* q = p;
 
     unsigned int sampleCount = audio.getSampleCount();
+    audio.resetIterators();
 
     // for each frame (running off the end of the sample stream by delay)
     for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
@@ -95,8 +96,9 @@ namespace KeyFinder {
       p = p->r;
 
       // load new sample into back of delay buffer
-      if (inSample < sampleCount) {
-        p->l->data = audio.getSample(inSample) / gain;
+      if (audio.readIteratorWithinUpperBound()) {
+        p->l->data = audio.getSampleAtReadIterator() / gain;
+        audio.advanceReadIterator();
       } else {
         p->l->data = 0.0; // zero pad once we're past the end of the file
       }
@@ -112,7 +114,8 @@ namespace KeyFinder {
         sum += coefficients[k] * q->data;
         q = q->r;
       }
-      audio.setSample(outSample, sum);
+      audio.setSampleAtWriteIterator(sum);
+      audio.advanceWriteIterator(shortcutFactor);
     }
   }
 
