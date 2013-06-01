@@ -98,8 +98,7 @@ namespace KeyFinder {
       if (inSample < sampleCount) {
         p->l->data = audio.getSample(inSample) / gain;
       } else {
-        // zero pad once we're into the delay at the end of the file
-        p->l->data = 0.0;
+        p->l->data = 0.0; // zero pad once we're past the end of the file
       }
       // start doing the maths once the delay has passed
       int outSample = (signed)inSample - (signed)delay;
