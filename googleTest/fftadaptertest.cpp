@@ -21,6 +21,12 @@
 
 #include "fftadaptertest.h"
 
+/*
+ * TODO: figure out why this test sometimes fails when the FFT Adapter has not
+ * been touched. It appears GoogleTest does not parallelise tests (see FAQ) so
+ * it's not a thread safety thing.
+ */
+
 TEST (FftAdapterTest, ForwardAndBackward) {
 
   unsigned int frameSize = 4096;

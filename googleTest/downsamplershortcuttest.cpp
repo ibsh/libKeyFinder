@@ -21,13 +21,6 @@
 
 #include "downsamplershortcuttest.h"
 
-/*
- * TODO: investigate thread safety of FFTW. I have observed the FftAdapterTest
- * ForwardAndBackward failing when run alongside the LPF lines below, but only
- * when the two were using the same FFT frame size. Once that changed, no more
- * collision. This could get very ugly if not handled.
- */
-
 TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
 
   unsigned int channels = 1;
