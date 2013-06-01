@@ -73,17 +73,22 @@ namespace KeyFinder {
 
     if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
 
-    if (workspace.getLpfBuffer() == NULL)
+    if (workspace.getLpfBuffer() == NULL) {
       workspace.constructLpfBuffer(impulseLength);
+    } else {
+      // clear delay buffer
+      Binode<float>* clear = workspace.getLpfBuffer();
+      for (unsigned int k = 0; k < impulseLength; k++) {
+        clear->data = 0.0;
+        clear = clear->r;
+      }
+    }
+
     Binode<float>* p = workspace.getLpfBuffer();
+    Binode<float>* q = p;
 
     unsigned int sampleCount = audio.getSampleCount();
-    Binode<float>* q = p;
-    // clear delay buffer
-    for (unsigned int k = 0; k < impulseLength; k++) {
-      q->data = 0.0;
-      q = q->r;
-    }
+
     // for each frame (running off the end of the sample stream by delay)
     for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
       // shuffle old samples along delay buffer
