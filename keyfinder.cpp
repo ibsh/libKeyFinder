@@ -114,8 +114,7 @@ namespace KeyFinder {
     lpf->filter(workingAudio, workspace, downsampleFactor); // downsampleFactor shortcut
     // note we don't delete the LPF; it's stored in the factory for reuse
 
-    Downsampler ds;
-    ds.downsample(workingAudio, downsampleFactor);
+    workingAudio.downsample(downsampleFactor);
   }
 
   void KeyFinder::chromagramOfBufferedAudio(

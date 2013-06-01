@@ -133,16 +133,39 @@ namespace KeyFinder {
     if (channels == 1) return;
     std::deque<float>::iterator read = samples.begin();
     std::deque<float>::iterator write = samples.begin();
-    while(read != samples.end()) {
-      float sum = 0.0;
+    while (read != samples.end()) {
+      float mean = 0.0;
       for (unsigned int c = 0; c < channels; c++) {
-        sum += *read++ / channels;
+        mean += *read++ / channels;
       }
-      *write++ = sum;
+      *write++ = mean;
     }
     samples.resize(getSampleCount() / channels);
     channels = 1;
-    return;
+  }
+
+  /*
+   * Strictly to be applied AFTER low pass filtering
+   */
+  void AudioData::downsample(unsigned int factor, bool shortcut) {
+    if (factor == 1) return;
+    if (channels > 1) throw Exception("Apply to monophonic only");
+    std::deque<float>::iterator read = samples.begin();
+    std::deque<float>::iterator write = samples.begin();
+    while (read < samples.end()) {
+      float mean = 0.0;
+      if (shortcut) {
+        mean = *read;
+        read += factor;
+      } else {
+        for (unsigned int s = 0; s < factor; s++) {
+          if (read < samples.end()) mean += *read++ / (float)factor;
+        }
+      }
+      *write++ = mean;
+    }
+    setFrameRate(getFrameRate() / factor);
+    samples.resize(ceil((float)getSampleCount() / (float)factor));
   }
 
   void AudioData::discardFramesFromFront(unsigned int discardFrameCount) {

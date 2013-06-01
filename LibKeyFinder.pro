@@ -25,7 +25,7 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.7.0
+VERSION = 0.8.0
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -36,7 +36,6 @@ HEADERS += \
     chromatransform.h \
     chromatransformfactory.h \
     constants.h \
-    downsampler.h \
     exception.h \
     fftadapter.h \
     keyclassifier.h \
@@ -57,7 +56,6 @@ SOURCES += \
     chromagram.cpp \
     chromatransform.cpp \
     chromatransformfactory.cpp \
-    downsampler.cpp \
     fftadapter.cpp \
     keyclassifier.cpp \
     keyfinder.cpp \

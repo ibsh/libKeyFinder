@@ -56,7 +56,7 @@ TEST (FftAdapterTest, ForwardAndBackward) {
     } else if (i == 20) {
       ASSERT_FLOAT_EQ(500 / 2 * frameSize, out);
     } else {
-      ASSERT_GT(0.5, out);
+      ASSERT_GT(5, out);
     }
   }
 

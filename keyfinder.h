@@ -3,7 +3,6 @@
 
 #include "audiodata.h"
 #include "chromatransformfactory.h"
-#include "downsampler.h"
 #include "keyclassifier.h"
 #include "keyfinderresult.h"
 #include "lowpassfilterfactory.h"

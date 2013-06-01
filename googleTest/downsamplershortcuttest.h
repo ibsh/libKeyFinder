@@ -23,7 +23,6 @@
 #define DOWNSAMPLERSHORTCUTTEST_H
 
 #include "_testhelpers.h"
-#include "keyfinder/downsampler.h"
 #include "keyfinder/lowpassfilter.h"
 
 class DownsamplerShortcutTest : public ::testing::Test { };

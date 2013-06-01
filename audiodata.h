@@ -50,8 +50,9 @@ namespace KeyFinder {
     void discardFramesFromFront(unsigned int discardFrameCount);
     void discardFramesFromBack(unsigned int discardFrameCount);
     void reduceToMono();
+    void downsample(unsigned int factor, bool shortcut = true);
 
-  private:
+  protected:
     std::deque<float> samples;
     unsigned int channels;
     unsigned int frameRate;

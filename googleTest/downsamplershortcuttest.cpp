@@ -28,8 +28,6 @@
  * collision. This could get very ugly if not handled.
  */
 
-#include <fstream>
-
 TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
 
   unsigned int channels = 1;
@@ -81,8 +79,7 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
     }
   }
 
-  KeyFinder::Downsampler ds;
-  ds.downsample(a, factor);
+  a.downsample(factor);
 
   ASSERT_EQ(channels, a.getChannels());
   ASSERT_EQ(frameRate / factor, a.getFrameRate());
