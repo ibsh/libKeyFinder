@@ -104,9 +104,8 @@ namespace KeyFinder {
       // start doing the maths once the delay has passed
       int outSample = (signed)inSample - (signed)delay;
       if (outSample < 0) continue;
-      // and, if shortcut != 1, only do the maths for the useful samples,
-      // and then flatten the others to the same value (this is
-      // mathematically dodgy, but it's faster and it usually works);
+      // and, if shortcut != 1, only do the maths for the useful samples (this
+      // is mathematically dodgy, but it's faster and it usually works);
       if (outSample % shortcutFactor > 0) continue;
       float sum = 0.0;
       q = p;
