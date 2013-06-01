@@ -41,7 +41,7 @@ namespace KeyFinder {
   }
 
   Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(
-    const AudioData& audio,
+    AudioData& audio,
     FftAdapter* const fft
   ) const {
     if (audio.getChannels() != 1)
@@ -52,8 +52,11 @@ namespace KeyFinder {
     unsigned int hops = 1 + ((audio.getSampleCount() - frmSize) / hopSize);
     Chromagram* c = new Chromagram(hops, octaves, bandsPerSemitone);
     for (unsigned int hop = 0; hop < hops; hop++) {
+      audio.resetIterators();
+      audio.advanceReadIterator(hop * hopSize);
       for (unsigned int sample = 0; sample < frmSize; sample++) {
-        fft->setInput(sample, audio.getSample((hop * hopSize) + sample) * temporalWindow[sample]);
+        fft->setInput(sample, audio.getSampleAtReadIterator() * temporalWindow[sample]);
+        audio.advanceReadIterator();
       }
       fft->execute();
       std::vector<float> cv = ct->chromaVector(fft);
