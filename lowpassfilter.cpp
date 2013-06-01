@@ -71,52 +71,49 @@ namespace KeyFinder {
 
   void LowPassFilter::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
 
+    if (audio.getChannels() > 1) throw Exception("Filtering multi-channel audio is too expensive");
+
     if (workspace.getLpfBuffer() == NULL)
       workspace.constructLpfBuffer(impulseLength);
     Binode<float>* p = workspace.getLpfBuffer();
 
-    unsigned int frameCount = audio.getFrameCount();
-    unsigned int channels = audio.getChannels();
+    unsigned int sampleCount = audio.getSampleCount();
+    Binode<float>* q = p;
+    // clear delay buffer
+    for (unsigned int k = 0; k < impulseLength; k++) {
+      q->data = 0.0;
+      q = q->r;
+    }
+    float sum;
+    // for each frame (running off the end of the sample stream by delay)
+    for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
+      // shuffle old samples along delay buffer
+      p = p->r;
 
-    // for each channel (should be mono by this point but just in case)
-    for (unsigned int channel = 0; channel < channels; channel++) {
-      Binode<float>* q = p;
-      // clear delay buffer
-      for (unsigned int k = 0; k < impulseLength; k++) {
-        q->data = 0.0;
-        q = q->r;
+      // load new sample into back of delay buffer
+      if (inSample < sampleCount) {
+        p->l->data = audio.getSample(inSample) / gain;
+      } else {
+        // zero pad once we're into the delay at the end of the file
+        p->l->data = 0.0;
       }
-      float sum;
-      // for each frame (running off the end of the sample stream by delay)
-      for (unsigned int inFrame = 0; inFrame < frameCount + delay; inFrame++) {
-        // shuffle old samples along delay buffer
-        p = p->r;
-
-        // load new sample into back of delay buffer
-        if (inFrame < frameCount) {
-          p->l->data = audio.getSample(inFrame, channel) / gain;
-        } else {
-          // zero pad once we're into the delay at the end of the file
-          p->l->data = 0.0;
-        }
-        // start doing the maths once the delay has passed
-        int outFrame = inFrame - delay;
-        if (outFrame >= 0) {
-          // and, if shortcut != 1, only do the maths for the useful samples,
-          // and then flatten the others to the same value (this is
-          // mathematically dodgy, but it's faster and it usually works);
-          if (outFrame % shortcutFactor == 0) {
-            sum = 0.0;
-            q = p;
-            for (unsigned int k = 0; k < impulseLength; k++) {
-              sum += coefficients[k] * q->data;
-              q = q->r;
-            }
-            audio.setSample(outFrame, channel, sum);
-          } else {
-            // flatten useless frames when using a shortcut
-            audio.setSample(outFrame, channel, sum);
+      // start doing the maths once the delay has passed
+      int outSample = (signed)inSample - (signed)delay;
+      if (outSample >= 0) {
+        // and, if shortcut != 1, only do the maths for the useful samples,
+        // and then flatten the others to the same value (this is
+        // mathematically dodgy, but it's faster and it usually works);
+        if (outSample % shortcutFactor == 0) {
+          sum = 0.0;
+          q = p;
+          for (unsigned int k = 0; k < impulseLength; k++) {
+            sum += coefficients[k] * q->data;
+            q = q->r;
           }
+          audio.setSample(outSample, sum);
+        } else {
+          // flatten useless frames when using a shortcut
+          audio.setSample(outSample, sum);
         }
       }
     }

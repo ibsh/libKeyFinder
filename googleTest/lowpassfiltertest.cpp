@@ -49,6 +49,20 @@ TEST (LowPassFilterTest, InsistsOnOrderNotGreaterThanOneQuarterFftFrameSize) {
   ASSERT_NO_THROW(delete lpf);
 }
 
+TEST (LowPassFilterTest, InsistsOnMonophonicAudio) {
+  KeyFinder::AudioData a;
+  a.setChannels(2);
+  a.setFrameRate(frameRate);
+  a.addToSampleCount(frameRate);
+
+  KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
+  KeyFinder::Workspace w;
+  ASSERT_THROW(lpf->filter(a, w), KeyFinder::Exception);
+  a.reduceToMono();
+  ASSERT_NO_THROW(lpf->filter(a, w));
+  delete lpf;
+}
+
 TEST (LowPassFilterTest, InitialisesNullRingBuffer) {
   KeyFinder::AudioData a;
   a.setChannels(1);
@@ -180,40 +194,6 @@ TEST (LowPassFilterTest, WorksOnRepetitiveWaves) {
   for (unsigned int i = 0; i < frames; i++) {
     float expected = sine_wave(i, lowFrequency, frameRate, magnitude);
     ASSERT_NEAR(expected, a.getSample(i), tolerance);
-  }
-}
-
-TEST (LowPassFilterTest, WorksOnMultipleChannels) {
-  // make two sine waves, one second long
-  unsigned int channels = 5;
-  KeyFinder::AudioData a;
-  a.setChannels(channels);
-  a.setFrameRate(frameRate);
-  a.addToFrameCount(frameRate);
-  for (unsigned int i = 0; i < frameRate; i++) {
-    float sample = 0.0;
-    sample += sine_wave(i, highFrequency, frameRate, magnitude); // high freq
-    sample += sine_wave(i, lowFrequency, frameRate, magnitude); // low freq
-    for (unsigned int j = 0; j < channels; j++) {
-      a.setSample(i, j, sample);
-    }
-  }
-
-  KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
-  KeyFinder::Workspace w;
-  lpf->filter(a, w);
-  delete lpf;
-
-  // test for lower wave only
-  for (unsigned int i = 0; i < frameRate; i++) {
-    float expected = sine_wave(i, lowFrequency, frameRate, magnitude);
-    float test;
-    for (unsigned int j = 0; j < channels; j++) {
-      ASSERT_NEAR(expected, a.getSample(i, j), tolerance);
-      if (j == 0)
-        test = a.getSample(i, j);
-      ASSERT_FLOAT_EQ(test, a.getSample(i, j));
-    }
   }
 }
 

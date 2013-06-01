@@ -32,7 +32,7 @@
 
 TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
 
-  unsigned int channels = 2;
+  unsigned int channels = 1;
   unsigned int frameRate = 44100;
   unsigned int frames = frameRate * 5;
   float magnitude = 1000.0;
