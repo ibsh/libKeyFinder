@@ -21,7 +21,20 @@
 
 #include "downsamplertest.h"
 
-TEST (DownsamplerTest, ResamplesOneChannel) {
+TEST (DownsamplerTest, InsistsOnMonophonicAudio) {
+  KeyFinder::AudioData a;
+  a.setChannels(2);
+  a.setFrameRate(100);
+  a.addToSampleCount(10);
+
+  KeyFinder::Downsampler ds;
+
+  ASSERT_THROW(ds.downsample(a, 5), KeyFinder::Exception);
+  a.reduceToMono();
+  ASSERT_NO_THROW(ds.downsample(a, 5));
+}
+
+TEST (DownsamplerTest, ResamplesIntegralRelationship) {
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(100);
@@ -58,58 +71,8 @@ TEST (DownsamplerTest, ResamplesNonintegralRelationship) {
   ASSERT_EQ(3, a.getSampleCount());
   ASSERT_FLOAT_EQ(100.0, a.getSample(0));
   ASSERT_FLOAT_EQ(500.0, a.getSample(1));
-  ASSERT_FLOAT_EQ(400.0, a.getSample(2));
-}
-
-TEST (DownsamplerTest, ResamplesTwoChannels) {
-  KeyFinder::AudioData a;
-  a.setChannels(2);
-  a.setFrameRate(100);
-  a.addToFrameCount(6);
-  for (unsigned int i = 0; i < a.getFrameCount(); i++) {
-    a.setSample(i, 0, 100.0);
-    a.setSample(i, 1, 200.0);
-  }
-
-  KeyFinder::Downsampler ds;
-  ds.downsample(a, 5);
-
-  ASSERT_EQ(2, a.getFrameCount());
-  ASSERT_FLOAT_EQ(100.0, a.getSample(0));
-  ASSERT_FLOAT_EQ(200.0, a.getSample(1));
-  ASSERT_FLOAT_EQ(20.0, a.getSample(2));
-  ASSERT_FLOAT_EQ(40.0, a.getSample(3));
-}
-
-
-TEST (DownsamplerTest, ResamplesMoreChannels) {
-  KeyFinder::AudioData a;
-  a.setChannels(5);
-  a.setFrameRate(100);
-  a.addToFrameCount(6);
-  for (unsigned int i = 0; i < a.getFrameCount(); i++) {
-    a.setSample(i, 0, 100.0);
-    a.setSample(i, 1, 200.0);
-    a.setSample(i, 2, 300.0);
-    a.setSample(i, 3, 400.0);
-    a.setSample(i, 4, 500.0);
-  }
-
-  KeyFinder::Downsampler ds;
-  ds.downsample(a, 5);
-
-  ASSERT_EQ(2, a.getFrameCount());
-
-  ASSERT_FLOAT_EQ(100.0, a.getSample(0, 0));
-  ASSERT_FLOAT_EQ(200.0, a.getSample(0, 1));
-  ASSERT_FLOAT_EQ(300.0, a.getSample(0, 2));
-  ASSERT_FLOAT_EQ(400.0, a.getSample(0, 3));
-  ASSERT_FLOAT_EQ(500.0, a.getSample(0, 4));
-  ASSERT_FLOAT_EQ( 20.0, a.getSample(1, 0));
-  ASSERT_FLOAT_EQ( 40.0, a.getSample(1, 1));
-  ASSERT_FLOAT_EQ( 60.0, a.getSample(1, 2));
-  ASSERT_FLOAT_EQ( 80.0, a.getSample(1, 3));
-  ASSERT_FLOAT_EQ(100.0, a.getSample(1, 4));
+  // this doesn't make total mathematical sense but I'm taking a shortcut for performance
+  ASSERT_FLOAT_EQ(1000.0, a.getSample(2));
 }
 
 TEST (DownsamplerTest, ResamplesSineWave) {

@@ -63,7 +63,8 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
   lpf->filter(a, w, factor);
   delete lpf;
 
-  // test for lower wave only, and for flattening of non-useful samples
+  // test for lower wave only in the useful samples,
+  // and expect the non-useful samples to stay unfiltered
   for (unsigned int i = 0; i < frames; i++) {
     if (i % factor == 0) {
       float expected = sine_wave(i, lowFrequency, frameRate, magnitude);
@@ -71,8 +72,11 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
         ASSERT_NEAR(expected, a.getSample(i, j), tolerance);
       }
     } else {
+      float expected = 0.0;
+      expected += sine_wave(i, highFrequency, frameRate, magnitude); // high freq
+      expected += sine_wave(i, lowFrequency, frameRate, magnitude); // low freq
       for (unsigned int j = 0; j < channels; j++) {
-        ASSERT_FLOAT_EQ(a.getSample(i - 1, j), a.getSample(i, j));
+        ASSERT_FLOAT_EQ(expected, a.getSample(i, j));
       }
     }
   }

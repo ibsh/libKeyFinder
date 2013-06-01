@@ -24,28 +24,33 @@
 
 namespace KeyFinder {
 
-  void Downsampler::downsample(AudioData& audio, unsigned int factor) const {
+  void Downsampler::downsample(
+    AudioData& audio,
+    unsigned int factor,
+    bool shortcut
+  ) const {
     if (factor == 1) return;
 
-    unsigned int channels = audio.getChannels();
+    if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
     unsigned int oldFrameCount = audio.getFrameCount();
     unsigned int newFrameCount = ceil((float)oldFrameCount / (float)factor);
 
     // for each frame of the output
     for (unsigned int outFrm = 0; outFrm < newFrameCount; outFrm++) {
-      // for each channel
-      for (unsigned int ch = 0; ch < channels; ch++) {
+      float outputValue = 0.0;
+      if (shortcut) {
+        outputValue = audio.getSample(outFrm * factor);
+      } else {
         // take the mean of a set of input frames
-        float mean = 0.0;
         for (unsigned int element = 0; element < factor; element++) {
           unsigned int inFrm = (outFrm * factor) + element;
           if (inFrm < audio.getFrameCount()) {
-            mean += audio.getSample(inFrm, ch) / (float)factor;
+            outputValue += audio.getSample(inFrm) / (float)factor;
           }
         }
-        // writing in place; this must take place AFTER reading from this frame
-        audio.setSample(outFrm, ch, mean);
       }
+      // writing in place; this must take place AFTER reading from this frame
+      audio.setSample(outFrm, outputValue);
     }
 
     audio.setFrameRate(audio.getFrameRate() / factor);

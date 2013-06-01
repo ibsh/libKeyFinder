@@ -71,7 +71,7 @@ namespace KeyFinder {
 
   void LowPassFilter::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
 
-    if (audio.getChannels() > 1) throw Exception("Filtering multi-channel audio is too expensive");
+    if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
 
     if (workspace.getLpfBuffer() == NULL)
       workspace.constructLpfBuffer(impulseLength);
@@ -84,7 +84,6 @@ namespace KeyFinder {
       q->data = 0.0;
       q = q->r;
     }
-    float sum;
     // for each frame (running off the end of the sample stream by delay)
     for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
       // shuffle old samples along delay buffer
@@ -99,23 +98,18 @@ namespace KeyFinder {
       }
       // start doing the maths once the delay has passed
       int outSample = (signed)inSample - (signed)delay;
-      if (outSample >= 0) {
-        // and, if shortcut != 1, only do the maths for the useful samples,
-        // and then flatten the others to the same value (this is
-        // mathematically dodgy, but it's faster and it usually works);
-        if (outSample % shortcutFactor == 0) {
-          sum = 0.0;
-          q = p;
-          for (unsigned int k = 0; k < impulseLength; k++) {
-            sum += coefficients[k] * q->data;
-            q = q->r;
-          }
-          audio.setSample(outSample, sum);
-        } else {
-          // flatten useless frames when using a shortcut
-          audio.setSample(outSample, sum);
-        }
+      if (outSample < 0) continue;
+      // and, if shortcut != 1, only do the maths for the useful samples,
+      // and then flatten the others to the same value (this is
+      // mathematically dodgy, but it's faster and it usually works);
+      if (outSample % shortcutFactor > 0) continue;
+      float sum = 0.0;
+      q = p;
+      for (unsigned int k = 0; k < impulseLength; k++) {
+        sum += coefficients[k] * q->data;
+        q = q->r;
       }
+      audio.setSample(outSample, sum);
     }
   }
 
