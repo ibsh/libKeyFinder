@@ -169,16 +169,16 @@ TEST (LowPassFilterTest, DoesBothAtOnce) {
 
 TEST (LowPassFilterTest, WorksOnRepetitiveWaves) {
   // make two sine waves, but this time, several seconds long
-  unsigned int frames = frameRate * 5;
+  unsigned int samples = frameRate * 5;
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(frameRate);
-  a.addToSampleCount(frames);
-  for (unsigned int i = 0; i < frames; i++) {
+  a.addToSampleCount(samples);
+  for (unsigned int i = 0; i < samples; i++) {
     float sample = 0.0;
     sample += sine_wave(i, highFrequency, frameRate, magnitude); // high freq
     sample += sine_wave(i, lowFrequency, frameRate, magnitude); // low freq
-    a.setSample(i, 0, sample);
+    a.setSample(i, sample);
     // ensure repetition of sine waves is perfect...
     if (i >= frameRate) {
       ASSERT_NEAR(a.getSample(i), a.getSample(i - frameRate), tolerance);
@@ -191,7 +191,7 @@ TEST (LowPassFilterTest, WorksOnRepetitiveWaves) {
   delete lpf;
 
   // test for lower wave only
-  for (unsigned int i = 0; i < frames; i++) {
+  for (unsigned int i = 0; i < samples; i++) {
     float expected = sine_wave(i, lowFrequency, frameRate, magnitude);
     ASSERT_NEAR(expected, a.getSample(i), tolerance);
   }

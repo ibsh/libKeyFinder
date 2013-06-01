@@ -69,7 +69,7 @@ namespace KeyFinder {
   }
 
   // get sample by frame and channel
-  float AudioData::getSample(unsigned int frame, unsigned int channel) const {
+  float AudioData::getSampleByFrame(unsigned int frame, unsigned int channel) const {
     if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
@@ -97,7 +97,7 @@ namespace KeyFinder {
   }
 
   // set sample by frame and channel
-  void AudioData::setSample(unsigned int frame, unsigned int channel, float value) {
+  void AudioData::setSampleByFrame(unsigned int frame, unsigned int channel, float value) {
     if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";

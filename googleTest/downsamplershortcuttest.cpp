@@ -54,7 +54,7 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
     sample += sine_wave(i, highFrequency, frameRate, magnitude); // high freq
     sample += sine_wave(i, lowFrequency, frameRate, magnitude); // low freq
     for (unsigned int j = 0; j < channels; j++) {
-      a.setSample(i, j, sample);
+      a.setSampleByFrame(i, j, sample);
     }
   }
 
@@ -69,14 +69,14 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
     if (i % factor == 0) {
       float expected = sine_wave(i, lowFrequency, frameRate, magnitude);
       for (unsigned int j = 0; j < channels; j++) {
-        ASSERT_NEAR(expected, a.getSample(i, j), tolerance);
+        ASSERT_NEAR(expected, a.getSampleByFrame(i, j), tolerance);
       }
     } else {
       float expected = 0.0;
       expected += sine_wave(i, highFrequency, frameRate, magnitude); // high freq
       expected += sine_wave(i, lowFrequency, frameRate, magnitude); // low freq
       for (unsigned int j = 0; j < channels; j++) {
-        ASSERT_FLOAT_EQ(expected, a.getSample(i, j));
+        ASSERT_FLOAT_EQ(expected, a.getSampleByFrame(i, j));
       }
     }
   }
@@ -92,7 +92,7 @@ TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
   for (unsigned int i = 0; i < frames / factor; i++) {
     float expected = sine_wave(i, lowFrequency, frameRate / factor, magnitude);
     for (unsigned int j = 0; j < channels; j++) {
-      ASSERT_NEAR(expected, a.getSample(i, j), tolerance);
+      ASSERT_NEAR(expected, a.getSampleByFrame(i, j), tolerance);
     }
   }
 

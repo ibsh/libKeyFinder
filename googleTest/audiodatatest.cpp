@@ -75,7 +75,7 @@ TEST (AudioDataTest, SampleMutatorBounds) {
 TEST (AudioDataTest, FrameAccessBeforeChannelsInitialised) {
   KeyFinder::AudioData a;
   a.addToSampleCount(4);
-  ASSERT_THROW(a.getSample(0, 0), KeyFinder::Exception);
+  ASSERT_THROW(a.getSampleByFrame(0, 0), KeyFinder::Exception);
 }
 
 TEST (AudioDataTest, FrameMutator) {
@@ -87,20 +87,20 @@ TEST (AudioDataTest, FrameMutator) {
 
   a.setSample(6, 10.0);
   ASSERT_FLOAT_EQ(10.0, a.getSample(6));
-  ASSERT_FLOAT_EQ(10.0, a.getSample(1, 2));
-  a.setSample(1, 2, 20.0);
+  ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(1, 2));
+  a.setSampleByFrame(1, 2, 20.0);
   ASSERT_FLOAT_EQ(20.0, a.getSample(6));
-  ASSERT_FLOAT_EQ(20.0, a.getSample(1, 2));
+  ASSERT_FLOAT_EQ(20.0, a.getSampleByFrame(1, 2));
 }
 
 TEST (AudioDataTest, FrameMutatorBounds) {
   KeyFinder::AudioData a;
   a.setChannels(2);
   a.addToFrameCount(10);
-  ASSERT_THROW(a.getSample(-1, 0), KeyFinder::Exception);
-  ASSERT_THROW(a.getSample(10, 0), KeyFinder::Exception);
-  ASSERT_THROW(a.getSample( 0,-1), KeyFinder::Exception);
-  ASSERT_THROW(a.getSample( 0, 2), KeyFinder::Exception);
+  ASSERT_THROW(a.getSampleByFrame(-1, 0), KeyFinder::Exception);
+  ASSERT_THROW(a.getSampleByFrame(10, 0), KeyFinder::Exception);
+  ASSERT_THROW(a.getSampleByFrame( 0,-1), KeyFinder::Exception);
+  ASSERT_THROW(a.getSampleByFrame( 0, 2), KeyFinder::Exception);
 }
 
 TEST (AudioDataTest, AppendToNew) {
@@ -143,13 +143,13 @@ TEST (AudioDataTest, AppendToInitialised) {
 
   a.addToFrameCount(1);
   b.addToFrameCount(1);
-  a.setSample(0, 0, 10.0);
-  b.setSample(0, 0, 20.0);
+  a.setSampleByFrame(0, 0, 10.0);
+  b.setSampleByFrame(0, 0, 20.0);
 
   a.append(b);
   ASSERT_EQ(2, a.getFrameCount());
-  ASSERT_FLOAT_EQ(10.0, a.getSample(0, 0));
-  ASSERT_FLOAT_EQ(20.0, a.getSample(1, 0));
+  ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(0, 0));
+  ASSERT_FLOAT_EQ(20.0, a.getSampleByFrame(1, 0));
 }
 
 TEST (AudioDataTest, DiscardFromFront) {
@@ -162,10 +162,10 @@ TEST (AudioDataTest, DiscardFromFront) {
   a.addToFrameCount(10);
   ASSERT_THROW(a.discardFramesFromFront(11), KeyFinder::Exception);
   ASSERT_NO_THROW(a.discardFramesFromFront(0));
-  a.setSample(5, 0, 10.0);
+  a.setSampleByFrame(5, 0, 10.0);
   ASSERT_NO_THROW(a.discardFramesFromFront(5));
   ASSERT_EQ(5, a.getFrameCount());
-  ASSERT_FLOAT_EQ(10.0, a.getSample(0, 0));
+  ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(0, 0));
 }
 
 TEST (AudioDataTest, DiscardFromBack) {
@@ -178,10 +178,10 @@ TEST (AudioDataTest, DiscardFromBack) {
   a.addToFrameCount(10);
   ASSERT_THROW(a.discardFramesFromBack(11), KeyFinder::Exception);
   ASSERT_NO_THROW(a.discardFramesFromBack(0));
-  a.setSample(2, 0, 10.0);
+  a.setSampleByFrame(2, 0, 10.0);
   ASSERT_NO_THROW(a.discardFramesFromBack(5));
   ASSERT_EQ(5, a.getFrameCount());
-  ASSERT_FLOAT_EQ(10.0, a.getSample(2, 0));
+  ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(2, 0));
 }
 
 TEST (AudioDataTest, MakeMono) {
