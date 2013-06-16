@@ -33,7 +33,7 @@ namespace KeyFinder {
   public:
     LowPassFilterFactory();
     ~LowPassFilterFactory();
-    LowPassFilter* getLowPassFilter(
+    const LowPassFilter* getLowPassFilter(
       unsigned int order,
       unsigned int frameRate,
       float cornerFrequency,
@@ -52,10 +52,10 @@ namespace KeyFinder {
       unsigned int frameRate,
       float cornerFrequency,
       unsigned int fftFrameSize,
-      LowPassFilter* filter
+      const LowPassFilter* const filter
     );
     ~LowPassFilterWrapper();
-    LowPassFilter* getLowPassFilter() const;
+    const LowPassFilter* getLowPassFilter() const;
     unsigned int getOrder() const;
     unsigned int getFrameRate() const;
     float getCornerFrequency() const;
@@ -65,7 +65,7 @@ namespace KeyFinder {
     unsigned int frameRate;
     float cornerFrequency;
     unsigned int fftFrameSize;
-    LowPassFilter* lpf;
+    const LowPassFilter* lpf;
   };
 
 }

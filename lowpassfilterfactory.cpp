@@ -24,7 +24,11 @@
 namespace KeyFinder {
 
   LowPassFilterFactory::LowPassFilterWrapper::LowPassFilterWrapper(
-    unsigned int cc, unsigned int fr, float cf, unsigned int fs, LowPassFilter* fi
+    unsigned int cc,
+    unsigned int fr,
+    float cf,
+    unsigned int fs,
+    const LowPassFilter* const fi
   ) {
     order = cc;
     frameRate = fr;
@@ -37,7 +41,7 @@ namespace KeyFinder {
     delete lpf;
   }
 
-  LowPassFilter* LowPassFilterFactory::LowPassFilterWrapper::getLowPassFilter() const {
+  const LowPassFilter* LowPassFilterFactory::LowPassFilterWrapper::getLowPassFilter() const {
     return lpf;
   }
 
@@ -66,7 +70,7 @@ namespace KeyFinder {
       delete filters[i];
   }
 
-  LowPassFilter* LowPassFilterFactory::getLowPassFilter(
+  const LowPassFilter* LowPassFilterFactory::getLowPassFilter(
     unsigned int cc, unsigned int fr, float cf, unsigned int fs
   ) {
     boost::mutex::scoped_lock lock(LowPassFilterFactoryMutex);
