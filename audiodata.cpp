@@ -142,6 +142,34 @@ namespace KeyFinder {
     return;
   }
 
+  /*
+   * Strictly to be applied AFTER low pass filtering
+   */
+  void AudioData::downsample(unsigned int factor, bool shortcut) {
+    if (factor == 1) return;
+    if (channels > 1) throw Exception("Apply to monophonic only");
+    unsigned int oldSampleCount = getFrameCount();
+    unsigned int newSampleCount = ceil((float)oldSampleCount / (float)factor);
+    // for each frame of the output
+    for (unsigned int outSample = 0; outSample < newSampleCount; outSample++) {
+      // take the mean of a set of input frames
+      float mean = 0.0;
+      if (shortcut) {
+        mean = getSample(outSample * factor);
+      } else {
+        for (unsigned int element = 0; element < factor; element++) {
+          unsigned int inSample = (outSample * factor) + element;
+          if (inSample < oldSampleCount) {
+            mean += getSample(inSample) / (float)factor;
+          }
+        }
+      }
+      setSample(outSample, mean);
+    }
+    setFrameRate(getFrameRate() / factor);
+    samples.resize(ceil((float)getSampleCount() / (float)factor));
+  }
+
   void AudioData::discardFramesFromFront(unsigned int discardFrameCount) {
     if (discardFrameCount > getFrameCount()) {
       std::ostringstream ss;

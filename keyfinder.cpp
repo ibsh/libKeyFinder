@@ -20,8 +20,7 @@ namespace KeyFinder {
     lpf->filter(workingAudio, downsampleFactor);
     // note we don't delete the LPF; it's stored in the factory for reuse
 
-    Downsampler ds;
-    ds.downsample(workingAudio, downsampleFactor);
+    workingAudio->downsample(downsampleFactor, true);
 
     // run spectral analysis
     SpectrumAnalyser sa(workingAudio->getFrameRate(), params, &ctFactory);

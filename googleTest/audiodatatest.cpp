@@ -181,3 +181,78 @@ TEST (AudioDataTest, MakeMono) {
     ASSERT_FLOAT_EQ(50.0, a.getSample(i));
   }
 }
+
+TEST (AudioDataTest, DownsamplerInsistsOnMonophonicAudio) {
+  KeyFinder::AudioData a;
+  a.setChannels(2);
+  a.setFrameRate(100);
+  a.addToSampleCount(10);
+
+  ASSERT_THROW(a.downsample(5), KeyFinder::Exception);
+  a.reduceToMono();
+  ASSERT_NO_THROW(a.downsample(5));
+}
+
+TEST (AudioDataTest, DownsamplerResamplesIntegralRelationship) {
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(100);
+  a.addToSampleCount(10);
+  for (unsigned int i = 0; i < 5; i++)
+    a.setSample(i, 100.0);
+  for (unsigned int i = 5; i < 10; i++)
+    a.setSample(i, 500.0);
+
+  a.downsample(5);
+
+  ASSERT_EQ(20, a.getFrameRate());
+  ASSERT_EQ(2, a.getSampleCount());
+  ASSERT_FLOAT_EQ(100.0, a.getSample(0));
+  ASSERT_FLOAT_EQ(500.0, a.getSample(1));
+}
+
+TEST (AudioDataTest, DownsamplerResamplesNonintegralRelationship) {
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(100);
+  a.addToSampleCount(12);
+  for (unsigned int i = 0; i < 5; i++)
+    a.setSample(i, 100.0);
+  for (unsigned int i = 5; i < 10; i++)
+    a.setSample(i, 500.0);
+  for (unsigned int i = 10; i < 12; i++)
+    a.setSample(i, 1000.0);
+
+  a.downsample(5);
+
+  ASSERT_EQ(3, a.getSampleCount());
+  ASSERT_FLOAT_EQ(100.0, a.getSample(0));
+  ASSERT_FLOAT_EQ(500.0, a.getSample(1));
+  // this doesn't make total mathematical sense but I'm taking a shortcut for performance
+  ASSERT_FLOAT_EQ(1000.0, a.getSample(2));
+}
+
+TEST (AudioDataTest, DownsamplerResamplesSineWave) {
+  unsigned int frameRate = 10000;
+  unsigned int frames = frameRate * 4;
+  float freq = 20;
+  float magnitude = 32768.0;
+  unsigned int factor = 5;
+
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(frameRate);
+  a.addToSampleCount(frames);
+  for (unsigned int i = 0; i < frames; i++)
+    a.setSample(i, sine_wave(i, freq, frameRate, magnitude));
+
+  a.downsample(factor);
+
+  unsigned int newFrameRate = frameRate / factor;
+  unsigned int newFrames = frames / factor;
+
+  ASSERT_EQ(newFrameRate, a.getFrameRate());
+  ASSERT_EQ(newFrames, a.getSampleCount());
+  for (unsigned int i = 0; i < newFrames; i++)
+    ASSERT_NEAR(sine_wave(i, freq, newFrameRate, magnitude), a.getSample(i), magnitude * 0.05);
+}
