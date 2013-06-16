@@ -77,4 +77,3 @@ TEST (WorkspaceTest, DestructorIsSafeAfterLpfBufferInitialisation) {
   w->constructLpfBuffer(10);
   ASSERT_NO_THROW(delete w);
 }
-
