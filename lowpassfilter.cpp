@@ -71,7 +71,9 @@ namespace KeyFinder {
     delete ifft;
   }
 
-  void LowPassFilter::filter(AudioData*& audioIn, unsigned int shortcutFactor) const {
+  void LowPassFilter::filter(AudioData& audio, unsigned int shortcutFactor) const {
+
+    if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
 
     // create circular delay buffer
     // this must be done in here for thread safety
@@ -86,55 +88,35 @@ namespace KeyFinder {
     p->l = q;
     q->r = p;
 
-    unsigned int frameCount = audioIn->getFrameCount();
-    unsigned int channels = audioIn->getChannels();
+    unsigned int sampleCount = audio.getFrameCount();
+    audio.resetIterators();
 
-    // prep output stream
-    AudioData* audioOut = new AudioData();
-    audioOut->setFrameRate(audioIn->getFrameRate());
-    audioOut->setChannels(channels);
-    try{
-      audioOut->addToFrameCount(frameCount);
-    }catch(const Exception& e) {
-      delete audioOut ;
-      throw e;
-    }
+    // for each frame (running off the end of the sample stream by delay)
+    for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
+      // shuffle old samples along delay buffer
+      p = p->r;
 
-    // for each channel (should be mono by this point but just in case)
-    for (unsigned int ch = 0; ch < channels; ch++) {
-      Binode<float>* q = p;
-      // clear delay buffer
+      // load new sample into back of delay buffer
+      if (audio.readIteratorWithinUpperBound()) {
+        p->l->data = audio.getSampleAtReadIterator() / gain;
+        audio.advanceReadIterator();
+      } else {
+        p->l->data = 0.0; // zero pad once we're past the end of the file
+      }
+      // start doing the maths once the delay has passed
+      int outSample = (signed)inSample - (signed)delay;
+      if (outSample < 0) continue;
+      // and, if shortcut != 1, only do the maths for the useful samples (this
+      // is mathematically dodgy, but it's faster and it usually works);
+      if (outSample % shortcutFactor > 0) continue;
+      float sum = 0.0;
+      q = p;
       for (unsigned int k = 0; k < impulseLength; k++) {
-        q->data = 0.0;
+        sum += coefficients[k] * q->data;
         q = q->r;
       }
-      // for each frame (running off the end of the sample stream by delay)
-      for (unsigned int frm = 0; frm < frameCount + delay; frm++) {
-
-        // shuffle old samples along delay buffer
-        p = p->r;
-
-        // load new sample into delay buffer
-        if (frm < frameCount) {
-          p->l->data = audioIn->getSampleByFrame(frm, ch) / gain;
-        } else {
-          // zero pad once we're into the delay at the end of the file
-          p->l->data = 0.0;
-        }
-
-        // start doing the maths once the delay has passed
-        // and, if shortcut != 1, only do the maths for the useful samples
-        // (this is mathematically dodgy, but it's fast and it usually works)
-        if ((frm >= delay) && (frm - delay) % shortcutFactor == 0) {
-          float sum = 0.0;
-          q = p;
-          for (unsigned int k = 0; k < impulseLength; k++) {
-            sum += coefficients[k] * q->data;
-            q = q->r;
-          }
-          audioOut->setSampleByFrame(frm - delay, ch, sum);
-        }
-      }
+      audio.setSampleAtWriteIterator(sum);
+      audio.advanceWriteIterator(shortcutFactor);
     }
 
     // delete delay buffer
@@ -143,9 +125,6 @@ namespace KeyFinder {
       p = p->r;
       delete q;
     }
-
-    delete audioIn;
-    audioIn = audioOut ;
 
   }
 
