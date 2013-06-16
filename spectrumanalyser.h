@@ -39,7 +39,7 @@ namespace KeyFinder {
       const Parameters& params,
       ChromaTransformFactory* ctFactory
     );
-    Chromagram chromagram(AudioData* audio) const;
+    Chromagram chromagram(AudioData& audio) const;
     ~SpectrumAnalyser();
   protected:
     unsigned int octaves;

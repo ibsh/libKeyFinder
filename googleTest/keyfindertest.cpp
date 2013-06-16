@@ -23,29 +23,20 @@
 
 TEST (KeyFinderTest, ChromagramOfAudioDetectsAMinorTriad) {
     unsigned int sampleRate = 44100;
-    KeyFinder::AudioData a;
-    a.setChannels(1);
-    a.setFrameRate(sampleRate);
-    a.addToSampleCount(sampleRate);
+    KeyFinder::AudioData inputAudio;
+    inputAudio.setChannels(1);
+    inputAudio.setFrameRate(sampleRate);
+    inputAudio.addToSampleCount(sampleRate);
     for (unsigned int i = 0; i < sampleRate; i++) {
       float sample = 0.0;
       sample += sine_wave(i, 440.0000, sampleRate, 1);
       sample += sine_wave(i, 523.2511, sampleRate, 1);
       sample += sine_wave(i, 659.2551, sampleRate, 1);
-      a.setSample(i, sample);
+      inputAudio.setSample(i, sample);
     }
 
     KeyFinder::KeyFinder kf;
-    ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(a).globalKeyEstimate);
-
-    KeyFinder::Chromagram ch(kf.chromagramOfAudio(a));
-    ASSERT_EQ(72, ch.getBands());
-    for (unsigned int b = 0; b < ch.getBands(); b++){
-      if (b == 45 || b == 48 || b == 52)
-        ASSERT_LT(36000.0, ch.getMagnitude(0, b));
-      else
-        ASSERT_GT(3600.0, ch.getMagnitude(0, b));
-    }
+    ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(inputAudio).globalKeyEstimate);
 }
 
 TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {

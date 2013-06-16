@@ -42,20 +42,21 @@ namespace KeyFinder {
     delete fft;
   }
 
-  Chromagram SpectrumAnalyser::chromagram(AudioData* audio) const {
-    if (audio->getChannels() != 1)
+  Chromagram SpectrumAnalyser::chromagram(AudioData& audio) const {
+    if (audio.getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
-    unsigned int sampleCount = audio->getSampleCount();
+    unsigned int sampleCount = audio.getSampleCount();
     unsigned int hops = ceil((float)sampleCount / (float)hopSize);
     Chromagram ch(hops, octaves, bandsPerSemitone);
-    unsigned int fftFrameSize = fft->getFrameSize();
     for (unsigned int hop = 0; hop < hops; hop ++) {
-      unsigned int sampleOffset = hop * hopSize;
-      for (unsigned int sample = 0; sample < fftFrameSize; sample++) {
-        if (sampleOffset + sample < sampleCount) {
-          fft->setInput(sample, audio->getSample(sampleOffset + sample) * temporalWindow[sample]); // real part, windowed
+      audio.resetIterators();
+      audio.advanceReadIterator(hop * hopSize);
+      for (unsigned int sample = 0; sample < fft->getFrameSize(); sample++) {
+        if (audio.readIteratorWithinUpperBound()) {
+          fft->setInput(sample, audio.getSampleAtReadIterator() * temporalWindow[sample]);
+          audio.advanceReadIterator();
         } else {
-          fft->setInput(sample, 0.0); // zero-pad if no PCM data remaining
+          fft->setInput(sample, 0.0);
         }
       }
       fft->execute();

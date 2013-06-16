@@ -23,7 +23,7 @@ namespace KeyFinder {
 
     // run spectral analysis
     SpectrumAnalyser sa(workingAudio->getFrameRate(), params, &ctFactory);
-    Chromagram ch = sa.chromagram(workingAudio);
+    Chromagram ch = sa.chromagram(*workingAudio);
 
     delete workingAudio;
 
