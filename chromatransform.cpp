@@ -63,7 +63,7 @@ namespace KeyFinder {
     return 1.0 - cos((2 * PI * n) / N);
   }
 
-  std::vector<float> ChromaTransform::chromaVector(const FftAdapter* fft) const {
+  std::vector<float> ChromaTransform::chromaVector(const FftAdapter* const fft) const {
     std::vector<float> cv(chromaBands);
     for (unsigned int i = 0; i < chromaBands; i++) {
       float sum = 0.0;

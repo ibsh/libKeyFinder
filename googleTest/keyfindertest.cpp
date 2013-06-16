@@ -21,7 +21,7 @@
 
 #include "keyfindertest.h"
 
-TEST (KeyFinderTest, ChromagramOfAudioDetectsAMinorTriad) {
+TEST (KeyFinderTest, KeyOfAudioDetectsAMinorTriad) {
     unsigned int sampleRate = 44100;
     KeyFinder::AudioData inputAudio;
     inputAudio.setChannels(1);
@@ -36,7 +36,9 @@ TEST (KeyFinderTest, ChromagramOfAudioDetectsAMinorTriad) {
     }
 
     KeyFinder::KeyFinder kf;
-    ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(inputAudio).globalKeyEstimate);
+    KeyFinder::Workspace ws;
+    KeyFinder::KeyDetectionResult kdr(kf.keyOfAudio(inputAudio, ws));
+    ASSERT_EQ(KeyFinder::A_MINOR, kdr.globalKeyEstimate);
 }
 
 TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
@@ -104,27 +106,6 @@ TEST (KeyFinderTest, KeyOfChromagramCollapsesTimeDimension) {
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[10]);
   ASSERT_FLOAT_EQ(0.0, kdr.segments[0].chromaVector[11]);
   ASSERT_EQ(KeyFinder::C_MINOR, kdr.globalKeyEstimate);
-}
-
-TEST (KeyFinderTest, KeyOfAudioDetectsAMinorTriad) {
-    unsigned int sampleRate = 44100;
-    KeyFinder::AudioData a;
-    a.setChannels(1);
-    a.setFrameRate(sampleRate);
-    a.addToSampleCount(sampleRate);
-    for (unsigned int i = 0; i < sampleRate; i++) {
-      float sample = 0.0;
-      sample += sine_wave(i, 440.0000, sampleRate, 1);
-      sample += sine_wave(i, 523.2511, sampleRate, 1);
-      sample += sine_wave(i, 659.2551, sampleRate, 1);
-      a.setSample(i, sample);
-    }
-
-    KeyFinder::KeyFinder kf;
-    KeyFinder::Parameters p;
-    p.setFftFrameSize(sampleRate);
-    KeyFinder::KeyDetectionResult kdr(kf.keyOfAudio(a, p));
-    ASSERT_EQ(KeyFinder::A_MINOR, kdr.globalKeyEstimate);
 }
 
 TEST (KeyFinderTest, FlatBeatRegressionTest) {

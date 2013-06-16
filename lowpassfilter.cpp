@@ -31,7 +31,7 @@
 namespace KeyFinder {
 
   LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
-    if (ord %2 != 0) throw Exception("LPF order must be an even number");
+    if (ord % 2 != 0) throw Exception("LPF order must be an even number");
     if (ord > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
     order = ord;
     delay = order / 2;
@@ -43,9 +43,7 @@ namespace KeyFinder {
     float tau = 0.5 / cutoffPoint;
     for (unsigned int i = 0; i < fftFrameSize/2; i++) {
       float input = 0.0;
-      if (i / (float) fftFrameSize <= cutoffPoint) {
-        input = tau;
-      }
+      if (i / (float) fftFrameSize <= cutoffPoint) input = tau;
       ifft->setInput(i, input, 0.0);
       ifft->setInput(fftFrameSize - i - 1, input, 0.0);
     }
@@ -71,24 +69,25 @@ namespace KeyFinder {
     delete ifft;
   }
 
-  void LowPassFilter::filter(AudioData& audio, unsigned int shortcutFactor) const {
+  void LowPassFilter::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
 
     if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
 
-    // create circular delay buffer
-    // this must be done in here for thread safety
-    Binode<float>* p = new Binode<float>(); // first node
-    Binode<float>* q = p;
-    for (unsigned int i=0; i<order; i++) {
-      q->r = new Binode<float>(); // subsequent nodes, for a total of impulseLength
-      q->r->l = q;
-      q = q->r;
+    if (workspace.getLpfBuffer() == NULL) {
+      workspace.constructLpfBuffer(impulseLength);
+    } else {
+      // clear delay buffer
+      Binode<float>* clear = workspace.getLpfBuffer();
+      for (unsigned int k = 0; k < impulseLength; k++) {
+        clear->data = 0.0;
+        clear = clear->r;
+      }
     }
-    // join first and last nodes
-    p->l = q;
-    q->r = p;
 
-    unsigned int sampleCount = audio.getFrameCount();
+    Binode<float>* p = workspace.getLpfBuffer();
+    Binode<float>* q = p;
+
+    unsigned int sampleCount = audio.getSampleCount();
     audio.resetIterators();
 
     // for each frame (running off the end of the sample stream by delay)
@@ -118,14 +117,6 @@ namespace KeyFinder {
       audio.setSampleAtWriteIterator(sum);
       audio.advanceWriteIterator(shortcutFactor);
     }
-
-    // delete delay buffer
-    for (unsigned int i = 0; i < impulseLength; i++) {
-      q = p;
-      p = p->r;
-      delete q;
-    }
-
   }
 
 }

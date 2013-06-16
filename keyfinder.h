@@ -16,14 +16,16 @@ namespace KeyFinder {
   public:
     Chromagram chromagramOfAudio(
       const AudioData& audio,
+      Workspace& workspace,
       const Parameters& params = Parameters()
     );
     KeyDetectionResult keyOfChromagram(
       const Chromagram& chromagram,
       const Parameters& params = Parameters()
-    );
+    ) const;
     KeyDetectionResult keyOfAudio(
       const AudioData& audio,
+      Workspace& workspace,
       const Parameters& params = Parameters()
     );
   private:

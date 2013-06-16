@@ -29,7 +29,6 @@ namespace KeyFinder {
     hopSize = params.getHopSize();
     ct = spFactory->getChromaTransform(f, params);
     unsigned int fftFrameSize = params.getFftFrameSize();
-    fft = new FftAdapter(fftFrameSize);
     WindowFunction win;
     temporalWindow = std::vector<float>(fftFrameSize);
     for (unsigned int i = 0; i < fftFrameSize; i++) {
@@ -37,12 +36,10 @@ namespace KeyFinder {
     }
   }
 
-  SpectrumAnalyser::~SpectrumAnalyser() {
-    // don't delete the chroma transform; it's stored in the factory
-    delete fft;
-  }
-
-  Chromagram SpectrumAnalyser::chromagram(AudioData& audio) const {
+  Chromagram SpectrumAnalyser::chromagram(
+    AudioData& audio,
+    FftAdapter* const fft
+  ) const {
     if (audio.getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
     unsigned int sampleCount = audio.getSampleCount();

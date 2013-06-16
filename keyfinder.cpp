@@ -2,7 +2,11 @@
 
 namespace KeyFinder {
 
-  Chromagram KeyFinder::chromagramOfAudio(const AudioData& originalAudio, const Parameters& params) {
+  Chromagram KeyFinder::chromagramOfAudio(
+    const AudioData& originalAudio,
+    Workspace& workspace,
+    const Parameters& params
+  ) {
 
     AudioData workingAudio(originalAudio);
 
@@ -16,14 +20,16 @@ namespace KeyFinder {
 
     // get filter
     LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
-    lpf->filter(workingAudio, downsampleFactor); // downsampleFactor shortcut
+    lpf->filter(workingAudio, workspace, downsampleFactor); // downsampleFactor shortcut
     // don't delete the LPF; it's stored in the factory for reuse
 
     workingAudio.downsample(downsampleFactor, true);
 
     // run spectral analysis
     SpectrumAnalyser sa(workingAudio.getFrameRate(), params, &ctFactory);
-    Chromagram ch = sa.chromagram(workingAudio);
+
+    workspace.setFftAdapter(new FftAdapter(params.getFftFrameSize()));
+    Chromagram ch = sa.chromagram(workingAudio, workspace.getFftAdapter());
 
     // deal with tuning if necessary
     if (ch.getBandsPerSemitone() > 1) {
@@ -36,7 +42,10 @@ namespace KeyFinder {
     return ch;
   }
 
-  KeyDetectionResult KeyFinder::keyOfChromagram(const Chromagram& chromagram, const Parameters& params) {
+  KeyDetectionResult KeyFinder::keyOfChromagram(
+    const Chromagram& chromagram,
+    const Parameters& params
+  ) const {
 
     KeyDetectionResult result;
 
@@ -93,8 +102,12 @@ namespace KeyFinder {
   }
 
   // this method to be used for whole audio streams
-  KeyDetectionResult KeyFinder::keyOfAudio(const AudioData& originalAudio, const Parameters& params) {
-    Chromagram ch = chromagramOfAudio(originalAudio, params);
+  KeyDetectionResult KeyFinder::keyOfAudio(
+    const AudioData& originalAudio,
+    Workspace& workspace,
+    const Parameters& params
+  ) {
+    Chromagram ch = chromagramOfAudio(originalAudio, workspace, params);
     return keyOfChromagram(ch, params);
   }
 

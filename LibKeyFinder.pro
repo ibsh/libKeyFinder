@@ -47,7 +47,8 @@ HEADERS += \
     segmentation.h \
     spectrumanalyser.h \
     toneprofiles.h \
-    windowfunctions.h
+    windowfunctions.h \
+    workspace.h
 
 SOURCES += \
     audiodata.cpp \
@@ -63,12 +64,13 @@ SOURCES += \
     segmentation.cpp \
     spectrumanalyser.cpp \
     toneprofiles.cpp \
-    windowfunctions.cpp
+    windowfunctions.cpp \
+    workspace.cpp
 
 OTHER_FILES += README
 
 unix|macx{
-  LIBS += -lfftw3
+  LIBS += -lfftw3 -lboost_system -lboost_thread
 }
 
 macx{
