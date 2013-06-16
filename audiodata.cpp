@@ -211,5 +211,4 @@ namespace KeyFinder {
     *writeIterator = value;
   }
 
-
 }

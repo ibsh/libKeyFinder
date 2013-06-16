@@ -157,11 +157,11 @@ TEST (AudioDataTest, DiscardFromFront) {
 
   a.setChannels(1);
   a.setFrameRate(1);
-  a.addToFrameCount(10);
 
+  ASSERT_THROW(a.discardFramesFromFront(1), KeyFinder::Exception);
+  a.addToFrameCount(10);
   ASSERT_THROW(a.discardFramesFromFront(11), KeyFinder::Exception);
   ASSERT_NO_THROW(a.discardFramesFromFront(0));
-
   a.setSampleByFrame(5, 0, 10.0);
   ASSERT_NO_THROW(a.discardFramesFromFront(5));
   ASSERT_EQ(5, a.getFrameCount());
