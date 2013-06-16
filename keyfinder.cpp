@@ -4,28 +4,26 @@ namespace KeyFinder {
 
   Chromagram KeyFinder::chromagramOfAudio(const AudioData& originalAudio, const Parameters& params) {
 
-    AudioData* workingAudio = new AudioData(originalAudio);
+    AudioData workingAudio(originalAudio);
 
-    workingAudio->reduceToMono();
+    workingAudio.reduceToMono();
 
     // TODO: there is presumably some good maths to determine filter frequencies.
     // For now, this approximates original experiment values for default params.
     float lpfCutoff = params.getLastFrequency() * 1.012;
     float dsCutoff = params.getLastFrequency() * 1.10;
-    unsigned int downsampleFactor = (int)floor( workingAudio->getFrameRate() / 2 / dsCutoff );
+    unsigned int downsampleFactor = (int)floor( workingAudio.getFrameRate() / 2 / dsCutoff );
 
     // get filter
-    LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio->getFrameRate(), lpfCutoff, 2048);
-    lpf->filter(*workingAudio, downsampleFactor); // downsampleFactor shortcut
+    LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
+    lpf->filter(workingAudio, downsampleFactor); // downsampleFactor shortcut
     // don't delete the LPF; it's stored in the factory for reuse
 
-    workingAudio->downsample(downsampleFactor, true);
+    workingAudio.downsample(downsampleFactor, true);
 
     // run spectral analysis
-    SpectrumAnalyser sa(workingAudio->getFrameRate(), params, &ctFactory);
-    Chromagram ch = sa.chromagram(*workingAudio);
-
-    delete workingAudio;
+    SpectrumAnalyser sa(workingAudio.getFrameRate(), params, &ctFactory);
+    Chromagram ch = sa.chromagram(workingAudio);
 
     // deal with tuning if necessary
     if (ch.getBandsPerSemitone() > 1) {
