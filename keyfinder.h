@@ -15,7 +15,7 @@ namespace KeyFinder {
   class KeyFinder {
   public:
     Chromagram chromagramOfAudio(
-      const AudioData& audio,
+      AudioData audio,
       Workspace& workspace,
       const Parameters& params = Parameters()
     );
@@ -29,6 +29,11 @@ namespace KeyFinder {
       const Parameters& params = Parameters()
     );
   private:
+    void preprocess(
+      AudioData& workingAudio,
+      Workspace& workspace,
+      const Parameters& params
+    );
     LowPassFilterFactory   lpfFactory;
     ChromaTransformFactory ctFactory;
   };

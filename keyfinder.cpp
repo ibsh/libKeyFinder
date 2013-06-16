@@ -3,27 +3,12 @@
 namespace KeyFinder {
 
   Chromagram KeyFinder::chromagramOfAudio(
-    const AudioData& originalAudio,
+    AudioData workingAudio,
     Workspace& workspace,
     const Parameters& params
   ) {
 
-    AudioData workingAudio(originalAudio);
-
-    workingAudio.reduceToMono();
-
-    // TODO: there is presumably some good maths to determine filter frequencies.
-    // For now, this approximates original experiment values for default params.
-    float lpfCutoff = params.getLastFrequency() * 1.012;
-    float dsCutoff = params.getLastFrequency() * 1.10;
-    unsigned int downsampleFactor = (int)floor( workingAudio.getFrameRate() / 2 / dsCutoff );
-
-    // get filter
-    const LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
-    lpf->filter(workingAudio, workspace, downsampleFactor); // downsampleFactor shortcut
-    // don't delete the LPF; it's stored in the factory for reuse
-
-    workingAudio.downsample(downsampleFactor, true);
+    preprocess(workingAudio, workspace, params);
 
     // run spectral analysis
     SpectrumAnalyser sa(workingAudio.getFrameRate(), params, &ctFactory);
@@ -99,6 +84,27 @@ namespace KeyFinder {
     }
 
     return result;
+  }
+
+  void KeyFinder::preprocess(
+    AudioData& workingAudio,
+    Workspace& workspace,
+    const Parameters& params
+  ) {
+    workingAudio.reduceToMono();
+
+    // TODO: there is presumably some good maths to determine filter frequencies.
+    // For now, this approximates original experiment values for default params.
+    float lpfCutoff = params.getLastFrequency() * 1.012;
+    float dsCutoff = params.getLastFrequency() * 1.10;
+    unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
+
+    // get filter
+    const LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
+    lpf->filter(workingAudio, workspace, downsampleFactor); // downsampleFactor shortcut
+    // note we don't delete the LPF; it's stored in the factory for reuse
+
+    workingAudio.downsample(downsampleFactor);
   }
 
   // this method to be used for whole audio streams
