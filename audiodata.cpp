@@ -131,15 +131,18 @@ namespace KeyFinder {
 
   void AudioData::reduceToMono() {
     if (channels == 1) return;
-    std::deque<float> newStream(getSampleCount() / channels);
-    for (unsigned int i = 0; i < getSampleCount(); i += channels) {
-      for (unsigned int j = 0; j < channels; j++) {
-        newStream[i/channels] += samples[i + j] / channels;
+    resetIterators();
+    while (readIteratorWithinUpperBound()) {
+      float mean = 0.0;
+      for (unsigned int c = 0; c < channels; c++) {
+        mean += getSampleAtReadIterator() / channels;
+        advanceReadIterator();
       }
+      setSampleAtWriteIterator(mean);
+      advanceWriteIterator();
     }
-    samples = newStream;
+    samples.resize(getSampleCount() / channels);
     channels = 1;
-    return;
   }
 
   /*
@@ -148,23 +151,22 @@ namespace KeyFinder {
   void AudioData::downsample(unsigned int factor, bool shortcut) {
     if (factor == 1) return;
     if (channels > 1) throw Exception("Apply to monophonic only");
-    unsigned int oldSampleCount = getFrameCount();
-    unsigned int newSampleCount = ceil((float)oldSampleCount / (float)factor);
-    // for each frame of the output
-    for (unsigned int outSample = 0; outSample < newSampleCount; outSample++) {
-      // take the mean of a set of input frames
+    resetIterators();
+    while (readIteratorWithinUpperBound()) {
       float mean = 0.0;
       if (shortcut) {
-        mean = getSample(outSample * factor);
+        mean = getSampleAtReadIterator();
+        advanceReadIterator(factor);
       } else {
-        for (unsigned int element = 0; element < factor; element++) {
-          unsigned int inSample = (outSample * factor) + element;
-          if (inSample < oldSampleCount) {
-            mean += getSample(inSample) / (float)factor;
+        for (unsigned int s = 0; s < factor; s++) {
+          if (readIteratorWithinUpperBound()) {
+            mean += getSampleAtReadIterator() / (float)factor;
+            advanceReadIterator();
           }
         }
       }
-      setSample(outSample, mean);
+      setSampleAtWriteIterator(mean);
+      advanceWriteIterator();
     }
     setFrameRate(getFrameRate() / factor);
     samples.resize(ceil((float)getSampleCount() / (float)factor));
@@ -179,5 +181,35 @@ namespace KeyFinder {
     unsigned int discardSampleCount = discardFrameCount * channels;
     samples.erase(samples.begin(), samples.begin() + discardSampleCount);
   }
+
+  void AudioData::resetIterators() {
+    readIterator = samples.begin();
+    writeIterator = samples.begin();
+  }
+
+  bool AudioData::readIteratorWithinUpperBound() const {
+    return (readIterator < samples.end());
+  }
+
+  bool AudioData::writeIteratorWithinUpperBound() const {
+    return (writeIterator < samples.end());
+  }
+
+  void AudioData::advanceReadIterator(unsigned int by) {
+    readIterator += by;
+  }
+
+  void AudioData::advanceWriteIterator(unsigned int by) {
+    writeIterator += by;
+  }
+
+  float AudioData::getSampleAtReadIterator() const {
+    return *readIterator;
+  }
+
+  void AudioData::setSampleAtWriteIterator(float value) {
+    *writeIterator = value;
+  }
+
 
 }

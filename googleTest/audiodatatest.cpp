@@ -256,3 +256,44 @@ TEST (AudioDataTest, DownsamplerResamplesSineWave) {
   for (unsigned int i = 0; i < newFrames; i++)
     ASSERT_NEAR(sine_wave(i, freq, newFrameRate, magnitude), a.getSample(i), magnitude * 0.05);
 }
+
+TEST (AudioDataTest, Iterators) {
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(1);
+  a.addToSampleCount(10);
+
+  a.setSample(0, 10.0);
+  a.setSample(1, 20.0);
+  a.setSample(3, 50.0);
+
+  a.resetIterators(); // this is required before each use
+
+  ASSERT_FLOAT_EQ(10.0, a.getSampleAtReadIterator());
+  a.setSampleAtWriteIterator(15.0);
+  ASSERT_FLOAT_EQ(15.0, a.getSampleAtReadIterator());
+
+  a.advanceReadIterator();
+  a.advanceWriteIterator();
+  ASSERT_FLOAT_EQ(20.0, a.getSampleAtReadIterator());
+  a.setSampleAtWriteIterator(25.0);
+  ASSERT_FLOAT_EQ(25.0, a.getSampleAtReadIterator());
+
+  a.advanceReadIterator(2);
+  a.advanceWriteIterator(2);
+  ASSERT_FLOAT_EQ(50.0, a.getSampleAtReadIterator());
+  a.setSampleAtWriteIterator(55.0);
+  ASSERT_FLOAT_EQ(55.0, a.getSampleAtReadIterator());
+
+  a.resetIterators();
+  ASSERT_FLOAT_EQ(15.0, a.getSampleAtReadIterator());
+  a.setSampleAtWriteIterator(150.0);
+  ASSERT_FLOAT_EQ(150.0, a.getSampleAtReadIterator());
+
+  ASSERT_TRUE(a.readIteratorWithinUpperBound());
+  ASSERT_TRUE(a.writeIteratorWithinUpperBound());
+  a.advanceReadIterator(10);
+  a.advanceWriteIterator(10);
+  ASSERT_FALSE(a.readIteratorWithinUpperBound());
+  ASSERT_FALSE(a.writeIteratorWithinUpperBound());
+}

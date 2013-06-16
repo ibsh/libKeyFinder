@@ -36,6 +36,7 @@ namespace KeyFinder {
     unsigned int getFrameRate() const;
     float getSample(unsigned int index) const;
     float getSampleByFrame(unsigned int frame, unsigned int channel) const;
+    float getSampleAtReadIterator() const;
     unsigned int getSampleCount() const;
     unsigned int getFrameCount() const;
 
@@ -43,8 +44,15 @@ namespace KeyFinder {
     void setFrameRate(unsigned int newFrameRate);
     void setSample(unsigned int index, float value);
     void setSampleByFrame(unsigned int frame, unsigned int channels, float value);
+    void setSampleAtWriteIterator(float value);
     void addToSampleCount(unsigned int newSamples);
     void addToFrameCount(unsigned int newFrames);
+
+    void advanceReadIterator(unsigned int by = 1);
+    void advanceWriteIterator(unsigned int by = 1);
+    bool readIteratorWithinUpperBound() const;
+    bool writeIteratorWithinUpperBound() const;
+    void resetIterators();
 
     void append(const AudioData& that);
     void discardFramesFromFront(unsigned int discardFrameCount);
@@ -55,6 +63,8 @@ namespace KeyFinder {
     std::deque<float> samples;
     unsigned int channels;
     unsigned int frameRate;
+    std::deque<float>::iterator readIterator;
+    std::deque<float>::iterator writeIterator;
   };
 
 }

@@ -16,9 +16,8 @@ namespace KeyFinder {
 
     // get filter
     LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio->getFrameRate(), lpfCutoff, 2048);
-    // feeding in the downsampleFactor for a shortcut
-    lpf->filter(workingAudio, downsampleFactor);
-    // note we don't delete the LPF; it's stored in the factory for reuse
+    lpf->filter(workingAudio, downsampleFactor); // downsampleFactor shortcut
+    // don't delete the LPF; it's stored in the factory for reuse
 
     workingAudio->downsample(downsampleFactor, true);
 

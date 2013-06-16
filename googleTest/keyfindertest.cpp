@@ -36,17 +36,15 @@ TEST (KeyFinderTest, ChromagramOfAudioDetectsAMinorTriad) {
     }
 
     KeyFinder::KeyFinder kf;
-    KeyFinder::Parameters p;
-    p.setFftFrameSize(sampleRate);
-    p.setOffsetToC(false);
-    KeyFinder::Chromagram ch(kf.chromagramOfAudio(a, p));
-    ASSERT_EQ(1, ch.getHops());
+    ASSERT_EQ(KeyFinder::A_MINOR, kf.keyOfAudio(a).globalKeyEstimate);
+
+    KeyFinder::Chromagram ch(kf.chromagramOfAudio(a));
     ASSERT_EQ(72, ch.getBands());
     for (unsigned int b = 0; b < ch.getBands(); b++){
-      if (b == 48 || b == 51 || b == 55)
-        ASSERT_LT(175.0, ch.getMagnitude(0, b));
+      if (b == 45 || b == 48 || b == 52)
+        ASSERT_LT(36000.0, ch.getMagnitude(0, b));
       else
-        ASSERT_GT(16.0, ch.getMagnitude(0, b));
+        ASSERT_GT(3600.0, ch.getMagnitude(0, b));
     }
 }
 
