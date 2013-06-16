@@ -50,10 +50,10 @@ namespace KeyFinder {
         for (unsigned int element = 0; element < factor; element++) {
           unsigned int inFrm = (outFrm * factor) + element;
           if (inFrm < audioIn->getFrameCount()) {
-            mean += audioIn->getSample(inFrm, ch) / (float)factor;
+            mean += audioIn->getSampleByFrame(inFrm, ch) / (float)factor;
           }
         }
-        audioOut->setSample(outFrm, ch, mean);
+        audioOut->setSampleByFrame(outFrm, ch, mean);
       }
     }
 

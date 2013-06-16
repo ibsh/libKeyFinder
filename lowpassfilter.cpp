@@ -116,7 +116,7 @@ namespace KeyFinder {
 
         // load new sample into delay buffer
         if (frm < frameCount) {
-          p->l->data = audioIn->getSample(frm, ch) / gain;
+          p->l->data = audioIn->getSampleByFrame(frm, ch) / gain;
         } else {
           // zero pad once we're into the delay at the end of the file
           p->l->data = 0.0;
@@ -132,7 +132,7 @@ namespace KeyFinder {
             sum += coefficients[k] * q->data;
             q = q->r;
           }
-          audioOut->setSample(frm - delay, ch, sum);
+          audioOut->setSampleByFrame(frm - delay, ch, sum);
         }
       }
     }
