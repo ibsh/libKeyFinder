@@ -58,7 +58,7 @@ TEST (WorkspaceTest, LpfBufferCanOnlyBeConstructedOnce) {
   ASSERT_THROW(w.constructLpfBuffer(1), KeyFinder::Exception);
 }
 
-TEST (WorkspaceTest, DestructorIsSafePointerInitialisations) {
+TEST (WorkspaceTest, DestructorIsSafeBeforePointerInitialisations) {
   KeyFinder::Workspace* w;
   w = new KeyFinder::Workspace();
   ASSERT_NO_THROW(delete w);
