@@ -34,6 +34,7 @@ HEADERS += \
     chromagramtest.h \
     chromatransformtest.h \
     chromatransformfactorytest.h \
+    downsamplershortcuttest.h \
     fftadaptertest.h \
     keyclassifiertest.h \
     keyfindertest.h \
@@ -55,6 +56,7 @@ SOURCES += \
     chromagramtest.cpp \
     chromatransformtest.cpp \
     chromatransformfactorytest.cpp \
+    downsamplershortcuttest.cpp \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \
     keyfindertest.cpp \
