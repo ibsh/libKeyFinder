@@ -24,22 +24,18 @@
 namespace KeyFinder {
 
   ChromaTransformFactory::ChromaTransformWrapper::ChromaTransformWrapper(
-    unsigned int f, const Parameters& p, ChromaTransform* s
-  ) {
-    frameRate = f;
-    params = p;
-    ct = s;
-  }
+    unsigned int f, const Parameters& p, const ChromaTransform* const s
+  ) : frameRate(f), params(p), ct(s) { }
 
   ChromaTransformFactory::ChromaTransformWrapper::~ChromaTransformWrapper() {
     delete ct;
   }
 
-  ChromaTransform* ChromaTransformFactory::ChromaTransformWrapper::getChromaTransform() const {
+  const ChromaTransform* ChromaTransformFactory::ChromaTransformWrapper::getChromaTransform() const {
     return ct;
   }
 
-  Parameters ChromaTransformFactory::ChromaTransformWrapper::getParameters() const {
+  const Parameters& ChromaTransformFactory::ChromaTransformWrapper::getParameters() const {
     return params;
   }
 
@@ -56,7 +52,7 @@ namespace KeyFinder {
       delete chromaTransforms[i];
   }
 
-  ChromaTransform* ChromaTransformFactory::getChromaTransform(
+  const ChromaTransform* ChromaTransformFactory::getChromaTransform(
     unsigned int f, const Parameters& p
   ) {
     boost::mutex::scoped_lock lock(chromaTransformFactoryMutex);

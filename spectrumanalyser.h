@@ -47,7 +47,7 @@ namespace KeyFinder {
     unsigned int octaves;
     unsigned int bandsPerSemitone;
     unsigned int hopSize;
-    ChromaTransform* ct;
+    const ChromaTransform* ct;
     std::vector<float> temporalWindow;
   };
 

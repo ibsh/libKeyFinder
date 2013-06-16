@@ -25,13 +25,13 @@ TEST (ChromaTransformFactoryTest, RepeatedTransformRequests) {
   KeyFinder::ChromaTransformFactory ctf;
 
   KeyFinder::Parameters params;
-  KeyFinder::ChromaTransform* ct1 = ctf.getChromaTransform(4410, params);
-  KeyFinder::ChromaTransform* ct2 = ctf.getChromaTransform(4410, params);
-  KeyFinder::ChromaTransform* ct3 = ctf.getChromaTransform(4800, params);
+  const KeyFinder::ChromaTransform* ct1 = ctf.getChromaTransform(4410, params);
+  const KeyFinder::ChromaTransform* ct2 = ctf.getChromaTransform(4410, params);
+  const KeyFinder::ChromaTransform* ct3 = ctf.getChromaTransform(4800, params);
   params.setArbitrarySegments(9);
-  KeyFinder::ChromaTransform* ct4 = ctf.getChromaTransform(4800, params);
+  const KeyFinder::ChromaTransform* ct4 = ctf.getChromaTransform(4800, params);
   params.setOctaves(3);
-  KeyFinder::ChromaTransform* ct5 = ctf.getChromaTransform(4800, params);
+  const KeyFinder::ChromaTransform* ct5 = ctf.getChromaTransform(4800, params);
 
   ASSERT_EQ(ct1, ct2);
   ASSERT_NE(ct2, ct3);
