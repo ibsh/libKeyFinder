@@ -23,7 +23,7 @@
 #define AUDIOSTREAM_H
 
 #include <boost/math/special_functions/fpclassify.hpp>
-#include <vector>
+#include <deque>
 #include "exception.h"
 
 namespace KeyFinder {
@@ -51,7 +51,7 @@ namespace KeyFinder {
     void reduceToMono();
 
   private:
-    std::vector<float> samples;
+    std::deque<float> samples;
     unsigned int channels;
     unsigned int frameRate;
   };

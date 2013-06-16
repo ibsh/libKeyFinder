@@ -30,7 +30,7 @@ namespace KeyFinder {
   }
 
   void AudioData::setChannels(unsigned int newChannels) {
-    if (newChannels < 1) throw Exception("Channels must be > 0");
+    if (newChannels < 1) throw Exception("New channel count must be > 0");
     channels = newChannels;
   }
 
@@ -39,7 +39,7 @@ namespace KeyFinder {
   }
 
   void AudioData::setFrameRate(unsigned int newFrameRate) {
-    if (newFrameRate < 1) throw Exception("Frame rate must be > 0");
+    if (newFrameRate < 1) throw Exception("New frame rate must be > 0");
     frameRate = newFrameRate;
   }
 
@@ -53,7 +53,7 @@ namespace KeyFinder {
     if (that.frameRate != frameRate)
       throw Exception("Cannot append audio data with a different frame rate");
     unsigned int oldSampleCount = getSampleCount();
-    samples.resize(oldSampleCount + that.getSampleCount(), 0.0);
+    addToSampleCount(that.getSampleCount());
     for (unsigned int s = 0; s < that.getSampleCount(); s++)
       setSample(oldSampleCount + s, that.getSample(s));
   }
@@ -112,19 +112,7 @@ namespace KeyFinder {
   }
 
   void AudioData::addToSampleCount(unsigned int newSamples) {
-    try{
-      samples.resize(getSampleCount() + newSamples, 0.0);
-      // TODO: turns out this doesn't work; bad_alloc never gets thrown on Mac,
-      // presumably it tries to do everything in swap
-    }catch(const std::exception& e) {
-      std::ostringstream ss;
-      ss << "Exception adding " << newSamples << " samples to stream of " << getSampleCount() << ": " << e.what();
-      throw Exception(ss.str().c_str());
-    }catch(...) {
-      std::ostringstream ss;
-      ss << "Unknown exception adding " << newSamples << " samples to stream of " << getSampleCount();
-      throw Exception(ss.str().c_str());
-    }
+    samples.resize(getSampleCount() + newSamples, 0.0);
   }
 
   void AudioData::addToFrameCount(unsigned int newFrames) {
@@ -143,7 +131,7 @@ namespace KeyFinder {
 
   void AudioData::reduceToMono() {
     if (channels == 1) return;
-    std::vector<float> newStream(getSampleCount() / channels);
+    std::deque<float> newStream(getSampleCount() / channels);
     for (unsigned int i = 0; i < getSampleCount(); i += channels) {
       for (unsigned int j = 0; j < channels; j++) {
         newStream[i/channels] += samples[i + j] / channels;
@@ -161,12 +149,7 @@ namespace KeyFinder {
       throw Exception(ss.str().c_str());
     }
     unsigned int discardSampleCount = discardFrameCount * channels;
-    unsigned int newSampleCount = getSampleCount() - discardSampleCount;
-    std::vector<float> newStream(newSampleCount);
-    for (unsigned int i = 0; i < newSampleCount; i ++) {
-      newStream[i] = samples[i + discardSampleCount];
-    }
-    samples = newStream;
+    samples.erase(samples.begin(), samples.begin() + discardSampleCount);
   }
 
 }
