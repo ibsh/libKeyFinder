@@ -55,11 +55,12 @@ namespace KeyFinder {
     unsigned int oldSampleCount = getSampleCount();
     addToSampleCount(that.getSampleCount());
     std::deque<float>::const_iterator readThat = that.samples.begin();
-    std::deque<float>::iterator writeThis = samples.begin() + oldSampleCount;
+    std::deque<float>::iterator writeThis = samples.begin();
+    std::advance(writeThis, oldSampleCount);
     for (unsigned int s = 0; s < that.getSampleCount(); s++) {
       *writeThis = *readThat;
-      readThat++;
-      writeThis++;
+      std::advance(readThat, 1);
+      std::advance(writeThis, 1);
     }
   }
 
@@ -142,10 +143,10 @@ namespace KeyFinder {
       float mean = 0.0;
       for (unsigned int c = 0; c < channels; c++) {
         mean += *readAt / channels;
-        readAt++;
+        std::advance(readAt, 1);
       }
       *writeAt = mean;
-      writeAt++;
+      std::advance(writeAt, 1);
     }
     samples.resize(getSampleCount() / channels);
     channels = 1;
@@ -163,17 +164,17 @@ namespace KeyFinder {
       float mean = 0.0;
       if (shortcut) {
         mean = *readAt;
-        readAt += factor;
+        std::advance(readAt, factor);
       } else {
         for (unsigned int s = 0; s < factor; s++) {
           if (readAt < samples.end()) {
             mean += *readAt / (float)factor;
-            readAt++;
+            std::advance(readAt, 1);
           }
         }
       }
       *writeAt = mean;
-      writeAt++;
+      std::advance(writeAt, 1);
     }
     samples.resize(ceil((float)getSampleCount() / (float)factor));
     setFrameRate(getFrameRate() / factor);
@@ -186,7 +187,9 @@ namespace KeyFinder {
       throw Exception(ss.str().c_str());
     }
     unsigned int discardSampleCount = discardFrameCount * channels;
-    samples.erase(samples.begin(), samples.begin() + discardSampleCount);
+    std::deque<float>::iterator discardToHere = samples.begin();
+    std::advance(discardToHere, discardSampleCount);
+    samples.erase(samples.begin(), discardToHere);
   }
 
   void AudioData::resetIterators() {
@@ -203,11 +206,11 @@ namespace KeyFinder {
   }
 
   void AudioData::advanceReadIterator(unsigned int by) {
-    readIterator += by;
+    std::advance(readIterator, by);
   }
 
   void AudioData::advanceWriteIterator(unsigned int by) {
-    writeIterator += by;
+    std::advance(writeIterator, by);
   }
 
   float AudioData::getSampleAtReadIterator() const {
