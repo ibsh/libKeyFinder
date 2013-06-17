@@ -2,7 +2,6 @@
 
 namespace KeyFinder {
 
-
   // this method to be used for whole audio streams
   KeyDetectionResult KeyFinder::keyOfAudio(
     const AudioData& originalAudio,

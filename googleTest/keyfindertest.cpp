@@ -36,8 +36,7 @@ TEST (KeyFinderTest, KeyOfAudioDetectsAMinorTriad) {
     }
 
     KeyFinder::KeyFinder kf;
-    KeyFinder::Workspace ws;
-    KeyFinder::KeyDetectionResult kdr(kf.keyOfAudio(inputAudio, ws));
+    KeyFinder::KeyDetectionResult kdr(kf.keyOfAudio(inputAudio));
     ASSERT_EQ(KeyFinder::A_MINOR, kdr.globalKeyEstimate);
 }
 
