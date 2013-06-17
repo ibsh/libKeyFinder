@@ -2,12 +2,22 @@
 
 namespace KeyFinder {
 
+
+  // this method to be used for whole audio streams
+  KeyDetectionResult KeyFinder::keyOfAudio(
+    const AudioData& originalAudio,
+    const Parameters& params
+  ) {
+    Workspace workspace;
+    Chromagram ch = chromagramOfAudio(originalAudio, workspace, params);
+    return keyOfChromagram(ch, params);
+  }
+
   Chromagram KeyFinder::chromagramOfAudio(
     AudioData workingAudio,
     Workspace& workspace,
     const Parameters& params
   ) {
-
     preprocess(workingAudio, workspace, params);
 
     // run spectral analysis
@@ -105,16 +115,6 @@ namespace KeyFinder {
     // note we don't delete the LPF; it's stored in the factory for reuse
 
     workingAudio.downsample(downsampleFactor);
-  }
-
-  // this method to be used for whole audio streams
-  KeyDetectionResult KeyFinder::keyOfAudio(
-    const AudioData& originalAudio,
-    Workspace& workspace,
-    const Parameters& params
-  ) {
-    Chromagram ch = chromagramOfAudio(originalAudio, workspace, params);
-    return keyOfChromagram(ch, params);
   }
 
 }

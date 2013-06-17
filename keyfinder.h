@@ -14,6 +14,10 @@ namespace KeyFinder {
 
   class KeyFinder {
   public:
+    KeyDetectionResult keyOfAudio(
+      const AudioData& audio,
+      const Parameters& params = Parameters()
+    );
     Chromagram chromagramOfAudio(
       AudioData audio,
       Workspace& workspace,
@@ -23,11 +27,6 @@ namespace KeyFinder {
       const Chromagram& chromagram,
       const Parameters& params = Parameters()
     ) const;
-    KeyDetectionResult keyOfAudio(
-      const AudioData& audio,
-      Workspace& workspace,
-      const Parameters& params = Parameters()
-    );
   private:
     void preprocess(
       AudioData& workingAudio,

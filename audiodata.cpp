@@ -152,9 +152,7 @@ namespace KeyFinder {
     channels = 1;
   }
 
-  /*
-   * Strictly to be applied AFTER low pass filtering
-   */
+  // Strictly to be applied AFTER low pass filtering
   void AudioData::downsample(unsigned int factor, bool shortcut) {
     if (factor == 1) return;
     if (channels > 1) throw Exception("Apply to monophonic only");
