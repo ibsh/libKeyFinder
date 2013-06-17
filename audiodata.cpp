@@ -136,15 +136,16 @@ namespace KeyFinder {
 
   void AudioData::reduceToMono() {
     if (channels == 1) return;
-    resetIterators();
-    while (readIteratorWithinUpperBound()) {
+    std::deque<float>::const_iterator readAt = samples.begin();
+    std::deque<float>::iterator writeAt = samples.begin();
+    while (readAt < samples.end()) {
       float mean = 0.0;
       for (unsigned int c = 0; c < channels; c++) {
-        mean += getSampleAtReadIterator() / channels;
-        advanceReadIterator();
+        mean += *readAt / channels;
+        readAt++;
       }
-      setSampleAtWriteIterator(mean);
-      advanceWriteIterator();
+      *writeAt = mean;
+      writeAt++;
     }
     samples.resize(getSampleCount() / channels);
     channels = 1;
@@ -156,25 +157,26 @@ namespace KeyFinder {
   void AudioData::downsample(unsigned int factor, bool shortcut) {
     if (factor == 1) return;
     if (channels > 1) throw Exception("Apply to monophonic only");
-    resetIterators();
-    while (readIteratorWithinUpperBound()) {
+    std::deque<float>::const_iterator readAt = samples.begin();
+    std::deque<float>::iterator writeAt = samples.begin();
+    while (readAt < samples.end()) {
       float mean = 0.0;
       if (shortcut) {
-        mean = getSampleAtReadIterator();
-        advanceReadIterator(factor);
+        mean = *readAt;
+        readAt += factor;
       } else {
         for (unsigned int s = 0; s < factor; s++) {
-          if (readIteratorWithinUpperBound()) {
-            mean += getSampleAtReadIterator() / (float)factor;
-            advanceReadIterator();
+          if (readAt < samples.end()) {
+            mean += *readAt / (float)factor;
+            readAt++;
           }
         }
       }
-      setSampleAtWriteIterator(mean);
-      advanceWriteIterator();
+      *writeAt = mean;
+      writeAt++;
     }
-    setFrameRate(getFrameRate() / factor);
     samples.resize(ceil((float)getSampleCount() / (float)factor));
+    setFrameRate(getFrameRate() / factor);
   }
 
   void AudioData::discardFramesFromFront(unsigned int discardFrameCount) {
