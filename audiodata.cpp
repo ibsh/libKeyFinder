@@ -57,7 +57,7 @@ namespace KeyFinder {
     std::deque<float>::const_iterator readThat = that.samples.begin();
     std::deque<float>::iterator writeThis = samples.begin();
     std::advance(writeThis, oldSampleCount);
-    for (unsigned int s = 0; s < that.getSampleCount(); s++) {
+    while (readThat < that.samples.end()) {
       *writeThis = *readThat;
       std::advance(readThat, 1);
       std::advance(writeThis, 1);
