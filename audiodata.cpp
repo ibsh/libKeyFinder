@@ -54,8 +54,13 @@ namespace KeyFinder {
       throw Exception("Cannot append audio data with a different frame rate");
     unsigned int oldSampleCount = getSampleCount();
     addToSampleCount(that.getSampleCount());
-    for (unsigned int s = 0; s < that.getSampleCount(); s++)
-      setSample(oldSampleCount + s, that.getSample(s));
+    std::deque<float>::const_iterator readThat = that.samples.begin();
+    std::deque<float>::iterator writeThis = samples.begin() + oldSampleCount;
+    for (unsigned int s = 0; s < that.getSampleCount(); s++) {
+      *writeThis = *readThat;
+      readThat++;
+      writeThis++;
+    }
   }
 
   // get sample by absolute index

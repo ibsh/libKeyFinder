@@ -63,7 +63,7 @@ namespace KeyFinder {
     std::deque<float> samples;
     unsigned int channels;
     unsigned int frameRate;
-    std::deque<float>::iterator readIterator;
+    std::deque<float>::const_iterator readIterator;
     std::deque<float>::iterator writeIterator;
   };
 
