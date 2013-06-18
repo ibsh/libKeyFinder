@@ -207,16 +207,7 @@ namespace KeyFinder {
       ss << "(" << getBands() << " != " << that.getBands() << ")";
       throw Exception(ss.str().c_str());
     }
-    unsigned int oldHops = getHops();
-    chromaData.resize(oldHops + that.getHops());
-    std::vector< std::vector<float> >::const_iterator readThat = that.chromaData.begin();
-    std::vector< std::vector<float> >::iterator writeThis = chromaData.begin();
-    std::advance(writeThis, oldHops);
-    while (readThat < that.chromaData.end()) {
-      *writeThis = *readThat;
-      std::advance(readThat, 1);
-      std::advance(writeThis, 1);
-    }
+    chromaData.insert(chromaData.end(), that.chromaData.begin(), that.chromaData.end());
   }
 
   unsigned int Chromagram::getHops() const {

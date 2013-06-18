@@ -52,16 +52,7 @@ namespace KeyFinder {
       throw Exception("Cannot append audio data with a different number of channels");
     if (that.frameRate != frameRate)
       throw Exception("Cannot append audio data with a different frame rate");
-    unsigned int oldSampleCount = getSampleCount();
-    addToSampleCount(that.getSampleCount());
-    std::deque<float>::const_iterator readThat = that.samples.begin();
-    std::deque<float>::iterator writeThis = samples.begin();
-    std::advance(writeThis, oldSampleCount);
-    while (readThat < that.samples.end()) {
-      *writeThis = *readThat;
-      std::advance(readThat, 1);
-      std::advance(writeThis, 1);
-    }
+    samples.insert(samples.end(), that.samples.begin(), that.samples.end());
   }
 
   // get sample by absolute index
