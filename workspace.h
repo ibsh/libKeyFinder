@@ -34,14 +34,9 @@ namespace KeyFinder {
     Workspace();
     ~Workspace();
     AudioData buffer;
-    Chromagram* chroma;
-    FftAdapter* getFftAdapter();
-    Binode<float>* getLpfBuffer();
-    void setFftAdapter(FftAdapter* const fftAdapter);
-    void constructLpfBuffer(unsigned int impulseLength);
-  private:
+    Chromagram* chromagram;
     FftAdapter* fftAdapter;
-    Binode<float>* lpfBuffer;
+    std::vector<float>* lpfBuffer;
   };
 
 }

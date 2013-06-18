@@ -26,7 +26,6 @@
 #include <vector>
 
 #include "audiodata.h"
-#include "binode.h"
 #include "fftadapter.h"
 #include "windowfunctions.h"
 #include "workspace.h"

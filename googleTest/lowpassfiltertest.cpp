@@ -63,7 +63,7 @@ TEST (LowPassFilterTest, InsistsOnMonophonicAudio) {
   delete lpf;
 }
 
-TEST (LowPassFilterTest, InitialisesNullRingBuffer) {
+TEST (LowPassFilterTest, InitialisesNullBuffer) {
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(frameRate);
@@ -71,16 +71,10 @@ TEST (LowPassFilterTest, InitialisesNullRingBuffer) {
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
   KeyFinder::Workspace w;
-  KeyFinder::Binode<float>* p = NULL;
+  std::vector<float>* nullPtr = NULL;
+  ASSERT_EQ(nullPtr, w.lpfBuffer);
   lpf->filter(a, w);
-  ASSERT_NE(p, w.getLpfBuffer());
-  unsigned int count = 1;
-  p = w.getLpfBuffer()->r;
-  for (; p != w.getLpfBuffer(); count++) {
-    p = p->r;
-  }
-  ASSERT_EQ(filterOrder + 1, count);
-  delete lpf;
+  ASSERT_NE(nullPtr, w.lpfBuffer);
 }
 
 TEST (LowPassFilterTest, DoesntAlterAudioMetadata) {

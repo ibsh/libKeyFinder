@@ -22,8 +22,8 @@ namespace KeyFinder {
     // run spectral analysis
     SpectrumAnalyser sa(workingAudio.getFrameRate(), params, &ctFactory);
 
-    workspace.setFftAdapter(new FftAdapter(params.getFftFrameSize()));
-    Chromagram ch = sa.chromagram(workingAudio, workspace.getFftAdapter());
+    workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
+    Chromagram ch = sa.chromagram(workingAudio, workspace.fftAdapter);
 
     // deal with tuning if necessary
     if (ch.getBandsPerSemitone() > 1) {

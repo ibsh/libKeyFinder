@@ -73,20 +73,23 @@ namespace KeyFinder {
 
     if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
 
-    if (workspace.getLpfBuffer() == NULL) {
-      workspace.constructLpfBuffer(impulseLength);
+    std::vector<float>* buffer = workspace.lpfBuffer;
+
+    if (buffer == NULL) {
+      workspace.lpfBuffer = new std::vector<float>(impulseLength, 0.0);
+      buffer = workspace.lpfBuffer;
     } else {
       // clear delay buffer
-      Binode<float>* start = workspace.getLpfBuffer();
-      Binode<float>* clear = start;
-      do {
-        clear->data = 0.0;
-        clear = clear->r;
-      } while (clear != start);
+      std::vector<float>::iterator bufferIterator = buffer->begin();
+      while (bufferIterator < buffer->end()) {
+        *bufferIterator = 0.0;
+        std::advance(bufferIterator, 1);
+      }
     }
 
-    Binode<float>* p = workspace.getLpfBuffer();
-    Binode<float>* q = p;
+    std::vector<float>::iterator bufferFront = buffer->begin();
+    std::vector<float>::iterator bufferBack;
+    std::vector<float>::iterator bufferTemp;
 
     unsigned int sampleCount = audio.getSampleCount();
     audio.resetIterators();
@@ -95,14 +98,17 @@ namespace KeyFinder {
     // for each frame (running off the end of the sample stream by delay)
     for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
       // shuffle old samples along delay buffer
-      p = p->r;
+      bufferBack = bufferFront;
+      std::advance(bufferFront, 1);
+      if (bufferFront == buffer->end())
+        bufferFront = buffer->begin();
 
       // load new sample into back of delay buffer
       if (audio.readIteratorWithinUpperBound()) {
-        p->l->data = audio.getSampleAtReadIterator() / gain;
+        *bufferBack = audio.getSampleAtReadIterator() / gain;
         audio.advanceReadIterator();
       } else {
-        p->l->data = 0.0; // zero pad once we're past the end of the file
+        *bufferBack = 0.0; // zero pad once we're past the end of the file
       }
       // start doing the maths once the delay has passed
       int outSample = (signed)inSample - (signed)delay;
@@ -111,13 +117,15 @@ namespace KeyFinder {
       // is mathematically dodgy, but it's faster and it usually works);
       if (outSample % shortcutFactor > 0) continue;
       sum = 0.0;
-      q = p;
+      bufferTemp = bufferFront;
       std::vector<float>::const_iterator coefficientIterator = coefficients.begin();
-      do {
-        sum += *coefficientIterator * q->data;
+      while (coefficientIterator < coefficients.end()) {
+        sum += *coefficientIterator * *bufferTemp;
         std::advance(coefficientIterator, 1);
-        q = q->r;
-      } while (q != p);
+        std::advance(bufferTemp, 1);
+        if (bufferTemp == buffer->end())
+          bufferTemp = buffer->begin();
+      }
       audio.setSampleAtWriteIterator(sum);
       audio.advanceWriteIterator(shortcutFactor);
     }
