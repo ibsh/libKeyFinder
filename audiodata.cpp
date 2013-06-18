@@ -131,12 +131,12 @@ namespace KeyFinder {
     std::deque<float>::const_iterator readAt = samples.begin();
     std::deque<float>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {
-      float mean = 0.0;
+      float sum = 0.0;
       for (unsigned int c = 0; c < channels; c++) {
-        mean += *readAt / channels;
+        sum += *readAt;
         std::advance(readAt, 1);
       }
-      *writeAt = mean;
+      *writeAt = sum / channels;
       std::advance(writeAt, 1);
     }
     samples.resize(getSampleCount() / channels);
