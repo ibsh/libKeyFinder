@@ -39,7 +39,7 @@ namespace KeyFinder {
       const Parameters& params,
       ChromaTransformFactory* ctFactory
     );
-    Chromagram chromagram(
+    Chromagram* chromagramOfWholeFrames(
       AudioData& audio,
       FftAdapter* const fft
     ) const;

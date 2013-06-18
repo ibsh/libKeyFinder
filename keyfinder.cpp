@@ -23,49 +23,48 @@
 
 namespace KeyFinder {
 
-  // this method to be used for whole audio streams
   KeyDetectionResult KeyFinder::keyOfAudio(
     const AudioData& originalAudio,
     const Parameters& params
   ) {
     Workspace workspace;
-    Chromagram ch = chromagramOfAudio(originalAudio, workspace, params);
-    return keyOfChromagram(ch, params);
+
+    progressiveChromagram(originalAudio, workspace, params);
+    finalChromagram(workspace, params);
+
+    return keyOfChromagram(workspace, params);
   }
 
-  Chromagram KeyFinder::chromagramOfAudio(
-    AudioData workingAudio,
+  void KeyFinder::progressiveChromagram(
+    AudioData audio,
     Workspace& workspace,
     const Parameters& params
   ) {
-    preprocess(workingAudio, workspace, params);
+    preprocess(audio, workspace, params);
+    workspace.buffer.append(audio);
+    chromagramOfBufferedAudio(workspace, params);
+  }
 
-    // run spectral analysis
-    SpectrumAnalyser sa(workingAudio.getFrameRate(), params, &ctFactory);
-
-    workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
-    Chromagram ch = sa.chromagram(workingAudio, workspace.fftAdapter);
-
-    // deal with tuning if necessary
-    if (ch.getBandsPerSemitone() > 1) {
-      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
-        ch.tuningBandAdaptive(params.getDetunedBandWeight());
-      } else if (params.getTuningMethod() == TUNING_HARTE) {
-        ch.tuningHarte();
-      }
-    }
-    return ch;
+  void KeyFinder::finalChromagram(
+    Workspace& workspace,
+    const Parameters& params
+  ) {
+    // zero padding
+    unsigned int paddedHopCount = ceil(workspace.buffer.getSampleCount() / (float)params.getHopSize());
+    unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
+    workspace.buffer.addToSampleCount(finalSampleLength - workspace.buffer.getSampleCount());
+    chromagramOfBufferedAudio(workspace, params);
   }
 
   KeyDetectionResult KeyFinder::keyOfChromagram(
-    const Chromagram& chromagram,
+    Workspace& workspace,
     const Parameters& params
   ) const {
 
     KeyDetectionResult result;
 
     // working copy of chromagram
-    Chromagram ch = Chromagram(chromagram);
+    Chromagram ch(*workspace.chromagram);
     ch.reduceToOneOctave();
 
     // get harmonic change signal and segment
@@ -88,14 +87,16 @@ namespace KeyFinder {
       segment.firstHop = segmentBoundaries[s];
       segment.lastHop  = segmentBoundaries[s+1] - 1;
       // collapse segment's time dimension
+      std::vector<float> segmentChroma(ch.getBands(), 0.0);
       for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {
         for (unsigned int band = 0; band < ch.getBands(); band++) {
           float value = ch.getMagnitude(hop, band);
-          segment.chromaVector[band] += value;
+          segmentChroma[band] += value;
           segment.energy += value;
         }
       }
-      segment.key = classifier.classify(segment.chromaVector);
+      segment.chromaVector = segmentChroma;
+      segment.key = classifier.classify(segmentChroma);
       if (segment.key != SILENCE)
         keyWeights[segment.key] += segment.energy;
       result.segments.push_back(segment);
@@ -104,7 +105,7 @@ namespace KeyFinder {
     // get global key
     result.globalKeyEstimate = SILENCE;
     float mostCommonKeyWeight = 0.0;
-    for (unsigned int k = 0; k < keyWeights.size(); k++) {
+    for (int k = 0; k < (signed)keyWeights.size(); k++) {
       if (keyWeights[k] > mostCommonKeyWeight) {
         mostCommonKeyWeight = keyWeights[k];
         result.globalKeyEstimate = (key_t)k;
@@ -133,6 +134,31 @@ namespace KeyFinder {
     // note we don't delete the LPF; it's stored in the factory for reuse
 
     workingAudio.downsample(downsampleFactor);
+  }
+
+  void KeyFinder::chromagramOfBufferedAudio(
+    Workspace& workspace,
+    const Parameters& params
+  ) {
+    if (workspace.fftAdapter == NULL)
+      workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
+    SpectrumAnalyser sa(workspace.buffer.getFrameRate(), params, &ctFactory);
+    Chromagram* c = sa.chromagramOfWholeFrames(workspace.buffer, workspace.fftAdapter);
+    // deal with tuning if necessary
+    if (c->getBandsPerSemitone() > 1) {
+      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
+        c->tuningBandAdaptive(params.getDetunedBandWeight());
+      } else if (params.getTuningMethod() == TUNING_HARTE) {
+        c->tuningHarte();
+      }
+    }
+    workspace.buffer.discardFramesFromFront(params.getHopSize() * c->getHops());
+    if (workspace.chromagram == NULL) {
+      workspace.chromagram = c;
+    } else {
+      workspace.chromagram->append(*c);
+      delete c;
+    }
   }
 
 }

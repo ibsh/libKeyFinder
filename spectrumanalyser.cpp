@@ -38,15 +38,17 @@ namespace KeyFinder {
     }
   }
 
-  Chromagram SpectrumAnalyser::chromagram(
+  Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(
     AudioData& audio,
     FftAdapter* const fft
   ) const {
     if (audio.getChannels() != 1)
       throw Exception("Audio must be monophonic to be analysed");
-    unsigned int sampleCount = audio.getSampleCount();
-    unsigned int hops = ceil((float)sampleCount / (float)hopSize);
-    Chromagram ch(hops, octaves, bandsPerSemitone);
+    unsigned int frmSize = fft->getFrameSize();
+    if (audio.getSampleCount() < frmSize)
+      return new Chromagram(0, octaves, bandsPerSemitone);
+    unsigned int hops = 1 + ((audio.getSampleCount() - frmSize) / hopSize);
+    Chromagram* ch = new Chromagram(hops, octaves, bandsPerSemitone);
     for (unsigned int hop = 0; hop < hops; hop++) {
       audio.resetIterators();
       audio.advanceReadIterator(hop * hopSize);

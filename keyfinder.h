@@ -35,24 +35,32 @@ namespace KeyFinder {
 
   class KeyFinder {
   public:
-    KeyDetectionResult keyOfAudio(
-      const AudioData& audio,
-      const Parameters& params = Parameters()
-    );
-    Chromagram chromagramOfAudio(
+    void progressiveChromagram(
       AudioData audio,
       Workspace& workspace,
       const Parameters& params = Parameters()
     );
+    void finalChromagram(
+      Workspace& workspace,
+      const Parameters& params = Parameters()
+    );
     KeyDetectionResult keyOfChromagram(
-      const Chromagram& chromagram,
+      Workspace& workspace,
       const Parameters& params = Parameters()
     ) const;
+    KeyDetectionResult keyOfAudio(
+      const AudioData& audio,
+      const Parameters& params = Parameters()
+    );
   private:
     void preprocess(
       AudioData& workingAudio,
       Workspace& workspace,
       const Parameters& params
+    );
+    void chromagramOfBufferedAudio(
+      Workspace& workspace,
+      const Parameters& params = Parameters()
     );
     LowPassFilterFactory   lpfFactory;
     ChromaTransformFactory ctFactory;
