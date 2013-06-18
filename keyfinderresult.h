@@ -28,7 +28,13 @@ namespace KeyFinder {
 
   class KeyDetectionResultSegment {
   public:
-    KeyDetectionResultSegment(): firstHop(0), lastHop(0), chromaVector(0), energy(0.0), key(SILENCE) {}
+    KeyDetectionResultSegment():
+      firstHop(0),
+      lastHop(0),
+      chromaVector(SEMITONES, 0.0),
+      energy(0.0),
+      key(SILENCE)
+    { }
     unsigned int firstHop;
     unsigned int lastHop;
     std::vector<float> chromaVector;
@@ -38,7 +44,7 @@ namespace KeyFinder {
 
   class KeyDetectionResult {
   public:
-    KeyDetectionResult(): segments(0), globalKeyEstimate(SILENCE) {}
+    KeyDetectionResult(): segments(0), globalKeyEstimate(SILENCE) { }
     std::vector<KeyDetectionResultSegment> segments;
     key_t globalKeyEstimate;
   };

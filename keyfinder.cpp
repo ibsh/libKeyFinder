@@ -67,16 +67,14 @@ namespace KeyFinder {
       segment.firstHop = segmentBoundaries[s];
       segment.lastHop  = segmentBoundaries[s+1] - 1;
       // collapse segment's time dimension
-      std::vector<float> segmentChroma(ch.getBands(), 0.0);
       for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {
         for (unsigned int band = 0; band < ch.getBands(); band++) {
           float value = ch.getMagnitude(hop, band);
-          segmentChroma[band] += value;
+          segment.chromaVector[band] += value;
           segment.energy += value;
         }
       }
-      segment.chromaVector = segmentChroma;
-      segment.key = classifier.classify(segmentChroma);
+      segment.key = classifier.classify(segment.chromaVector);
       if (segment.key != SILENCE)
         keyWeights[segment.key] += segment.energy;
       result.segments.push_back(segment);
@@ -85,7 +83,7 @@ namespace KeyFinder {
     // get global key
     result.globalKeyEstimate = SILENCE;
     float mostCommonKeyWeight = 0.0;
-    for (int k = 0; k < (signed)keyWeights.size(); k++) {
+    for (unsigned int k = 0; k < keyWeights.size(); k++) {
       if (keyWeights[k] > mostCommonKeyWeight) {
         mostCommonKeyWeight = keyWeights[k];
         result.globalKeyEstimate = (key_t)k;
