@@ -77,11 +77,12 @@ namespace KeyFinder {
       workspace.constructLpfBuffer(impulseLength);
     } else {
       // clear delay buffer
-      Binode<float>* clear = workspace.getLpfBuffer();
-      for (unsigned int k = 0; k < impulseLength; k++) {
+      Binode<float>* start = workspace.getLpfBuffer();
+      Binode<float>* clear = start;
+      do {
         clear->data = 0.0;
         clear = clear->r;
-      }
+      } while (clear != start);
     }
 
     Binode<float>* p = workspace.getLpfBuffer();
@@ -90,6 +91,7 @@ namespace KeyFinder {
     unsigned int sampleCount = audio.getSampleCount();
     audio.resetIterators();
 
+    float sum;
     // for each frame (running off the end of the sample stream by delay)
     for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
       // shuffle old samples along delay buffer
@@ -108,12 +110,14 @@ namespace KeyFinder {
       // and, if shortcut != 1, only do the maths for the useful samples (this
       // is mathematically dodgy, but it's faster and it usually works);
       if (outSample % shortcutFactor > 0) continue;
-      float sum = 0.0;
+      sum = 0.0;
       q = p;
-      for (unsigned int k = 0; k < impulseLength; k++) {
-        sum += coefficients[k] * q->data;
+      std::vector<float>::const_iterator coefficientIterator = coefficients.begin();
+      do {
+        sum += *coefficientIterator * q->data;
+        std::advance(coefficientIterator, 1);
         q = q->r;
-      }
+      } while (q != p);
       audio.setSampleAtWriteIterator(sum);
       audio.advanceWriteIterator(shortcutFactor);
     }
