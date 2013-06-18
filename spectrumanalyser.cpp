@@ -31,8 +31,10 @@ namespace KeyFinder {
     unsigned int fftFrameSize = params.getFftFrameSize();
     WindowFunction win;
     temporalWindow = std::vector<float>(fftFrameSize);
+    std::vector<float>::iterator twIt = temporalWindow.begin();
     for (unsigned int i = 0; i < fftFrameSize; i++) {
-      temporalWindow[i] = win.window(params.getTemporalWindow(), i, fftFrameSize);
+      *twIt = win.window(params.getTemporalWindow(), i, fftFrameSize);
+      std::advance(twIt, 1);
     }
   }
 
@@ -45,21 +47,21 @@ namespace KeyFinder {
     unsigned int sampleCount = audio.getSampleCount();
     unsigned int hops = ceil((float)sampleCount / (float)hopSize);
     Chromagram ch(hops, octaves, bandsPerSemitone);
-    for (unsigned int hop = 0; hop < hops; hop ++) {
+    for (unsigned int hop = 0; hop < hops; hop++) {
       audio.resetIterators();
       audio.advanceReadIterator(hop * hopSize);
-      for (unsigned int sample = 0; sample < fft->getFrameSize(); sample++) {
-        if (audio.readIteratorWithinUpperBound()) {
-          fft->setInput(sample, audio.getSampleAtReadIterator() * temporalWindow[sample]);
-          audio.advanceReadIterator();
-        } else {
-          fft->setInput(sample, 0.0);
-        }
+      std::vector<float>::const_iterator twIt = temporalWindow.begin();
+      for (unsigned int sample = 0; sample < frmSize; sample++) {
+        fft->setInput(sample, audio.getSampleAtReadIterator() * *twIt);
+        audio.advanceReadIterator();
+        std::advance(twIt, 1);
       }
       fft->execute();
       std::vector<float> cv = ct->chromaVector(fft);
-      for (unsigned int band = 0; band < ch.getBands(); band++) {
-        ch.setMagnitude(hop, band, cv[band]);
+      std::vector<float>::const_iterator cvIt = cv.begin();
+      for (unsigned int band = 0; band < ch->getBands(); band++) {
+        ch->setMagnitude(hop, band, *cvIt);
+        std::advance(cvIt, 1);
       }
     }
     return ch;
