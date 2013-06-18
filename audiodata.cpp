@@ -157,9 +157,10 @@ namespace KeyFinder {
       } else {
         for (unsigned int s = 0; s < factor; s++) {
           if (readAt < samples.end()) {
-            mean += *readAt / (float)factor;
+            mean += *readAt;
             std::advance(readAt, 1);
           }
+          mean /= (float)factor;
         }
       }
       *writeAt = mean;

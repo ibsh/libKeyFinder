@@ -136,7 +136,8 @@ namespace KeyFinder {
     // get mean in preparation for correlation
     profileMean = 0.0;
     for (unsigned int i=0; i < SEMITONES; i++)
-      profileMean += (p[i] / SEMITONES);
+      profileMean += (p[i]);
+    profileMean /= SEMITONES;
   }
 
   ToneProfile::~ToneProfile() {
@@ -197,7 +198,8 @@ namespace KeyFinder {
   float ToneProfile::correlation(const std::vector<float>& input, int offset) const {
     float inputMean = 0.0;
     for (unsigned int i=0; i<input.size(); i++)
-      inputMean += input[i] / input.size();
+      inputMean += input[i];
+    inputMean /= input.size();
     Binode<float>* p = tonic;
     for (int i=0; i<offset; i++)
       p = p->l;

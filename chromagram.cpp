@@ -74,7 +74,8 @@ namespace KeyFinder {
       // find mean magnitude for this hop
       float meanVal = 0.0;
       for (unsigned int band = 0; band < getBands(); band++)
-        meanVal += chromaData[hop][band] / getBands();
+        meanVal += chromaData[hop][band];
+      meanVal /= getBands();
       // find peak bands
       std::vector<unsigned int> peakBands;
       for (unsigned int band = 0; band < getBands(); band++) {
