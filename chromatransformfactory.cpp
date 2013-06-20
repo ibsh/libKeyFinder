@@ -43,12 +43,10 @@ namespace KeyFinder {
     return frameRate;
   }
 
-  ChromaTransformFactory::ChromaTransformFactory() {
-    chromaTransforms = std::vector<ChromaTransformWrapper*>(0);
-  }
+  ChromaTransformFactory::ChromaTransformFactory() : chromaTransforms(0) { }
 
   ChromaTransformFactory::~ChromaTransformFactory() {
-    for (unsigned int i=0; i<chromaTransforms.size(); i++)
+    for (unsigned int i = 0; i < chromaTransforms.size(); i++)
       delete chromaTransforms[i];
   }
 
@@ -56,7 +54,7 @@ namespace KeyFinder {
     unsigned int f, const Parameters& p
   ) {
     boost::mutex::scoped_lock lock(chromaTransformFactoryMutex);
-    for (unsigned int i=0; i<chromaTransforms.size(); i++) {
+    for (unsigned int i = 0; i < chromaTransforms.size(); i++) {
       ChromaTransformWrapper* wrapper = chromaTransforms[i];
       if (
         wrapper->getFrameRate() == f &&

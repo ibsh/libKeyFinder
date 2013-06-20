@@ -29,7 +29,6 @@
 
 namespace KeyFinder {
 
-  // Holds all analysers generated in a session, to cut down on prep time.
   class ChromaTransformFactory {
   public:
     ChromaTransformFactory();
@@ -44,7 +43,6 @@ namespace KeyFinder {
     boost::mutex chromaTransformFactoryMutex;
   };
 
-  // Keeps a reference to a spectrum analyser with distinguishing information
   class ChromaTransformFactory::ChromaTransformWrapper {
   public:
     ChromaTransformWrapper(

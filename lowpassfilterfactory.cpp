@@ -61,12 +61,10 @@ namespace KeyFinder {
     return fftFrameSize;
   }
 
-  LowPassFilterFactory::LowPassFilterFactory() {
-    filters = std::vector<LowPassFilterWrapper*>(0);
-  }
+  LowPassFilterFactory::LowPassFilterFactory() : filters(0) { }
 
   LowPassFilterFactory::~LowPassFilterFactory() {
-    for (unsigned int i=0; i<filters.size(); i++)
+    for (unsigned int i = 0; i < filters.size(); i++)
       delete filters[i];
   }
 
@@ -74,7 +72,7 @@ namespace KeyFinder {
     unsigned int cc, unsigned int fr, float cf, unsigned int fs
   ) {
     boost::mutex::scoped_lock lock(LowPassFilterFactoryMutex);
-    for (unsigned int i=0; i<filters.size(); i++) {
+    for (unsigned int i = 0; i < filters.size(); i++) {
       LowPassFilterWrapper* wrapper = filters[i];
       if (
         wrapper->getOrder() == cc &&
