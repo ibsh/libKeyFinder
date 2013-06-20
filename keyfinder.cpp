@@ -142,7 +142,7 @@ namespace KeyFinder {
   ) {
     if (workspace.fftAdapter == NULL)
       workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
-    SpectrumAnalyser sa(workspace.buffer.getFrameRate(), params, &ctFactory);
+    SpectrumAnalyser sa(workspace.buffer.getFrameRate(), params, &ctFactory, &twFactory);
     Chromagram* c = sa.chromagramOfWholeFrames(workspace.buffer, workspace.fftAdapter);
     // deal with tuning if necessary
     if (c->getBandsPerSemitone() > 1) {

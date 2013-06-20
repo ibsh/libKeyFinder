@@ -44,6 +44,7 @@ HEADERS += \
     parameterstest.h \
     segmentationtest.h \
     spectrumanalysertest.h \
+    temporalwindowfactorytest.h \
     toneprofilestest.h \
     windowfunctiontest.h \
     workspacetest.h
@@ -66,6 +67,7 @@ SOURCES += \
     parameterstest.cpp \
     segmentationtest.cpp \
     spectrumanalysertest.cpp \
+    temporalwindowfactorytest.cpp \
     toneprofilestest.cpp \
     windowfunctiontest.cpp \
     workspacetest.cpp

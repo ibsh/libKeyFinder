@@ -23,19 +23,19 @@
 
 namespace KeyFinder {
 
-  SpectrumAnalyser::SpectrumAnalyser(unsigned int f, const Parameters& params, ChromaTransformFactory* spFactory) {
+  SpectrumAnalyser::SpectrumAnalyser(
+    unsigned int f,
+    const Parameters& params,
+    ChromaTransformFactory* spFactory,
+    TemporalWindowFactory* twFactory
+  ) {
     octaves = params.getOctaves();
     bandsPerSemitone = params.getBandsPerSemitone();
     hopSize = params.getHopSize();
     ct = spFactory->getChromaTransform(f, params);
-    unsigned int fftFrameSize = params.getFftFrameSize();
-    WindowFunction win;
-    temporalWindow = std::vector<float>(fftFrameSize);
-    std::vector<float>::iterator twIt = temporalWindow.begin();
-    for (unsigned int i = 0; i < fftFrameSize; i++) {
-      *twIt = win.window(params.getTemporalWindow(), i, fftFrameSize);
-      std::advance(twIt, 1);
-    }
+    tw = twFactory->getTemporalWindow(
+      params.getFftFrameSize(), params.getTemporalWindow()
+    );
   }
 
   Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(
@@ -52,7 +52,7 @@ namespace KeyFinder {
     for (unsigned int hop = 0; hop < hops; hop++) {
       audio.resetIterators();
       audio.advanceReadIterator(hop * hopSize);
-      std::vector<float>::const_iterator twIt = temporalWindow.begin();
+      std::vector<float>::const_iterator twIt = tw->begin();
       for (unsigned int sample = 0; sample < frmSize; sample++) {
         fft->setInput(sample, audio.getSampleAtReadIterator() * *twIt);
         audio.advanceReadIterator();

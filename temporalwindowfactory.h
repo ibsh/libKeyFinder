@@ -19,39 +19,45 @@
 
 *************************************************************************/
 
-#ifndef SPECTRUMANALYSER_H
-#define SPECTRUMANALYSER_H
+#ifndef TEMPORALWINDOWFACTORY_H
+#define TEMPORALWINDOWFACTORY_H
 
 #include <boost/thread/mutex.hpp>
-#include "chromagram.h"
-#include "audiodata.h"
-#include "fftadapter.h"
-#include "chromatransformfactory.h"
-#include "parameters.h"
-#include "temporalwindowfactory.h"
+#include <vector>
 #include "windowfunctions.h"
 
 namespace KeyFinder {
 
-  class SpectrumAnalyser {
+  class TemporalWindowFactory {
   public:
-    SpectrumAnalyser(
-      unsigned int frameRate,
-      const Parameters& params,
-      ChromaTransformFactory* ctFactory,
-      TemporalWindowFactory* twFactory
+    TemporalWindowFactory();
+    ~TemporalWindowFactory();
+    const std::vector<float>* getTemporalWindow(
+      unsigned int frameSize,
+      temporal_window_t function
     );
-    Chromagram* chromagramOfWholeFrames(
-      AudioData& audio,
-      FftAdapter* const fft
-    ) const;
-  protected:
-    unsigned int octaves;
-    unsigned int bandsPerSemitone;
-    unsigned int hopSize;
-    const ChromaTransform* ct;
-    const std::vector<float>* tw;
+  private:
+    class TemporalWindowWrapper;
+    std::vector<TemporalWindowWrapper*> temporalWindows;
+    boost::mutex temporalWindowFactoryMutex;
   };
+
+  class TemporalWindowFactory::TemporalWindowWrapper {
+  public:
+    TemporalWindowWrapper(
+      unsigned int frameSize,
+      temporal_window_t function
+    );
+    unsigned int getFrameSize() const;
+    temporal_window_t getFunction() const;
+    const std::vector<float>* getTemporalWindow() const;
+  private:
+    std::vector<float> temporalWindow;
+    temporal_window_t function;
+  };
+
+
+
 
 }
 

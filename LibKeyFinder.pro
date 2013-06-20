@@ -46,6 +46,7 @@ HEADERS += \
     parameters.h \
     segmentation.h \
     spectrumanalyser.h \
+    temporalwindowfactory.h \
     toneprofiles.h \
     windowfunctions.h \
     workspace.h
@@ -63,6 +64,7 @@ SOURCES += \
     parameters.cpp \
     segmentation.cpp \
     spectrumanalyser.cpp \
+    temporalwindowfactory.cpp \
     toneprofiles.cpp \
     windowfunctions.cpp \
     workspace.cpp

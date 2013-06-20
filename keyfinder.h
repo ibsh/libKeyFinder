@@ -64,6 +64,7 @@ namespace KeyFinder {
     );
     LowPassFilterFactory   lpfFactory;
     ChromaTransformFactory ctFactory;
+    TemporalWindowFactory  twFactory;
   };
 
 }
