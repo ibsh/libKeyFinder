@@ -24,9 +24,13 @@
 TEST (WorkspaceTest, ConstructorDefaultsWork) {
   KeyFinder::Workspace w;
 
-  ASSERT_EQ(0, w.buffer.getChannels());
-  ASSERT_EQ(0, w.buffer.getFrameRate());
-  ASSERT_EQ(0, w.buffer.getSampleCount());
+  ASSERT_EQ(0, w.preprocessedBuffer.getChannels());
+  ASSERT_EQ(0, w.preprocessedBuffer.getFrameRate());
+  ASSERT_EQ(0, w.preprocessedBuffer.getSampleCount());
+
+  ASSERT_EQ(0, w.remainderBuffer.getChannels());
+  ASSERT_EQ(0, w.remainderBuffer.getFrameRate());
+  ASSERT_EQ(0, w.remainderBuffer.getSampleCount());
 
   ASSERT_EQ(NULL, w.chromagram);
   ASSERT_EQ(NULL, w.fftAdapter);

@@ -58,6 +58,7 @@ namespace KeyFinder {
     void discardFramesFromFront(unsigned int discardFrameCount);
     void reduceToMono();
     void downsample(unsigned int factor, bool shortcut = true);
+    AudioData* sliceSamplesFromBack(unsigned int sliceSampleCount);
 
   private:
     std::deque<float> samples;

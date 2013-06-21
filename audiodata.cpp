@@ -182,6 +182,28 @@ namespace KeyFinder {
     samples.erase(samples.begin(), discardToHere);
   }
 
+  AudioData* AudioData::sliceSamplesFromBack(unsigned int sliceSampleCount) {
+    if (sliceSampleCount > getSampleCount()) {
+      std::ostringstream ss;
+      ss << "Cannot slice " << sliceSampleCount << " samples of " << getSampleCount();
+      throw Exception(ss.str().c_str());
+    }
+    AudioData* that = new AudioData();
+    that->channels = channels;
+    that->setFrameRate(getFrameRate());
+    that->addToSampleCount(sliceSampleCount);
+    std::deque<float>::const_iterator readAt = samples.begin();
+    std::advance(readAt, getSampleCount() - sliceSampleCount);
+    std::deque<float>::iterator writeAt = that->samples.begin();
+    while (readAt < samples.end()) {
+      *writeAt = *readAt;
+      std::advance(readAt, 1);
+      std::advance(writeAt, 1);
+    }
+    samples.resize(getSampleCount() - sliceSampleCount);
+    return that;
+  }
+
   void AudioData::resetIterators() {
     readIterator = samples.begin();
     writeIterator = samples.begin();

@@ -168,6 +168,38 @@ TEST (AudioDataTest, DiscardFromFront) {
   ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(0, 0));
 }
 
+TEST (AudioDataTest, SliceFromBack) {
+  KeyFinder::AudioData a;
+  a.setChannels(1);
+  a.setFrameRate(1);
+
+  KeyFinder::AudioData* b = NULL;
+  KeyFinder::AudioData* nullPtr = NULL;
+
+  ASSERT_THROW(b = a.sliceSamplesFromBack(1), KeyFinder::Exception);
+  ASSERT_EQ(nullPtr, b);
+
+  a.addToFrameCount(10);
+  ASSERT_THROW(b = a.sliceSamplesFromBack(11), KeyFinder::Exception);
+  ASSERT_EQ(nullPtr, b);
+
+  a.resetIterators();
+  float v = 0;
+  while (a.writeIteratorWithinUpperBound()) {
+    a.setSampleAtWriteIterator(v);
+    a.advanceWriteIterator();
+    v += 1.0;
+  }
+
+  ASSERT_NO_THROW(b = a.sliceSamplesFromBack(5));
+  ASSERT_NE(nullPtr, b);
+  ASSERT_EQ(5, a.getSampleCount());
+  ASSERT_EQ(5, b->getSampleCount());
+  ASSERT_FLOAT_EQ(5.0, b->getSample(0));
+  ASSERT_FLOAT_EQ(9.0, b->getSample(4));
+  delete b;
+}
+
 TEST (AudioDataTest, MakeMono) {
   KeyFinder::AudioData a;
   a.setChannels(2);

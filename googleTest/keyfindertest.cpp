@@ -71,19 +71,19 @@ TEST (KeyFinderTest, ProgressiveUseCase) {
     ASSERT_EQ(testFftPointer, w.fftAdapter);
   }
 
-  ASSERT_EQ(4410, w.buffer.getFrameRate());
-  ASSERT_EQ(1, w.buffer.getChannels());
+  ASSERT_EQ(4410, w.preprocessedBuffer.getFrameRate());
+  ASSERT_EQ(1, w.preprocessedBuffer.getChannels());
 
-  // progressive result without emptying buffer
+  // progressive result without emptying preprocessedBuffer
   ASSERT_EQ(7, w.chromagram->getHops());
-  ASSERT_EQ(15428, w.buffer.getSampleCount());
+  ASSERT_EQ(15428, w.preprocessedBuffer.getSampleCount());
 
-  // after emptying buffer
+  // after emptying preprocessedBuffer
   k.finalChromagram(w);
   ASSERT_EQ(11, w.chromagram->getHops());
-  ASSERT_EQ(12288, w.buffer.getSampleCount());
-  for (unsigned int i = 0; i < w.buffer.getSampleCount(); i++)
-    ASSERT_FLOAT_EQ(0.0, w.buffer.getSample(i));
+  ASSERT_EQ(12288, w.preprocessedBuffer.getSampleCount());
+  for (unsigned int i = 0; i < w.preprocessedBuffer.getSampleCount(); i++)
+    ASSERT_FLOAT_EQ(0.0, w.preprocessedBuffer.getSample(i));
 
   ASSERT_EQ(KeyFinder::A_MINOR, k.keyOfChromagram(w).globalKeyEstimate);
 }

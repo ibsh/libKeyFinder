@@ -41,7 +41,7 @@ namespace KeyFinder {
     const Parameters& params
   ) {
     preprocess(audio, workspace, params);
-    workspace.buffer.append(audio);
+    workspace.preprocessedBuffer.append(audio);
     chromagramOfBufferedAudio(workspace, params);
   }
 
@@ -50,9 +50,9 @@ namespace KeyFinder {
     const Parameters& params
   ) {
     // zero padding
-    unsigned int paddedHopCount = ceil(workspace.buffer.getSampleCount() / (float)params.getHopSize());
+    unsigned int paddedHopCount = ceil(workspace.preprocessedBuffer.getSampleCount() / (float)params.getHopSize());
     unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
-    workspace.buffer.addToSampleCount(finalSampleLength - workspace.buffer.getSampleCount());
+    workspace.preprocessedBuffer.addToSampleCount(finalSampleLength - workspace.preprocessedBuffer.getSampleCount());
     chromagramOfBufferedAudio(workspace, params);
   }
 
@@ -122,11 +122,22 @@ namespace KeyFinder {
   ) {
     workingAudio.reduceToMono();
 
+    if (workspace.remainderBuffer.getChannels() > 0) {
+      workingAudio.append(workspace.remainderBuffer);
+      workspace.remainderBuffer.discardFramesFromFront(workspace.remainderBuffer.getFrameCount());
+    }
+
     // TODO: there is presumably some good maths to determine filter frequencies.
     // For now, this approximates original experiment values for default params.
     float lpfCutoff = params.getLastFrequency() * 1.012;
     float dsCutoff = params.getLastFrequency() * 1.10;
     unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
+
+    if (workingAudio.getSampleCount() % downsampleFactor != 0) {
+      AudioData* remainder = workingAudio.sliceSamplesFromBack(workingAudio.getSampleCount() % downsampleFactor);
+      workspace.remainderBuffer.append(*remainder);
+      delete remainder;
+    }
 
     // get filter
     const LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
@@ -142,8 +153,8 @@ namespace KeyFinder {
   ) {
     if (workspace.fftAdapter == NULL)
       workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
-    SpectrumAnalyser sa(workspace.buffer.getFrameRate(), params, &ctFactory, &twFactory);
-    Chromagram* c = sa.chromagramOfWholeFrames(workspace.buffer, workspace.fftAdapter);
+    SpectrumAnalyser sa(workspace.preprocessedBuffer.getFrameRate(), params, &ctFactory, &twFactory);
+    Chromagram* c = sa.chromagramOfWholeFrames(workspace.preprocessedBuffer, workspace.fftAdapter);
     // deal with tuning if necessary
     if (c->getBandsPerSemitone() > 1) {
       if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
@@ -152,7 +163,7 @@ namespace KeyFinder {
         c->tuningHarte();
       }
     }
-    workspace.buffer.discardFramesFromFront(params.getHopSize() * c->getHops());
+    workspace.preprocessedBuffer.discardFramesFromFront(params.getHopSize() * c->getHops());
     if (workspace.chromagram == NULL) {
       workspace.chromagram = c;
     } else {

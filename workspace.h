@@ -33,7 +33,8 @@ namespace KeyFinder {
   public:
     Workspace();
     ~Workspace();
-    AudioData buffer;
+    AudioData remainderBuffer;
+    AudioData preprocessedBuffer;
     Chromagram* chromagram;
     FftAdapter* fftAdapter;
     std::vector<float>* lpfBuffer;
