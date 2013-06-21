@@ -123,7 +123,7 @@ namespace KeyFinder {
     workingAudio.reduceToMono();
 
     if (workspace.remainderBuffer.getChannels() > 0) {
-      workingAudio.append(workspace.remainderBuffer);
+      workingAudio.prepend(workspace.remainderBuffer);
       workspace.remainderBuffer.discardFramesFromFront(workspace.remainderBuffer.getFrameCount());
     }
 

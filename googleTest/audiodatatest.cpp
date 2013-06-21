@@ -121,6 +121,24 @@ TEST (AudioDataTest, AppendToNew) {
   ASSERT_EQ(1, a.getFrameCount());
 }
 
+TEST (AudioDataTest, PrependToNew) {
+  KeyFinder::AudioData a;
+  KeyFinder::AudioData b;
+
+  ASSERT_NO_THROW(a.prepend(b));
+  ASSERT_EQ(0, a.getChannels());
+  ASSERT_EQ(0, a.getFrameRate());
+
+  b.setChannels(1);
+  b.setFrameRate(1);
+  b.addToFrameCount(1);
+
+  ASSERT_NO_THROW(a.prepend(b));
+  ASSERT_EQ(1, a.getChannels());
+  ASSERT_EQ(1, a.getFrameRate());
+  ASSERT_EQ(1, a.getFrameCount());
+}
+
 TEST (AudioDataTest, AppendToInitialised) {
   KeyFinder::AudioData a;
   KeyFinder::AudioData b;
@@ -150,6 +168,37 @@ TEST (AudioDataTest, AppendToInitialised) {
   ASSERT_EQ(2, a.getFrameCount());
   ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(0, 0));
   ASSERT_FLOAT_EQ(20.0, a.getSampleByFrame(1, 0));
+}
+
+TEST (AudioDataTest, PrependToInitialised) {
+  KeyFinder::AudioData a;
+  KeyFinder::AudioData b;
+
+  a.setChannels(1);
+  a.setFrameRate(1);
+  ASSERT_THROW(a.prepend(b), KeyFinder::Exception);
+
+  b.setChannels(2);
+  b.setFrameRate(1);
+  ASSERT_THROW(a.prepend(b), KeyFinder::Exception);
+
+  b.setChannels(1);
+  b.setFrameRate(2);
+  ASSERT_THROW(a.prepend(b), KeyFinder::Exception);
+
+  b.setChannels(1);
+  b.setFrameRate(1);
+  ASSERT_NO_THROW(a.prepend(b));
+
+  a.addToFrameCount(1);
+  b.addToFrameCount(1);
+  a.setSampleByFrame(0, 0, 10.0);
+  b.setSampleByFrame(0, 0, 20.0);
+
+  a.prepend(b);
+  ASSERT_EQ(2, a.getFrameCount());
+  ASSERT_FLOAT_EQ(20.0, a.getSampleByFrame(0, 0));
+  ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(1, 0));
 }
 
 TEST (AudioDataTest, DiscardFromFront) {

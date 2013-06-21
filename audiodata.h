@@ -55,6 +55,7 @@ namespace KeyFinder {
     void resetIterators();
 
     void append(const AudioData& that);
+    void prepend(const AudioData& that);
     void discardFramesFromFront(unsigned int discardFrameCount);
     void reduceToMono();
     void downsample(unsigned int factor, bool shortcut = true);

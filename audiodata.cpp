@@ -55,6 +55,18 @@ namespace KeyFinder {
     samples.insert(samples.end(), that.samples.begin(), that.samples.end());
   }
 
+  void AudioData::prepend(const AudioData& that) {
+    if (channels == 0 && frameRate == 0) {
+      channels = that.channels;
+      frameRate = that.frameRate;
+    }
+    if (that.channels != channels)
+      throw Exception("Cannot prepend audio data with a different number of channels");
+    if (that.frameRate != frameRate)
+      throw Exception("Cannot prepend audio data with a different frame rate");
+    samples.insert(samples.begin(), that.samples.begin(), that.samples.end());
+  }
+
   // get sample by absolute index
   float AudioData::getSample(unsigned int index) const {
     if (index >= getSampleCount()) {
