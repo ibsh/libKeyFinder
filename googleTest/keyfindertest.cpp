@@ -61,18 +61,31 @@ TEST (KeyFinderTest, ProgressiveUseCase) {
     inputAudio.setSample(i, sample);
   }
 
+  /*
+   * Add an annoying bit of silence at the beginning to mess with our perfect
+   * integral relationship with the downsample factor, though it shouldn't alter
+   * the numbers above.
+   */
+  KeyFinder::AudioData offset;
+  offset.setFrameRate(sampleRate);
+  offset.setChannels(1);
+  offset.addToSampleCount(4);
+
   KeyFinder::KeyFinder k;
   KeyFinder::Workspace w;
   KeyFinder::FftAdapter* testFftPointer = NULL;
+
+  k.progressiveChromagram(offset, w);
+  ASSERT_EQ(4, w.remainderBuffer.getSampleCount());
   for (unsigned int i = 0; i < 10; i++) {
     k.progressiveChromagram(inputAudio, w);
     // ensure we're using the same FFT adapter throughout
     if (testFftPointer == NULL) testFftPointer = w.fftAdapter;
     ASSERT_EQ(testFftPointer, w.fftAdapter);
+    ASSERT_EQ(4410, w.preprocessedBuffer.getFrameRate());
+    ASSERT_EQ(1, w.preprocessedBuffer.getChannels());
+    ASSERT_EQ(4, w.remainderBuffer.getSampleCount());
   }
-
-  ASSERT_EQ(4410, w.preprocessedBuffer.getFrameRate());
-  ASSERT_EQ(1, w.preprocessedBuffer.getChannels());
 
   // progressive result without emptying preprocessedBuffer
   ASSERT_EQ(7, w.chromagram->getHops());
