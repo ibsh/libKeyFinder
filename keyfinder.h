@@ -56,7 +56,8 @@ namespace KeyFinder {
     void preprocess(
       AudioData& workingAudio,
       Workspace& workspace,
-      const Parameters& params
+      const Parameters& params,
+      bool flushRemainderBuffer = false
     );
     void chromagramOfBufferedAudio(
       Workspace& workspace,

@@ -80,6 +80,7 @@ TEST (KeyFinderTest, ProgressiveUseCase) {
 
   // after emptying preprocessedBuffer
   k.finalChromagram(w);
+  ASSERT_EQ(0, w.remainderBuffer.getSampleCount());
   ASSERT_EQ(11, w.chromagram->getHops());
   ASSERT_EQ(12288, w.preprocessedBuffer.getSampleCount());
   for (unsigned int i = 0; i < w.preprocessedBuffer.getSampleCount(); i++)

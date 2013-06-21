@@ -49,6 +49,11 @@ namespace KeyFinder {
     Workspace& workspace,
     const Parameters& params
   ) {
+    // flush remainder buffer
+    if (workspace.remainderBuffer.getSampleCount() > 0) {
+      AudioData flush;
+      preprocess(flush, workspace, params, true);
+    }
     // zero padding
     unsigned int paddedHopCount = ceil(workspace.preprocessedBuffer.getSampleCount() / (float)params.getHopSize());
     unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
@@ -118,7 +123,8 @@ namespace KeyFinder {
   void KeyFinder::preprocess(
     AudioData& workingAudio,
     Workspace& workspace,
-    const Parameters& params
+    const Parameters& params,
+    bool flushRemainderBuffer
   ) {
     workingAudio.reduceToMono();
 
@@ -133,7 +139,7 @@ namespace KeyFinder {
     float dsCutoff = params.getLastFrequency() * 1.10;
     unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
 
-    if (workingAudio.getSampleCount() % downsampleFactor != 0) {
+    if (!flushRemainderBuffer && workingAudio.getSampleCount() % downsampleFactor != 0) {
       AudioData* remainder = workingAudio.sliceSamplesFromBack(workingAudio.getSampleCount() % downsampleFactor);
       workspace.remainderBuffer.append(*remainder);
       delete remainder;

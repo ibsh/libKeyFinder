@@ -139,7 +139,7 @@ namespace KeyFinder {
   }
 
   void AudioData::reduceToMono() {
-    if (channels == 1) return;
+    if (channels < 2) return;
     std::deque<float>::const_iterator readAt = samples.begin();
     std::deque<float>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {
