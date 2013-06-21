@@ -84,7 +84,15 @@ TEST (KeyFinderTest, ProgressiveUseCase) {
     ASSERT_EQ(testFftPointer, w.fftAdapter);
     ASSERT_EQ(4410, w.preprocessedBuffer.getFrameRate());
     ASSERT_EQ(1, w.preprocessedBuffer.getChannels());
+    // check that the offset left some unprocessed audio in the remainder
     ASSERT_EQ(4, w.remainderBuffer.getSampleCount());
+    // and that the remainder is equal to the last 4 samples which were excluded
+    for (unsigned int j = 0; j < 4; j++) {
+      ASSERT_FLOAT_EQ(
+        inputAudio.getSample(inputAudio.getSampleCount() - 4 + j),
+        w.remainderBuffer.getSample(j)
+      );
+    }
   }
 
   // progressive result without emptying preprocessedBuffer
