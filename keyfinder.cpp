@@ -61,6 +61,64 @@ namespace KeyFinder {
     chromagramOfBufferedAudio(workspace, params);
   }
 
+  void KeyFinder::preprocess(
+    AudioData& workingAudio,
+    Workspace& workspace,
+    const Parameters& params,
+    bool flushRemainderBuffer
+  ) {
+    workingAudio.reduceToMono();
+
+    if (workspace.remainderBuffer.getChannels() > 0) {
+      workingAudio.prepend(workspace.remainderBuffer);
+      workspace.remainderBuffer.discardFramesFromFront(workspace.remainderBuffer.getFrameCount());
+    }
+
+    // TODO: there is presumably some good maths to determine filter frequencies.
+    // For now, this approximates original experiment values for default params.
+    float lpfCutoff = params.getLastFrequency() * 1.012;
+    float dsCutoff = params.getLastFrequency() * 1.10;
+    unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
+
+    if (!flushRemainderBuffer && workingAudio.getSampleCount() % downsampleFactor != 0) {
+      AudioData* remainder = workingAudio.sliceSamplesFromBack(workingAudio.getSampleCount() % downsampleFactor);
+      workspace.remainderBuffer.append(*remainder);
+      delete remainder;
+    }
+
+    // get filter
+    const LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
+    lpf->filter(workingAudio, workspace, downsampleFactor); // downsampleFactor shortcut
+    // note we don't delete the LPF; it's stored in the factory for reuse
+
+    workingAudio.downsample(downsampleFactor);
+  }
+
+  void KeyFinder::chromagramOfBufferedAudio(
+    Workspace& workspace,
+    const Parameters& params
+  ) {
+    if (workspace.fftAdapter == NULL)
+      workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
+    SpectrumAnalyser sa(workspace.preprocessedBuffer.getFrameRate(), params, &ctFactory, &twFactory);
+    Chromagram* c = sa.chromagramOfWholeFrames(workspace.preprocessedBuffer, workspace.fftAdapter);
+    // deal with tuning if necessary
+    if (c->getBandsPerSemitone() > 1) {
+      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
+        c->tuningBandAdaptive(params.getDetunedBandWeight());
+      } else if (params.getTuningMethod() == TUNING_HARTE) {
+        c->tuningHarte();
+      }
+    }
+    workspace.preprocessedBuffer.discardFramesFromFront(params.getHopSize() * c->getHops());
+    if (workspace.chromagram == NULL) {
+      workspace.chromagram = c;
+    } else {
+      workspace.chromagram->append(*c);
+      delete c;
+    }
+  }
+
   KeyDetectionResult KeyFinder::keyOfChromagram(
     Workspace& workspace,
     const Parameters& params
@@ -118,64 +176,6 @@ namespace KeyFinder {
     }
 
     return result;
-  }
-
-  void KeyFinder::preprocess(
-    AudioData& workingAudio,
-    Workspace& workspace,
-    const Parameters& params,
-    bool flushRemainderBuffer
-  ) {
-    workingAudio.reduceToMono();
-
-    if (workspace.remainderBuffer.getChannels() > 0) {
-      workingAudio.prepend(workspace.remainderBuffer);
-      workspace.remainderBuffer.discardFramesFromFront(workspace.remainderBuffer.getFrameCount());
-    }
-
-    // TODO: there is presumably some good maths to determine filter frequencies.
-    // For now, this approximates original experiment values for default params.
-    float lpfCutoff = params.getLastFrequency() * 1.012;
-    float dsCutoff = params.getLastFrequency() * 1.10;
-    unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
-
-    if (!flushRemainderBuffer && workingAudio.getSampleCount() % downsampleFactor != 0) {
-      AudioData* remainder = workingAudio.sliceSamplesFromBack(workingAudio.getSampleCount() % downsampleFactor);
-      workspace.remainderBuffer.append(*remainder);
-      delete remainder;
-    }
-
-    // get filter
-    const LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
-    lpf->filter(workingAudio, workspace, downsampleFactor); // downsampleFactor shortcut
-    // note we don't delete the LPF; it's stored in the factory for reuse
-
-    workingAudio.downsample(downsampleFactor);
-  }
-
-  void KeyFinder::chromagramOfBufferedAudio(
-    Workspace& workspace,
-    const Parameters& params
-  ) {
-    if (workspace.fftAdapter == NULL)
-      workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
-    SpectrumAnalyser sa(workspace.preprocessedBuffer.getFrameRate(), params, &ctFactory, &twFactory);
-    Chromagram* c = sa.chromagramOfWholeFrames(workspace.preprocessedBuffer, workspace.fftAdapter);
-    // deal with tuning if necessary
-    if (c->getBandsPerSemitone() > 1) {
-      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
-        c->tuningBandAdaptive(params.getDetunedBandWeight());
-      } else if (params.getTuningMethod() == TUNING_HARTE) {
-        c->tuningHarte();
-      }
-    }
-    workspace.preprocessedBuffer.discardFramesFromFront(params.getHopSize() * c->getHops());
-    if (workspace.chromagram == NULL) {
-      workspace.chromagram = c;
-    } else {
-      workspace.chromagram->append(*c);
-      delete c;
-    }
   }
 
 }
