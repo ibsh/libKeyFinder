@@ -191,16 +191,9 @@ TEST (LowPassFilterTest, WorksOnRepetitiveWaves) {
   }
 }
 
-// Inheritance so we can check the coefficients. Probably best to refactor instead.
-class DefaultLowPassFilterWithPublicCoefficients : public KeyFinder::LowPassFilter {
-public:
-  DefaultLowPassFilterWithPublicCoefficients() : KeyFinder::LowPassFilter(160, 44100, 2000.0, 2048) {}
-  std::vector<float> getCoefficients() const { return coefficients; }
-};
-
 TEST (LowPassFilterTest, DefaultFilterMatchesFisherCoefficients) {
-  DefaultLowPassFilterWithPublicCoefficients* lpf = new DefaultLowPassFilterWithPublicCoefficients();
-  std::vector<float> myCoeffs = lpf->getCoefficients();
+  KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(160, 44100, 2000.0, 2048);
+  std::vector<float>* myCoeffs = (std::vector<float>*)lpf->getCoefficients();
   delete lpf;
 
   float fisherCoeffsFirstHalf[] = {
@@ -228,7 +221,7 @@ TEST (LowPassFilterTest, DefaultFilterMatchesFisherCoefficients) {
   };
 
   for (unsigned int i = 0; i < 81; i++) {
-    ASSERT_FLOAT_EQ(fisherCoeffsFirstHalf[i], myCoeffs[i]);
-    ASSERT_FLOAT_EQ(myCoeffs[i], myCoeffs[160 - i]);
+    ASSERT_FLOAT_EQ(fisherCoeffsFirstHalf[i], myCoeffs->at(i));
+    ASSERT_FLOAT_EQ(myCoeffs->at(i), myCoeffs->at(160 - i));
   }
 }

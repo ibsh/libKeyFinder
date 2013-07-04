@@ -28,9 +28,45 @@
 
 #include "lowpassfilter.h"
 
+// implementation specific
+#include "fftadapter.h"
+#include "windowfunctions.h"
+
 namespace KeyFinder {
 
+  class LowPassFilterPrivate {
+  public:
+    LowPassFilterPrivate(
+      unsigned int order,
+      unsigned int frameRate,
+      float cornerFrequency,
+      unsigned int fftFrameSize
+    );
+    void filter(
+      AudioData& audio,
+      Workspace& workspace,
+      unsigned int shortcutFactor = 1
+    ) const;
+    unsigned int order;
+    unsigned int delay;         // always order / 2
+    unsigned int impulseLength; // always order + 1
+    float gain;
+    std::vector<float> coefficients;
+  };
+
   LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
+    priv = new LowPassFilterPrivate(ord, frameRate, cornerFrequency, fftFrameSize);
+  }
+
+  void LowPassFilter::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
+    priv->filter(audio, workspace, shortcutFactor);
+  }
+
+  void const * LowPassFilter::getCoefficients() const {
+    return &priv->coefficients;
+  }
+
+  LowPassFilterPrivate::LowPassFilterPrivate(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
     if (ord % 2 != 0) throw Exception("LPF order must be an even number");
     if (ord > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
     order = ord;
@@ -69,7 +105,7 @@ namespace KeyFinder {
     delete ifft;
   }
 
-  void LowPassFilter::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
+  void LowPassFilterPrivate::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
 
     if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
 

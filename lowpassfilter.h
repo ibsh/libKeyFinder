@@ -26,11 +26,11 @@
 #include <vector>
 
 #include "audiodata.h"
-#include "fftadapter.h"
-#include "windowfunctions.h"
 #include "workspace.h"
 
 namespace KeyFinder {
+
+  class LowPassFilterPrivate;
 
   class LowPassFilter {
   public:
@@ -45,12 +45,9 @@ namespace KeyFinder {
       Workspace& workspace,
       unsigned int shortcutFactor = 1
     ) const;
+    void const * getCoefficients() const; // for unit testing only
   protected:
-    unsigned int order;
-    unsigned int delay;         // always order / 2
-    unsigned int impulseLength; // always order + 1
-    float gain;
-    std::vector<float> coefficients;
+    LowPassFilterPrivate* priv;
   };
 
 }
