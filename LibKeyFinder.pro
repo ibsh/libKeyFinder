@@ -88,14 +88,10 @@ macx{
 }
 
 win32{
-#  INCLUDEPATH += C:/MSYS/local/include
-#  DEPENDPATH += C:/MSYS/local/bin
-#  LIBS += -LC:/MSYS/local/bin
-#  LIBS += -lfftw3-3
-  INCLUDEPATH += C:/MinGW/msys/1.0/local/include
-  DEPENDPATH += C:/MinGW/msys/1.0/local/bin
-  LIBS += -LC:/MinGW/msys/1.0/local/bin
-  LIBS += -LC:/MinGW/msys/1.0/local/lib
+  INCLUDEPATH += C:/minGW/local/include
+  DEPENDPATH += C:/minGW/local/bin
+  LIBS += -LC:/minGW/local/bin
+  LIBS += -LC:/minGW/local/lib
   LIBS += -lfftw3-3 -lboost_system-47-mt-1_52 -lboost_thread-47-mt-1_52
 }
 
