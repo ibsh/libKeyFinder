@@ -72,9 +72,18 @@ SOURCES += \
     windowfunctiontest.cpp \
     workspacetest.cpp
 
-DEPENDPATH  += /usr/local/lib
-INCLUDEPATH += /usr/local/include
+unix|macx{
+  DEPENDPATH += /usr/local/lib
+  INCLUDEPATH += /usr/local/include
+  LIBS += -lkeyfinder -lboost_system -lboost_thread
+}
 
-LIBS += -lkeyfinder
+win32{
+  INCLUDEPATH += C:/minGW/local/include
+  DEPENDPATH += C:/minGW/local/bin
+  LIBS += -LC:/minGW/local/bin
+  LIBS += -LC:/minGW/local/lib
+  LIBS += -lkeyfinder0 -lboost_system-47-mt-1_52 -lboost_thread-47-mt-1_52
+}
+
 LIBS += -lgtest
-LIBS += -lboost_system -lboost_thread
