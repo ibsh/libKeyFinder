@@ -43,6 +43,14 @@ namespace KeyFinder {
   tone_profile_t       Parameters::getToneProfileDefault()              const { return TONE_PROFILE_SHAATH; }
   tuning_method_t      Parameters::getTuningMethodDefault()             const { return TUNING_HARTE; }
 
+  const std::vector<float> Parameters::getCustomToneProfileDefault() const {
+    float custom[24] = {
+      1,0,1,0,1,1,0,1,0,1,0,1, // major
+      1,0,1,1,0,1,0,1,1,0,1,0  // minor
+    };
+    return std::vector<float>(&custom[0], &custom[24]);
+  }
+
   Parameters::Parameters() {
     // defaults
     offsetToC = getOffsetToCDefault();
@@ -62,12 +70,7 @@ namespace KeyFinder {
     similarityMeasure = getSimilarityMeasureDefault();
     toneProfile = getToneProfileDefault();
     tuningMethod = getTuningMethodDefault();
-    // a basic CTP
-    float custom[24] = {
-      1,0,1,0,1,1,0,1,0,1,0,1, // major
-      1,0,1,1,0,1,0,1,1,0,1,0  // minor
-    };
-    customToneProfile = std::vector<float>(&custom[0], &custom[24]);
+    customToneProfile = getCustomToneProfileDefault();
     // and other prep
     generateBandFreqs();
   }

@@ -46,6 +46,22 @@ TEST (ParametersTest, DefaultAccessors) {
   ASSERT_EQ(KeyFinder::SIMILARITY_COSINE,   p.getSimilarityMeasureDefault());
   ASSERT_EQ(KeyFinder::TONE_PROFILE_SHAATH, p.getToneProfileDefault());
   ASSERT_EQ(KeyFinder::TUNING_HARTE,        p.getTuningMethodDefault());
+  // vector
+  std::vector<float> ctp = p.getCustomToneProfileDefault();
+  ASSERT_EQ(24, ctp.size());
+  // major minor
+  ASSERT_FLOAT_EQ(1, ctp[0]);  ASSERT_FLOAT_EQ(1, ctp[12]);
+  ASSERT_FLOAT_EQ(0, ctp[1]);  ASSERT_FLOAT_EQ(0, ctp[13]);
+  ASSERT_FLOAT_EQ(1, ctp[2]);  ASSERT_FLOAT_EQ(1, ctp[14]);
+  ASSERT_FLOAT_EQ(0, ctp[3]);  ASSERT_FLOAT_EQ(1, ctp[15]);
+  ASSERT_FLOAT_EQ(1, ctp[4]);  ASSERT_FLOAT_EQ(0, ctp[16]);
+  ASSERT_FLOAT_EQ(1, ctp[5]);  ASSERT_FLOAT_EQ(1, ctp[17]);
+  ASSERT_FLOAT_EQ(0, ctp[6]);  ASSERT_FLOAT_EQ(0, ctp[18]);
+  ASSERT_FLOAT_EQ(1, ctp[7]);  ASSERT_FLOAT_EQ(1, ctp[19]);
+  ASSERT_FLOAT_EQ(0, ctp[8]);  ASSERT_FLOAT_EQ(1, ctp[20]);
+  ASSERT_FLOAT_EQ(1, ctp[9]);  ASSERT_FLOAT_EQ(0, ctp[21]);
+  ASSERT_FLOAT_EQ(0, ctp[10]); ASSERT_FLOAT_EQ(1, ctp[22]);
+  ASSERT_FLOAT_EQ(1, ctp[11]); ASSERT_FLOAT_EQ(0, ctp[23]);
 }
 
 TEST (ParametersTest, DefaultsEmployedByConstructor) {
