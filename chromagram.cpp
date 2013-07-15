@@ -94,7 +94,7 @@ namespace KeyFinder {
         float beta  = getMagnitude(hop, peakBands[peak]);
         float gamma = peakBands[peak] == getBands() - 1 ? 0 : getMagnitude(hop, peakBands[peak] + 1);
         float peakLocation = ((alpha -  gamma) / (alpha - (2 * beta) + gamma)) / 2;
-        float peakMagnitude = beta - ((1/4) * (alpha - gamma) * peakLocation);
+        float peakMagnitude = beta - (0.25 * (alpha - gamma) * peakLocation);
         peakLocationsForThisHop.push_back(peakBands[peak] + peakLocation);
         peakMagnitudesForThisHop.push_back(peakMagnitude);
       }
