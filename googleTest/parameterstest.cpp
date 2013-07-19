@@ -32,12 +32,12 @@ TEST (ParametersTest, DefaultAccessors) {
   ASSERT_EQ(6,     p.getOctavesDefault());
   ASSERT_EQ(1,     p.getBandsPerSemitoneDefault());
   ASSERT_EQ(12,    p.getBandsPerOctaveDefault());
-  ASSERT_EQ(4,     p.getSegPeakPickingNeighboursDefault());
   ASSERT_EQ(3,     p.getArbitrarySegmentsDefault());
+  ASSERT_EQ(4,     p.getSegPeakPickingNeighboursDefault());
   ASSERT_EQ(35,    p.getSegGaussianSizeDefault());
   // floats
   ASSERT_FLOAT_EQ(8.0,  p.getSegGaussianSigmaDefault());
-  ASSERT_FLOAT_EQ(27.5, p.getStartingFreqADefault());
+  ASSERT_FLOAT_EQ(27.5, p.getStartingFrequencyADefault());
   ASSERT_FLOAT_EQ(0.8,  p.getDirectSkStretchDefault());
   ASSERT_FLOAT_EQ(0.2,  p.getDetunedBandWeightDefault());
   // enums
@@ -76,14 +76,14 @@ TEST (ParametersTest, DefaultsEmployedByConstructor) {
   ASSERT_EQ(p.getOctavesDefault(),                  p.getOctaves());
   ASSERT_EQ(p.getBandsPerSemitoneDefault(),         p.getBandsPerSemitone());
   ASSERT_EQ(p.getBandsPerOctaveDefault(),           p.getBandsPerOctave());
-  ASSERT_EQ(p.getSegPeakPickingNeighboursDefault(), p.getSegPeakPickingNeighbours());
   ASSERT_EQ(p.getArbitrarySegmentsDefault(),        p.getArbitrarySegments());
+  ASSERT_EQ(p.getSegPeakPickingNeighboursDefault(), p.getSegPeakPickingNeighbours());
   ASSERT_EQ(p.getSegGaussianSizeDefault(),          p.getSegGaussianSize());
   // floats
-  ASSERT_FLOAT_EQ(p.getSegGaussianSigmaDefault(),  p.getSegGaussianSigma());
-  ASSERT_FLOAT_EQ(p.getStartingFreqADefault(),     p.getStartingFreqA());
-  ASSERT_FLOAT_EQ(p.getDirectSkStretchDefault(),   p.getDirectSkStretch());
-  ASSERT_FLOAT_EQ(p.getDetunedBandWeightDefault(), p.getDetunedBandWeight());
+  ASSERT_FLOAT_EQ(p.getSegGaussianSigmaDefault(),   p.getSegGaussianSigma());
+  ASSERT_FLOAT_EQ(p.getStartingFrequencyADefault(), p.getStartingFrequencyA());
+  ASSERT_FLOAT_EQ(p.getDirectSkStretchDefault(),    p.getDirectSkStretch());
+  ASSERT_FLOAT_EQ(p.getDetunedBandWeightDefault(),  p.getDetunedBandWeight());
   // enums
   ASSERT_EQ(p.getTemporalWindowDefault(),    p.getTemporalWindow());
   ASSERT_EQ(p.getSegmentationDefault(),      p.getSegmentation());
@@ -208,4 +208,27 @@ TEST (ParametersTest, FrequencyBandsForTuning) {
   ASSERT_NEAR(50.92, p.getBandFrequency(33), 0.01);
   ASSERT_NEAR(51.91, p.getBandFrequency(34), 0.01);
   ASSERT_NEAR(52.92, p.getBandFrequency(35), 0.01);
+}
+
+TEST (ParametersTest, EquivalentSpectralKernels) {
+  KeyFinder::Parameters a;
+  KeyFinder::Parameters b;
+  ASSERT_TRUE(a.equivalentSpectralKernels(b));
+
+  // change irrelevant to spectral kernel
+  b.setSegmentation(KeyFinder::SEGMENTATION_COSINE);
+  ASSERT_TRUE(a.equivalentSpectralKernels(b));
+
+  // change relevant to spectral kernel
+  b.setOctaves(5);
+  ASSERT_FALSE(a.equivalentSpectralKernels(b));
+}
+
+TEST (ParametersTest, EquivalentTo) {
+  KeyFinder::Parameters a;
+  KeyFinder::Parameters b;
+  ASSERT_TRUE(a.equivalentTo(b));
+
+  b.setSegmentation(KeyFinder::SEGMENTATION_COSINE);
+  ASSERT_FALSE(a.equivalentTo(b));
 }

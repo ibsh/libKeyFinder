@@ -35,6 +35,7 @@ namespace KeyFinder {
 
     Parameters();
     Parameters& operator=(const Parameters&);
+    bool equivalentTo(const Parameters&) const;
     bool equivalentSpectralKernels(const Parameters&) const;
 
     bool getOffsetToC() const;
@@ -48,7 +49,7 @@ namespace KeyFinder {
     unsigned int getSegPeakPickingNeighbours() const;
     unsigned int getSegGaussianSize() const;
     float getSegGaussianSigma() const;
-    float getStartingFreqA() const;
+    float getStartingFrequencyA() const;
     float getBandFrequency(unsigned int band) const;
     float getLastFrequency() const;
     float getDirectSkStretch() const;
@@ -71,7 +72,7 @@ namespace KeyFinder {
     unsigned int getSegPeakPickingNeighboursDefault() const;
     unsigned int getSegGaussianSizeDefault() const;
     float getSegGaussianSigmaDefault() const;
-    float getStartingFreqADefault() const;
+    float getStartingFrequencyADefault() const;
     float getDirectSkStretchDefault() const;
     float getDetunedBandWeightDefault() const;
     temporal_window_t getTemporalWindowDefault() const;
@@ -90,7 +91,7 @@ namespace KeyFinder {
     void setSegPeakPickingNeighbours(unsigned int segPeakPickingNeighbours);
     void setSegGaussianSize(unsigned int segGaussianSize);
     void setSegGaussianSigma(float segGaussianSigma);
-    void setStartingFrequencyA(float startingFrequency);
+    void setStartingFrequencyA(float startingFrequencyA);
     void setDirectSkStretch(float directSkStretch);
     void setDetunedBandWeight(float detunedBandWeight);
     void setTemporalWindow(temporal_window_t temporalWindow);
@@ -110,7 +111,7 @@ namespace KeyFinder {
     unsigned int segPeakPickingNeighbours;
     unsigned int segGaussianSize;
     float segGaussianSigma;
-    float stFreq;
+    float startingFrequencyA;
     float directSkStretch;
     float detunedBandWeight;
     temporal_window_t temporalWindow;
@@ -118,8 +119,8 @@ namespace KeyFinder {
     similarity_measure_t similarityMeasure;
     tone_profile_t toneProfile;
     tuning_method_t tuningMethod;
-    std::vector<float> bandFreqs;
     std::vector<float> customToneProfile;
+    std::vector<float> bandFreqs;
 
     void generateBandFreqs();
   };
