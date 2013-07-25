@@ -14,6 +14,8 @@
 extern "C" {
 #endif
 
+DLLEXPORT const char* kfinder_get_version();
+
 DLLEXPORT const char* kfinder_get_key(short signed int   *samples,
                                       unsigned int        nb_samples,
                                       short unsigned int  frame_rate,

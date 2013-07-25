@@ -5,6 +5,14 @@
 
 using namespace std;
 
+#define XSTR(x) #x
+#define STR(x) XSTR(x)
+
+const char* kfinder_get_version()
+{
+    return STR(VERSION);
+}
+
 const char* kfinder_get_key(short signed int   *samples,
                             unsigned int        nb_samples,
                             short unsigned int  frame_rate,
