@@ -99,9 +99,11 @@ echo ""
 
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
-cp $ORIGDIR/.pbuilderrc ~/
-check_error
 cd $WORKINGPATH/$SOURCEDIR
+if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
+then
+    pbuilder-dist $DISTRIB create
+fi
 pbuilder-dist $DISTRIB update
 echo ""
 echo ""
@@ -120,7 +122,7 @@ check_error
 echo ""
 echo ""
 
-echo "************ Upload source.changes on Launchpad at $PPAPATH *************"
+echo "************ Upload source.changes on Launchpad at ppa:$PPAPATH *************"
 dput -f ppa:$PPAPATH *source.changes
 check_error
 echo ""
