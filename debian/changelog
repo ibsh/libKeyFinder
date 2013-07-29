@@ -1,11 +1,5 @@
-libkeyfinder (0.6.2-0ubuntu1) quantal; urgency=low
+libkeyfinder (0.11.0-0ubuntu1) raring; urgency=low
 
-  * First version. 
+  * Upstream integration (0.11.0). 
 
- -- Julien Rosener <julien.rosener@digital-scratch.org>  Sat, 25 May 2013 20:19:27 +0200
-
-libkeyfinder (0.6.1-0ubuntu1) quantal; urgency=low
-
-  * First test build for Ubuntu - never released.
-
- -- Julien Rosener <julien.rosener@digital-scratch.org>  Fri, 24 May 2013 17:18:24 +0200
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 30 Jul 2013 00:01:28 +0200
