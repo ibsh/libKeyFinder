@@ -29,9 +29,9 @@ fi
 
 # Select PPA
 if [[ $1 == test ]] ; then
-    PPAPATH=julien-rosener/keyfinder-test
+    PPAPATH=julien-rosener/digitalscratch-test
 elif [[ $1 == prod ]] ; then
-    PPAPATH=julien-rosener/keyfinder
+    PPAPATH=julien-rosener/digitalscratch
 else
     usage
 fi
