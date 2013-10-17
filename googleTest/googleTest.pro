@@ -75,14 +75,14 @@ SOURCES += \
 unix|macx{
   DEPENDPATH += /usr/local/lib
   INCLUDEPATH += /usr/local/include
+  LIBS += -L/usr/local/lib -L/usr/lib
   LIBS += -lkeyfinder -lboost_system -lboost_thread
 }
 
 win32{
   INCLUDEPATH += C:/minGW/local/include
   DEPENDPATH += C:/minGW/local/bin
-  LIBS += -LC:/minGW/local/bin
-  LIBS += -LC:/minGW/local/lib
+  LIBS += -LC:/minGW/local/bin -LC:/minGW/local/lib
   LIBS += -lkeyfinder0 -lboost_system-47-mt-1_52 -lboost_thread-47-mt-1_52
 }
 
