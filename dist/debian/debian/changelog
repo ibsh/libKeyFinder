@@ -1,0 +1,5 @@
+libkeyfinder (0.10.0-0) stable; urgency=low
+
+  * Upstream integration (0.10.0).
+
+ -- Julien Rosener <julien.rosener@digital-scratch.org>  Tue, 30 Jul 2013 00:01:28 +0200
