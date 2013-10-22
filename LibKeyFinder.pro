@@ -72,7 +72,30 @@ SOURCES += \
     workspace.cpp \
     keyfinder_api.cpp
 
-OTHER_FILES += README
+OTHER_FILES += \
+    README \
+    dist/ubuntu/generate_libkeyfinder_deb.sh \
+    dist/ubuntu/debian/changelog \
+    dist/ubuntu/debian/compat \
+    dist/ubuntu/debian/control \
+    dist/ubuntu/debian/copyright \
+    dist/ubuntu/debian/docs \
+    dist/ubuntu/debian/libkeyfinder0.dirs \
+    dist/ubuntu/debian/libkeyfinder0.install \
+    dist/ubuntu/debian/libkeyfinder-dev.dirs \
+    dist/ubuntu/debian/libkeyfinder-dev.install \
+    dist/ubuntu/debian/rules \
+    dist/debian/generate_libkeyfinder_deb.sh \
+    dist/debian/debian/changelog \
+    dist/debian/debian/compat \
+    dist/debian/debian/control \
+    dist/debian/debian/copyright \
+    dist/debian/debian/docs \
+    dist/debian/debian/libkeyfinder0.dirs \
+    dist/debian/debian/libkeyfinder0.install \
+    dist/debian/debian/libkeyfinder-dev.dirs \
+    dist/debian/debian/libkeyfinder-dev.install \
+    dist/debian/debian/rules
 
 unix|macx{
   LIBS += -lfftw3 -lboost_system -lboost_thread
