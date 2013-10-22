@@ -108,9 +108,9 @@ export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR
 if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
 then
-    pbuilder-dist $DISTRIB create
+    sudo pbuilder --create --distribution $DISTRIB
 fi
-pbuilder-dist $DISTRIB update
+sudo pbuilder --update --distribution $DISTRIB
 echo ""
 echo ""
 
