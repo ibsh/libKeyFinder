@@ -86,6 +86,7 @@ echo ""
 echo ""
 
 echo "************************* Update changelog ******************************"
+cd dist/ubuntu/debian
 ORIGDIR=$(pwd)
 cd $WORKINGPATH/$SOURCEDIR
 debchange --newversion $VERSIONPACKAGE --distribution $DISTRIB
