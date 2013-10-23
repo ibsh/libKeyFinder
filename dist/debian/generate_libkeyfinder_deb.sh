@@ -15,9 +15,9 @@ function check_error {
 # Usage
 function usage {
     echo ""
-    echo "Usage: generate_libkeyfinder_deb.sh [repo_type]"
+    echo "Usage: generate_libkeyfinder_deb.sh [archi]"
     echo ""
-    echo "    [repo_type]  'test' (for the test repository url) or 'prod'"
+    echo "    [archi]  'amd64' or 'i386'"
     echo ""
     exit
 }
@@ -27,17 +27,17 @@ if [ $# -ne 1 ]; then
     usage
 fi
 
-# Select PPA
-if [[ $1 == test ]] ; then
-    REPOPATH=julien-rosener/digitalscratch-test
-elif [[ $1 == prod ]] ; then
-    REPOPATH=julien-rosener/digitalscratch
+# Get archi
+if [[ $1 == amd64 ]] ; then
+    ARCHI=amd64
+elif [[ $1 == i386 ]] ; then
+    ARCHI=i386
 else
     usage
 fi
 
 echo "****************************** Install tools ****************************"
-sudo apt-get install packaging-dev build-essential dh-make
+sudo apt-get install packaging-dev build-essential dh-make reprepro
 check_error
 echo ""
 echo ""
@@ -51,6 +51,7 @@ echo ""
 
 echo "*************************** Prepare environment *************************"
 # Main vars
+REPOPATH=../../../gh-pages/debian/
 VERSIONPACKAGE=$VERSION-1
 WORKINGPATH=$HOME/libkeyfinder_$VERSION-make_package
 DEBPATH=$WORKINGPATH/deb
@@ -87,12 +88,11 @@ echo ""
 
 echo "************************* Update changelog ******************************"
 cd dist/debian/debian
-ORIGDIR=$(pwd)
 cd $WORKINGPATH/$SOURCEDIR
 debchange --newversion $VERSIONPACKAGE --distribution $DISTRIB
 check_error
 cat $WORKINGPATH/$SOURCEDIR/debian/changelog
-cp $WORKINGPATH/$SOURCEDIR/debian/changelog $ORIGDIR
+cp $WORKINGPATH/$SOURCEDIR/debian/changelog $ORIGDIR/debian
 check_error
 echo ""
 echo ""
@@ -108,30 +108,35 @@ export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR
 if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
 then
-    sudo pbuilder --create --distribution $DISTRIB
+    sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB
 fi
-sudo pbuilder --update --distribution $DISTRIB
+sudo pbuilder --update --architecture $ARCHI --distribution $DISTRIB
 echo ""
 echo ""
 
 echo "************Parse debian/ config file and create source.changes *********"
-debuild -b -sa
+#export CC="gcc -m32 -Wl,-melf_i386"
+debuild -b -a$ARCHI
 check_error
 cd ../
 echo ""
 echo ""
 
 echo "************ Show content of packages *********"
-dpkg -c $WORKINGPATH/libkeyfinder0_$VERSIONPACKAGE_amd64.deb
-dpkg -c $WORKINGPATH/libkeyfinder-dev_$VERSIONPACKAGE_amd64.deb
+dpkg -c $WORKINGPATH/libkeyfinder0_${VERSIONPACKAGE}_${ARCHI}.deb
+dpkg -c $WORKINGPATH/libkeyfinder-dev_${VERSIONPACKAGE}_${ARCHI}.deb
 check_error
 cd ../
 echo ""
 echo ""
 
-echo "************ Upload source.changes on Launchpad at ppa:$REPOPATH *************"
-#dput -f ppa:$REPOPATH *source.changes
+echo "************ Install package to local apt repo $REPOPATH *************"
+cd $ORIGDIR
+cd $REPOPATH
+reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/libkeyfinder0_${VERSIONPACKAGE}_${ARCHI}.deb
+reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/libkeyfinder-dev_${VERSIONPACKAGE}_${ARCHI}.deb
 check_error
+cd $ORIGDIR
 echo ""
 echo ""
 
