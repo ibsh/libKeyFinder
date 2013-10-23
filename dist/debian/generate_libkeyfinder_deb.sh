@@ -51,7 +51,7 @@ echo ""
 
 echo "*************************** Prepare environment *************************"
 # Main vars
-VERSIONPACKAGE=$VERSION-0
+VERSIONPACKAGE=$VERSION-1
 WORKINGPATH=$HOME/libkeyfinder_$VERSION-make_package
 DEBPATH=$WORKINGPATH/deb
 SOURCEDIR=libkeyfinder_source
@@ -123,7 +123,7 @@ echo ""
 
 echo "***************************** Create test DEB files *********************"
 mkdir -v $DEBPATH
-pbuilder-dist $DISTRIB build --buildresult $DEBPATH *.dsc
+pbuilder build --distribution $DISTRIB --buildresult $DEBPATH *.dsc
 check_error
 echo ""
 echo ""

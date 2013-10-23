@@ -20,6 +20,6 @@ Description: Key estimation library for DJs
 Package: libkeyfinder0
 Section: libs
 Architecture: any
-Depends: libfftw3-3, libboost-system1.49.0, ${shlibs:Depends}, ${misc:Depends}
+Depends: libfftw3-3, ${shlibs:Depends}, ${misc:Depends}
 Description: Key estimation library for DJs
  libKeyFinder can be used to estimate the musical key of digital recordings.
