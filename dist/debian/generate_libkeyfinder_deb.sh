@@ -121,10 +121,11 @@ cd ../
 echo ""
 echo ""
 
-echo "***************************** Create test DEB files *********************"
-mkdir -v $DEBPATH
-pbuilder build --distribution $DISTRIB --buildresult $DEBPATH *.dsc
+echo "************ Show content of packages *********"
+dpkg -c $WORKINGPATH/libkeyfinder0_$VERSIONPACKAGE_amd64.deb
+dpkg -c $WORKINGPATH/libkeyfinder-dev_$VERSIONPACKAGE_amd64.deb
 check_error
+cd ../
 echo ""
 echo ""
 
