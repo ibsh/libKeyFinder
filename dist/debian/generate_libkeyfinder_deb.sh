@@ -59,6 +59,8 @@ SOURCEDIR=libkeyfinder_source
 TARPACK=libkeyfinder_$VERSION.orig.tar.gz
 ORIGDIR=$(pwd)
 DISTRIB=stable
+DEBBIN=libkeyfinder0_${VERSIONPACKAGE}_${ARCHI}.deb
+DEBDEV=libkeyfinder-dev_${VERSIONPACKAGE}_${ARCHI}.deb
 export DEBEMAIL=julien.rosener@digital-scratch.org
 export DEBFULLNAME="Julien Rosener"
 export EDITOR=vim
@@ -106,25 +108,26 @@ echo ""
 echo "***************************** Create Linux base *************************"
 export BUILDUSERID=$USER
 cd $WORKINGPATH/$SOURCEDIR
-if [ ! -f ~/pbuilder/$DISTRIB-base.tgz ]
-then
-    sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB
-fi
-sudo pbuilder --update --architecture $ARCHI --distribution $DISTRIB
+sudo pbuilder --clean
+sudo pbuilder --create --architecture $ARCHI --distribution $DISTRIB
 echo ""
 echo ""
 
-echo "************Parse debian/ config file and create source.changes *********"
-#export CC="gcc -m32 -Wl,-melf_i386"
-debuild -b -a$ARCHI
+echo "************Parse debian/ config file and create DEBs *********"
+pdebuild --architecture $ARCHI
 check_error
 cd ../
 echo ""
 echo ""
 
 echo "************ Show content of packages *********"
-dpkg -c $WORKINGPATH/libkeyfinder0_${VERSIONPACKAGE}_${ARCHI}.deb
-dpkg -c $WORKINGPATH/libkeyfinder-dev_${VERSIONPACKAGE}_${ARCHI}.deb
+cp /var/cache/pbuilder/result/${DEBBIN} $WORKINGPATH
+cp /var/cache/pbuilder/result/${DEBDEV} $WORKINGPATH
+echo "$WORKINGPATH/${DEBBIN}"
+dpkg -c $WORKINGPATH/${DEBBIN}
+echo ""
+echo "$WORKINGPATH/${DEBDEV}"
+dpkg -c $WORKINGPATH/${DEBDEV}
 check_error
 cd ../
 echo ""
@@ -133,8 +136,8 @@ echo ""
 echo "************ Install package to local apt repo $REPOPATH *************"
 cd $ORIGDIR
 cd $REPOPATH
-reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/libkeyfinder0_${VERSIONPACKAGE}_${ARCHI}.deb
-reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/libkeyfinder-dev_${VERSIONPACKAGE}_${ARCHI}.deb
+reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBBIN}
+reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBDEV}
 check_error
 cd $ORIGDIR
 echo ""
