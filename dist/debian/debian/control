@@ -1,7 +1,7 @@
 Source: libkeyfinder
 Priority: extra
 Maintainer: Julien Rosener <julien.rosener@digital-scratch.org>
-Build-Depends: debhelper (>= 8.0.0), qt4-dev-tools, libboost-all-dev, libfftw3-dev
+Build-Depends: debhelper (>= 8.0.0), qt4-dev-tools, qt4-qmake, libboost-all-dev, libfftw3-dev
 Standards-Version: 3.9.3
 Section: libs
 Homepage: http://www.ibrahimshaath.co.uk/keyfinder/
