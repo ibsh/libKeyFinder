@@ -135,6 +135,8 @@ echo ""
 echo "************ Install package to local apt repo $REPOPATH *************"
 cd $ORIGDIR
 cd $REPOPATH
+#reprepro -A $ARCHI remove $DISTRIB libkeyfinder0
+#reprepro -A $ARCHI remove $DISTRIB libkeyfinder-dev
 reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBBIN}
 reprepro --ask-passphrase -Vb . includedeb stable $WORKINGPATH/${DEBDEV}
 check_error
