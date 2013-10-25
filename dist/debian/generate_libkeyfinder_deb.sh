@@ -51,10 +51,9 @@ echo ""
 
 echo "*************************** Prepare environment *************************"
 # Main vars
-REPOPATH=../../../gh-pages/debian/
+REPOPATH=$(readlink -f ../../../gh-pages/debian/)
 VERSIONPACKAGE=$VERSION-1
 WORKINGPATH=$HOME/libkeyfinder_$VERSION-make_package
-DEBPATH=$WORKINGPATH/deb
 SOURCEDIR=libkeyfinder_source
 TARPACK=libkeyfinder_$VERSION.orig.tar.gz
 ORIGDIR=$(pwd)
@@ -143,5 +142,5 @@ cd $ORIGDIR
 echo ""
 echo ""
 
-echo "    Done, testing DEBs are in $DEBPATH"
+echo "    Done."
 
