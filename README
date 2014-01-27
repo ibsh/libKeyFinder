@@ -48,7 +48,7 @@ Alternatively, you can transform a stream of audio into a chromatic representati
   }
 
   // if you want to squeeze every last bit of audio from the working buffer...
-  k.finalChromagram(w)
+  k.finalChromagram(w);
 
   // and finally...
   KeyFinder::KeyDetectionResult r = k.keyOfChromagram(w);
