@@ -24,19 +24,19 @@
 namespace KeyFinder {
 
   std::vector<unsigned int> Segmentation::getSegmentationBoundaries(
-    const Chromagram& ch,
+    const Chromagram& chromagram,
     const Parameters& params
   ) const {
     std::vector<unsigned int> segmentBoundaries(1, 0); // start vector with a 0 to enable first classification
     if (params.getSegmentation() == SEGMENTATION_ARBITRARY) {
       unsigned int segments = params.getArbitrarySegments();
-      float interval = ch.getHops() / segments;
+      float interval = chromagram.getHops() / segments;
       for (unsigned int i = 1; i < segments; i++) {
         segmentBoundaries.push_back((unsigned int)(interval * i + 0.5));
       }
       return segmentBoundaries;
     } else if (params.getSegmentation() == SEGMENTATION_COSINE) {
-      std::vector<float> rateOfChange = cosineRateOfChange(ch, params.getSegGaussianSize(), params.getSegGaussianSigma());
+      std::vector<float> rateOfChange = cosineRateOfChange(chromagram, params.getSegGaussianSize(), params.getSegGaussianSigma());
       unsigned int neighbours = params.getSegPeakPickingNeighbours();
       // for all hops except those in the neighbourhood of the extremities
       for (unsigned int hop = neighbours; hop < rateOfChange.size() - neighbours; hop++) {
@@ -53,12 +53,12 @@ namespace KeyFinder {
   }
 
   std::vector<float> Segmentation::cosineRateOfChange(
-    const Chromagram& ch,
+    const Chromagram& chromagram,
     unsigned int gaussianSize,
     float gaussianSigma
   ) const {
-    unsigned int hops = ch.getHops();
-    unsigned int bands = ch.getBands();
+    unsigned int hops = chromagram.getHops();
+    unsigned int bands = chromagram.getBands();
     // initialise to 1.0 (implies vectors are exactly the same)
     std::vector<float> cosineChanges(hops, 1.0);
     // determine cosine similarity
@@ -70,8 +70,8 @@ namespace KeyFinder {
         float bottomRight = 0.0;
         for (unsigned int band = 0; band < bands; band++) {
           // add a tiny amount to each magnitude to guard against div by zero
-          float magA = ch.getMagnitude(hop - 1, band) + 0.001;
-          float magB = ch.getMagnitude(hop, band) + 0.001;
+          float magA = chromagram.getMagnitude(hop - 1, band) + 0.001;
+          float magB = chromagram.getMagnitude(hop, band) + 0.001;
           top += magA * magB;
           bottomLeft  += magA * magA;
           bottomRight += magB * magB;

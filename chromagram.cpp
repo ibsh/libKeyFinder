@@ -23,40 +23,40 @@
 
 namespace KeyFinder {
 
-  Chromagram::Chromagram(unsigned int hops, unsigned int oct, unsigned int bps) :
-    bandsPerSemitone(bps), octaves(oct),
-    chromaData(hops, std::vector<float>(bps * oct * SEMITONES, 0.0))
+  Chromagram::Chromagram(unsigned int hops, unsigned int inOctaves, unsigned int inBandsPerSemitone) :
+    bandsPerSemitone(inBandsPerSemitone), octaves(inOctaves),
+    chromaData(hops, std::vector<float>(inBandsPerSemitone * inOctaves * SEMITONES, 0.0))
   { }
 
-  float Chromagram::getMagnitude(unsigned int h, unsigned int b) const {
-    if (h >= getHops()) {
+  float Chromagram::getMagnitude(unsigned int hop, unsigned int band) const {
+    if (hop >= getHops()) {
       std::ostringstream ss;
-      ss << "Cannot get magnitude of out-of-bounds hop (" << h << "/" << getHops() << ")";
+      ss << "Cannot get magnitude of out-of-bounds hop (" << hop << "/" << getHops() << ")";
       throw Exception(ss.str().c_str());
     }
-    if (b >= getBands()) {
+    if (band >= getBands()) {
       std::ostringstream ss;
-      ss << "Cannot get magnitude of out-of-bounds band (" << b << "/" << getBands() << ")";
+      ss << "Cannot get magnitude of out-of-bounds band (" << band << "/" << getBands() << ")";
       throw Exception(ss.str().c_str());
     }
-    return chromaData[h][b];
+    return chromaData[hop][band];
   }
 
-  void Chromagram::setMagnitude(unsigned int h, unsigned int b, float val) {
-    if (h >= getHops()) {
+  void Chromagram::setMagnitude(unsigned int hop, unsigned int band, float value) {
+    if (hop >= getHops()) {
       std::ostringstream ss;
-      ss << "Cannot set magnitude of out-of-bounds hop (" << h << "/" << getHops() << ")";
+      ss << "Cannot set magnitude of out-of-bounds hop (" << hop << "/" << getHops() << ")";
       throw Exception(ss.str().c_str());
     }
-    if (b >= getBands()) {
+    if (band >= getBands()) {
       std::ostringstream ss;
-      ss << "Cannot set magnitude of out-of-bounds band (" << b << "/" << getBands() << ")";
+      ss << "Cannot set magnitude of out-of-bounds band (" << band << "/" << getBands() << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(val)) {
+    if (!boost::math::isfinite(value)) {
       throw Exception("Cannot set magnitude to NaN");
     }
-    chromaData[h][b] = val;
+    chromaData[hop][band] = value;
   }
 
   void Chromagram::tuningHarte() {
@@ -155,11 +155,11 @@ namespace KeyFinder {
      */
     if (bandsPerSemitone == 1) return;
     std::vector< std::vector<float> > twelveBpoChroma(getHops(), std::vector<float>(SEMITONES * octaves));
-    for (unsigned int st = 0; st < SEMITONES * octaves; st++) {
+    for (unsigned int semitone = 0; semitone < SEMITONES * octaves; semitone++) {
       std::vector<float> oneSemitoneChroma(bandsPerSemitone);
-      for (unsigned int h = 0; h < getHops(); h++)
-        for (unsigned int b = 0; b < bandsPerSemitone; b++)
-          oneSemitoneChroma[b] += chromaData[h][st*bandsPerSemitone+b];
+      for (unsigned int hop = 0; hop < getHops(); hop++)
+        for (unsigned int band = 0; band < bandsPerSemitone; band++)
+          oneSemitoneChroma[band] += chromaData[hop][semitone*bandsPerSemitone+band];
       // determine highest energy tuning band
       unsigned int whichband = 0;
       float max = oneSemitoneChroma[0];
@@ -169,11 +169,11 @@ namespace KeyFinder {
           whichband = i;
         }
       }
-      for (unsigned int h = 0; h < getHops(); h++) {
+      for (unsigned int hop = 0; hop < getHops(); hop++) {
         float weighted = 0.0;
-        for (unsigned int b = 0; b < bandsPerSemitone; b++)
-          weighted += (chromaData[h][st*bandsPerSemitone+b] * (b == whichband ? 1.0 : detunedBandWeight));
-        twelveBpoChroma[h][st] = weighted;
+        for (unsigned int band = 0; band < bandsPerSemitone; band++)
+          weighted += (chromaData[hop][semitone*bandsPerSemitone+band] * (band == whichband ? 1.0 : detunedBandWeight));
+        twelveBpoChroma[hop][semitone] = weighted;
       }
     }
     chromaData = twelveBpoChroma;
@@ -185,12 +185,12 @@ namespace KeyFinder {
       return;
     unsigned int bandsPerOctave = bandsPerSemitone * SEMITONES;
     std::vector< std::vector<float> > oneOctaveChroma(getHops(), std::vector<float>(bandsPerOctave));
-    for (unsigned int h = 0; h < getHops(); h++) {
-      for (unsigned int b = 0; b < bandsPerOctave; b++) {
+    for (unsigned int hop = 0; hop < getHops(); hop++) {
+      for (unsigned int band = 0; band < bandsPerOctave; band++) {
         float sum = 0.0;
-        for (unsigned int o = 0; o < octaves; o++)
-          sum += chromaData[h][o * bandsPerOctave + b];
-        oneOctaveChroma[h][b] = sum / octaves;
+        for (unsigned int octave = 0; octave < octaves; octave++)
+          sum += chromaData[hop][octave * bandsPerOctave + band];
+        oneOctaveChroma[hop][band] = sum / octaves;
       }
     }
     chromaData = oneOctaveChroma;

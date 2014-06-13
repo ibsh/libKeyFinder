@@ -57,7 +57,7 @@ namespace KeyFinder {
     fftFrameSize = getFftFrameSizeDefault();
     hopsPerFrame = getHopsPerFrameDefault();
     octaves = getOctavesDefault();
-    bps = getBandsPerSemitoneDefault();
+    bandsPerSemitone = getBandsPerSemitoneDefault();
     arbitrarySegments = getArbitrarySegmentsDefault();
     segPeakPickingNeighbours = getSegPeakPickingNeighboursDefault();
     segGaussianSize = getSegGaussianSizeDefault();
@@ -65,8 +65,8 @@ namespace KeyFinder {
     startingFrequencyA = getStartingFrequencyADefault();
     directSkStretch = getDirectSkStretchDefault();
     detunedBandWeight = getDetunedBandWeightDefault();
-    temporalWindow = getTemporalWindowDefault();
-    segmentation = getSegmentationDefault();
+    temporalWindowType = getTemporalWindowDefault();
+    segmentationMethod = getSegmentationDefault();
     similarityMeasure = getSimilarityMeasureDefault();
     toneProfile = getToneProfileDefault();
     tuningMethod = getTuningMethodDefault();
@@ -81,7 +81,7 @@ namespace KeyFinder {
       fftFrameSize = that.fftFrameSize;
       hopsPerFrame = that.hopsPerFrame;
       octaves = that.octaves;
-      bps = that.bps;
+      bandsPerSemitone = that.bandsPerSemitone;
       arbitrarySegments = that.arbitrarySegments;
       segPeakPickingNeighbours = that.segPeakPickingNeighbours;
       segGaussianSize = that.segGaussianSize;
@@ -89,8 +89,8 @@ namespace KeyFinder {
       startingFrequencyA = that.startingFrequencyA;
       directSkStretch = that.directSkStretch;
       detunedBandWeight = that.detunedBandWeight;
-      temporalWindow = that.temporalWindow;
-      segmentation = that.segmentation;
+      temporalWindowType = that.temporalWindowType;
+      segmentationMethod = that.segmentationMethod;
       similarityMeasure = that.similarityMeasure;
       toneProfile = that.toneProfile;
       tuningMethod = that.tuningMethod;
@@ -109,8 +109,8 @@ namespace KeyFinder {
     if (segGaussianSize          != that.segGaussianSize)          return false;
     if (segGaussianSigma         != that.segGaussianSigma)         return false;
     if (detunedBandWeight        != that.detunedBandWeight)        return false;
-    if (temporalWindow           != that.temporalWindow)           return false;
-    if (segmentation             != that.segmentation)             return false;
+    if (temporalWindowType           != that.temporalWindowType)           return false;
+    if (segmentationMethod             != that.segmentationMethod)             return false;
     if (similarityMeasure        != that.similarityMeasure)        return false;
     if (toneProfile              != that.toneProfile)              return false;
     if (tuningMethod             != that.tuningMethod)             return false;
@@ -122,7 +122,7 @@ namespace KeyFinder {
     if (offsetToC          != that.offsetToC)          return false;
     if (fftFrameSize       != that.fftFrameSize)       return false;
     if (octaves            != that.octaves)            return false;
-    if (bps                != that.bps)                return false;
+    if (bandsPerSemitone   != that.bandsPerSemitone)   return false;
     if (startingFrequencyA != that.startingFrequencyA) return false;
     if (directSkStretch    != that.directSkStretch)    return false;
     return true;
@@ -134,8 +134,8 @@ namespace KeyFinder {
   unsigned int              Parameters::getHopsPerFrame()             const { return hopsPerFrame; }
   unsigned int              Parameters::getHopSize()                  const { return fftFrameSize / hopsPerFrame; }
   unsigned int              Parameters::getOctaves()                  const { return octaves; }
-  unsigned int              Parameters::getBandsPerSemitone()         const { return bps; }
-  unsigned int              Parameters::getBandsPerOctave()           const { return bps * SEMITONES; }
+  unsigned int              Parameters::getBandsPerSemitone()         const { return bandsPerSemitone; }
+  unsigned int              Parameters::getBandsPerOctave()           const { return bandsPerSemitone * SEMITONES; }
   unsigned int              Parameters::getArbitrarySegments()        const { return arbitrarySegments; }
   unsigned int              Parameters::getSegPeakPickingNeighbours() const { return segPeakPickingNeighbours; }
   unsigned int              Parameters::getSegGaussianSize()          const { return segGaussianSize; }
@@ -143,131 +143,131 @@ namespace KeyFinder {
   float                     Parameters::getStartingFrequencyA()       const { return startingFrequencyA; }
   float                     Parameters::getDirectSkStretch()          const { return directSkStretch; }
   float                     Parameters::getDetunedBandWeight()        const { return detunedBandWeight; }
-  temporal_window_t         Parameters::getTemporalWindow()           const { return temporalWindow; }
-  segmentation_t            Parameters::getSegmentation()             const { return segmentation; }
+  temporal_window_t         Parameters::getTemporalWindow()           const { return temporalWindowType; }
+  segmentation_t            Parameters::getSegmentation()             const { return segmentationMethod; }
   similarity_measure_t      Parameters::getSimilarityMeasure()        const { return similarityMeasure; }
   tone_profile_t            Parameters::getToneProfile()              const { return toneProfile; }
   tuning_method_t           Parameters::getTuningMethod()             const { return tuningMethod; }
   const std::vector<float>& Parameters::getCustomToneProfile()        const { return customToneProfile; }
 
   // mutators
-  void Parameters::setOffsetToC(bool off) {
-    offsetToC = off;
+  void Parameters::setOffsetToC(bool inOffsetToC) {
+    offsetToC = inOffsetToC;
     generateBandFreqs();
   }
 
-  void Parameters::setFftFrameSize(unsigned int framesize) {
-    if (framesize < 1) throw Exception("FFT frame size must be > 0");
-    fftFrameSize = framesize;
+  void Parameters::setFftFrameSize(unsigned int inFftFramesize) {
+    if (inFftFramesize < 1) throw Exception("FFT frame size must be > 0");
+    fftFrameSize = inFftFramesize;
   }
 
-  void Parameters::setHopsPerFrame(unsigned int hpf) {
-    if (hpf < 1) throw Exception("Hops per frame must be > 0");
-    hopsPerFrame = hpf;
+  void Parameters::setHopsPerFrame(unsigned int inHopsPerFrame) {
+    if (inHopsPerFrame < 1) throw Exception("Hops per frame must be > 0");
+    hopsPerFrame = inHopsPerFrame;
   }
 
-  void Parameters::setOctaves(unsigned int oct) {
-    if (oct < 1) throw Exception("Octaves must be > 0");
-    octaves = oct;
+  void Parameters::setOctaves(unsigned int inOctaves) {
+    if (inOctaves < 1) throw Exception("Octaves must be > 0");
+    octaves = inOctaves;
     generateBandFreqs();
   }
 
-  void Parameters::setBandsPerSemitone(unsigned int bands) {
-    if (bands < 1) throw Exception("Bands per semitone must be > 0");
-    bps = bands;
+  void Parameters::setBandsPerSemitone(unsigned int inBandsPerSemitone) {
+    if (inBandsPerSemitone < 1) throw Exception("Bands per semitone must be > 0");
+    bandsPerSemitone = inBandsPerSemitone;
     generateBandFreqs();
   }
 
-  void Parameters::setArbitrarySegments(unsigned int s) {
-    if (s < 1) throw Exception("Arbitrary segments must be > 0");
-    arbitrarySegments = s;
+  void Parameters::setArbitrarySegments(unsigned int inArbitrarySegments) {
+    if (inArbitrarySegments < 1) throw Exception("Arbitrary segments must be > 0");
+    arbitrarySegments = inArbitrarySegments;
   }
 
-  void Parameters::setSegPeakPickingNeighbours(unsigned int n) {
-    segPeakPickingNeighbours = n;
+  void Parameters::setSegPeakPickingNeighbours(unsigned int inSegPeakPickingNeighbours) {
+    segPeakPickingNeighbours = inSegPeakPickingNeighbours;
   }
 
-  void Parameters::setSegGaussianSize(unsigned int size) {
-    if (size < 1) throw Exception("Gaussian size must be > 0");
-    segGaussianSize = size;
+  void Parameters::setSegGaussianSize(unsigned int inSegGaussianSize) {
+    if (inSegGaussianSize < 1) throw Exception("Gaussian size must be > 0");
+    segGaussianSize = inSegGaussianSize;
   }
 
-  void Parameters::setSegGaussianSigma(float sigma) {
-    if (!boost::math::isfinite(sigma)) throw Exception("Gaussian sigma cannot be NaN");
-    if (sigma <= 0) throw Exception("Gaussian sigma must be > 0");
-    segGaussianSigma = sigma;
+  void Parameters::setSegGaussianSigma(float inSegGaussianSigma) {
+    if (!boost::math::isfinite(inSegGaussianSigma)) throw Exception("Gaussian sigma cannot be NaN");
+    if (inSegGaussianSigma <= 0) throw Exception("Gaussian sigma must be > 0");
+    segGaussianSigma = inSegGaussianSigma;
   }
 
-  void Parameters::setStartingFrequencyA(float a) {
+  void Parameters::setStartingFrequencyA(float inStartingFrequencyA) {
     if (
-      a != 27.5  && a != 55.0  && a != 110.0  && a != 220.0  &&
-      a != 440.0 && a != 880.0 && a != 1760.0 && a != 3520.0
+      inStartingFrequencyA != 27.5  && inStartingFrequencyA != 55.0  && inStartingFrequencyA != 110.0  && inStartingFrequencyA != 220.0  &&
+      inStartingFrequencyA != 440.0 && inStartingFrequencyA != 880.0 && inStartingFrequencyA != 1760.0 && inStartingFrequencyA != 3520.0
     ) throw Exception("Starting frequency must be an A (2^n * 27.5 Hz)");
-    startingFrequencyA = a;
+    startingFrequencyA = inStartingFrequencyA;
     generateBandFreqs();
   }
 
-  void Parameters::setDirectSkStretch(float stretch) {
-    if (!boost::math::isfinite(stretch)) throw Exception("Spectral kernel stretch cannot be NaN");
-    if (stretch <= 0) throw Exception("Spectral kernel stretch must be > 0");
-    directSkStretch = stretch;
+  void Parameters::setDirectSkStretch(float inDirectSkStretch) {
+    if (!boost::math::isfinite(inDirectSkStretch)) throw Exception("Spectral kernel stretch cannot be NaN");
+    if (inDirectSkStretch <= 0) throw Exception("Spectral kernel stretch must be > 0");
+    directSkStretch = inDirectSkStretch;
   }
 
-  void Parameters::setDetunedBandWeight(float weight) {
-    if (!boost::math::isfinite(weight)) throw Exception("Detuned band weighting cannot be NaN");
-    if (weight < 0) throw Exception("Detuned band weighting must be >= 0");
-    detunedBandWeight = weight;
+  void Parameters::setDetunedBandWeight(float inDetunedBandWeight) {
+    if (!boost::math::isfinite(inDetunedBandWeight)) throw Exception("Detuned band weighting cannot be NaN");
+    if (inDetunedBandWeight < 0) throw Exception("Detuned band weighting must be >= 0");
+    detunedBandWeight = inDetunedBandWeight;
   }
 
-  void Parameters::setTemporalWindow(temporal_window_t window) {
-    temporalWindow = window;
+  void Parameters::setTemporalWindowType(temporal_window_t inTemporalWindowType) {
+    temporalWindowType = inTemporalWindowType;
   }
 
-  void Parameters::setSegmentation(segmentation_t f) {
-    segmentation = f;
+  void Parameters::setSegmentationMethod(segmentation_t inSegmentationMethod) {
+    segmentationMethod = inSegmentationMethod;
   }
 
-  void Parameters::setSimilarityMeasure(similarity_measure_t msr) {
-    similarityMeasure = msr;
+  void Parameters::setSimilarityMeasure(similarity_measure_t inSimilarityMeasure) {
+    similarityMeasure = inSimilarityMeasure;
   }
 
   void Parameters::setToneProfile(tone_profile_t profile) {
     toneProfile = profile;
   }
 
-  void Parameters::setTuningMethod(tuning_method_t tune) {
-    tuningMethod = tune;
+  void Parameters::setTuningMethod(tuning_method_t inTuningMethod) {
+    tuningMethod = inTuningMethod;
   }
 
-  void Parameters::setCustomToneProfile(const std::vector<float>& v) {
-    if (v.size() != SEMITONES * 2) throw Exception("Custom tone profile must have 24 elements");
+  void Parameters::setCustomToneProfile(const std::vector<float>& inCustomToneProfile) {
+    if (inCustomToneProfile.size() != SEMITONES * 2) throw Exception("Custom tone profile must have 24 elements");
     for (unsigned int i = 0; i < SEMITONES * 2; i++)
-      if (v[i] < 0.0)
+      if (inCustomToneProfile[i] < 0.0)
         throw Exception("Custom tone profile elements must be >= 0");
-    customToneProfile = v;
+    customToneProfile = inCustomToneProfile;
   }
 
-  float Parameters::getBandFrequency(unsigned int b) const {
-    unsigned int max = octaves * SEMITONES * bps;
-    if (b >= max) {
+  float Parameters::getFrequencyOfBand(unsigned int bandIndex) const {
+    unsigned int max = octaves * SEMITONES * bandsPerSemitone;
+    if (bandIndex >= max) {
       std::ostringstream ss;
-      ss << "Cannot get out-of-bounds frequency index (" << b << "/" << max << ")";
+      ss << "Cannot get frequency of out-of-bounds band index (" << bandIndex << "/" << max << ")";
       throw Exception(ss.str().c_str());
     }
-    return bandFreqs[b];
+    return bandFrequencies[bandIndex];
   }
 
   float Parameters::getLastFrequency() const {
-    return bandFreqs[bandFreqs.size()-1];
+    return bandFrequencies[bandFrequencies.size()-1];
   }
 
   void Parameters::generateBandFreqs() {
-    unsigned int bpo = bps * SEMITONES;
-    bandFreqs.clear();
+    unsigned int bpo = bandsPerSemitone * SEMITONES;
+    bandFrequencies.clear();
     float freqRatio = pow(2, 1.0 / bpo);
     float octFreq = startingFrequencyA;
     float bandFreq;
-    unsigned int concertPitchBin = bps/2;
+    unsigned int concertPitchBin = bandsPerSemitone/2;
     for (unsigned int i = 0; i < octaves; i++) {
       bandFreq = octFreq;
       // offset as required
@@ -276,11 +276,11 @@ namespace KeyFinder {
       }
       // tune down for bins before first concert pitch bin (if bps > 1)
       for (unsigned int j = 0; j < concertPitchBin; j++) {
-        bandFreqs.push_back(bandFreq / pow(freqRatio, concertPitchBin - j));
+        bandFrequencies.push_back(bandFreq / pow(freqRatio, concertPitchBin - j));
       }
       // and tune all other bins
       for (unsigned int j = concertPitchBin; j < bpo; j++) {
-        bandFreqs.push_back(bandFreq);
+        bandFrequencies.push_back(bandFreq);
         bandFreq *= freqRatio;
       }
       octFreq *= 2;

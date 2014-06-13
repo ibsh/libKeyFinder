@@ -24,25 +24,25 @@
 namespace KeyFinder {
 
   LowPassFilterFactory::LowPassFilterWrapper::LowPassFilterWrapper(
-    unsigned int cc,
-    unsigned int fr,
-    float cf,
-    unsigned int fs,
-    const LowPassFilter* const fi
+    unsigned int inOrder,
+    unsigned int inFrameRate,
+    float inCornerFrequency,
+    unsigned int inFftFrameSize,
+    const LowPassFilter* const inLowPassFilter
   ) {
-    order = cc;
-    frameRate = fr;
-    cornerFrequency = cf;
-    fftFrameSize = fs;
-    lpf = fi;
+    order = inOrder;
+    frameRate = inFrameRate;
+    cornerFrequency = inCornerFrequency;
+    fftFrameSize = inFftFrameSize;
+    lowPassFilter = inLowPassFilter;
   }
 
   LowPassFilterFactory::LowPassFilterWrapper::~LowPassFilterWrapper() {
-    delete lpf;
+    delete lowPassFilter;
   }
 
   const LowPassFilter* LowPassFilterFactory::LowPassFilterWrapper::getLowPassFilter() const {
-    return lpf;
+    return lowPassFilter;
   }
 
   unsigned int LowPassFilterFactory::LowPassFilterWrapper::getOrder() const {
@@ -69,23 +69,23 @@ namespace KeyFinder {
   }
 
   const LowPassFilter* LowPassFilterFactory::getLowPassFilter(
-    unsigned int cc, unsigned int fr, float cf, unsigned int fs
+    unsigned int inOrder, unsigned int inFrameRate, float inCornerFrequency, unsigned int inFftFrameSize
   ) {
     boost::mutex::scoped_lock lock(LowPassFilterFactoryMutex);
     for (unsigned int i = 0; i < filters.size(); i++) {
       LowPassFilterWrapper* wrapper = filters[i];
       if (
-        wrapper->getOrder() == cc &&
-        wrapper->getFrameRate() == fr &&
-        wrapper->getCornerFrequency() == cf &&
-        wrapper->getFftFrameSize() == fs
+        wrapper->getOrder() == inOrder &&
+        wrapper->getFrameRate() == inFrameRate &&
+        wrapper->getCornerFrequency() == inCornerFrequency &&
+        wrapper->getFftFrameSize() == inFftFrameSize
       ) {
         return wrapper->getLowPassFilter();
       }
     }
     filters.push_back(
       new LowPassFilterWrapper(
-        cc, fr, cf, fs, new LowPassFilter(cc, fr, cf, fs)
+        inOrder, inFrameRate, inCornerFrequency, inFftFrameSize, new LowPassFilter(inOrder, inFrameRate, inCornerFrequency, inFftFrameSize)
       )
     );
     return filters[filters.size()-1]->getLowPassFilter();

@@ -54,8 +54,8 @@ namespace KeyFinder {
     std::vector<float> coefficients;
   };
 
-  LowPassFilter::LowPassFilter(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
-    priv = new LowPassFilterPrivate(ord, frameRate, cornerFrequency, fftFrameSize);
+  LowPassFilter::LowPassFilter(unsigned int order, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
+    priv = new LowPassFilterPrivate(order, frameRate, cornerFrequency, fftFrameSize);
   }
 
   void LowPassFilter::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
@@ -66,10 +66,10 @@ namespace KeyFinder {
     return &priv->coefficients;
   }
 
-  LowPassFilterPrivate::LowPassFilterPrivate(unsigned int ord, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
-    if (ord % 2 != 0) throw Exception("LPF order must be an even number");
-    if (ord > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
-    order = ord;
+  LowPassFilterPrivate::LowPassFilterPrivate(unsigned int inOrder, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
+    if (inOrder % 2 != 0) throw Exception("LPF order must be an even number");
+    if (inOrder > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
+    order = inOrder;
     delay = order / 2;
     impulseLength = order + 1;
     float cutoffPoint = cornerFrequency / frameRate;

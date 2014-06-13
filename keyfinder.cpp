@@ -145,10 +145,10 @@ namespace KeyFinder {
 
     std::vector<float> keyWeights(24); // TODO: not ideal using int cast of key_t enum. Hash?
 
-    for (int s = 0; s < (signed) segmentBoundaries.size() - 1; s++) {
+    for (int segmentBoundary = 0; segmentBoundary < (signed) segmentBoundaries.size() - 1; segmentBoundary++) {
       KeyDetectionResultSegment segment;
-      segment.firstHop = segmentBoundaries[s];
-      segment.lastHop  = segmentBoundaries[s+1] - 1;
+      segment.firstHop = segmentBoundaries[segmentBoundary];
+      segment.lastHop  = segmentBoundaries[segmentBoundary+1] - 1;
       // collapse segment's time dimension
       std::vector<float> segmentChroma(ch.getBands(), 0.0);
       for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {

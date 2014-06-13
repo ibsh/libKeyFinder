@@ -24,15 +24,15 @@
 namespace KeyFinder {
 
   ChromaTransformFactory::ChromaTransformWrapper::ChromaTransformWrapper(
-    unsigned int f, const Parameters& p, const ChromaTransform* const s
-  ) : frameRate(f), params(p), ct(s) { }
+    unsigned int inFrameRate, const Parameters& inParams, const ChromaTransform* const inChromaTransform
+  ) : frameRate(inFrameRate), params(inParams), chromaTransform(inChromaTransform) { }
 
   ChromaTransformFactory::ChromaTransformWrapper::~ChromaTransformWrapper() {
-    delete ct;
+    delete chromaTransform;
   }
 
   const ChromaTransform* ChromaTransformFactory::ChromaTransformWrapper::getChromaTransform() const {
-    return ct;
+    return chromaTransform;
   }
 
   const Parameters& ChromaTransformFactory::ChromaTransformWrapper::getParameters() const {
@@ -51,19 +51,19 @@ namespace KeyFinder {
   }
 
   const ChromaTransform* ChromaTransformFactory::getChromaTransform(
-    unsigned int f, const Parameters& p
+    unsigned int frameRate, const Parameters& params
   ) {
     boost::mutex::scoped_lock lock(chromaTransformFactoryMutex);
     for (unsigned int i = 0; i < chromaTransforms.size(); i++) {
       ChromaTransformWrapper* wrapper = chromaTransforms[i];
       if (
-        wrapper->getFrameRate() == f &&
-        p.equivalentSpectralKernels(wrapper->getParameters())
+        wrapper->getFrameRate() == frameRate &&
+        params.equivalentSpectralKernels(wrapper->getParameters())
       ) {
         return wrapper->getChromaTransform();
       }
     }
-    chromaTransforms.push_back(new ChromaTransformWrapper(f, p, new ChromaTransform(f, p)));
+    chromaTransforms.push_back(new ChromaTransformWrapper(frameRate, params, new ChromaTransform(frameRate, params)));
     return chromaTransforms[chromaTransforms.size()-1]->getChromaTransform();
   }
 

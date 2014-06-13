@@ -23,10 +23,10 @@
 
 namespace KeyFinder {
 
-  float WindowFunction::window(temporal_window_t w, int n, int N) const {
-    if (w == WINDOW_HANN) {
+  float WindowFunction::window(temporal_window_t windowType, int n, int N) const {
+    if (windowType == WINDOW_HANN) {
       return 0.5 * (1.0 - cos((2 * PI * n)/(N-1)));
-    } else if (w == WINDOW_HAMMING) {
+    } else if (windowType == WINDOW_HAMMING) {
       return 0.54 - (0.46 * cos((2 * PI * n)/(N-1)));
     } else { // Blackman
       return 0.42 - (0.5 * cos((2 * PI * n)/(N-1))) + (0.08 * cos((4 * PI * n)/(N-1)));

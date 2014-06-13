@@ -65,7 +65,7 @@ namespace KeyFinder {
     unsigned int frameRate;
     float cornerFrequency;
     unsigned int fftFrameSize;
-    const LowPassFilter* lpf;
+    const LowPassFilter* lowPassFilter;
   };
 
 }

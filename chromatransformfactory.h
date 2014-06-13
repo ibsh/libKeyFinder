@@ -57,7 +57,7 @@ namespace KeyFinder {
   private:
     unsigned int frameRate;
     Parameters params;
-    const ChromaTransform* const ct;
+    const ChromaTransform* const chromaTransform;
   };
 
 }

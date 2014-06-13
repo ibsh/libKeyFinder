@@ -50,7 +50,7 @@ namespace KeyFinder {
     unsigned int getSegGaussianSize() const;
     float getSegGaussianSigma() const;
     float getStartingFrequencyA() const;
-    float getBandFrequency(unsigned int band) const;
+    float getFrequencyOfBand(unsigned int band) const;
     float getLastFrequency() const;
     float getDirectSkStretch() const;
     float getDetunedBandWeight() const;
@@ -94,9 +94,9 @@ namespace KeyFinder {
     void setStartingFrequencyA(float startingFrequencyA);
     void setDirectSkStretch(float directSkStretch);
     void setDetunedBandWeight(float detunedBandWeight);
-    void setTemporalWindow(temporal_window_t temporalWindow);
-    void setSegmentation(segmentation_t segmentation);
-    void setSimilarityMeasure(similarity_measure_t similarityMeasure);
+    void setTemporalWindowType(temporal_window_t temporalWindowType);
+    void setSegmentationMethod(segmentation_t segmentationMethod);
+    void setSimilarityMeasureType(similarity_measure_t similarityMeasure);
     void setToneProfile(tone_profile_t toneProfile);
     void setTuningMethod(tuning_method_t tuningMethod);
     void setCustomToneProfile(const std::vector<float>& customToneProfile);
@@ -106,7 +106,7 @@ namespace KeyFinder {
     unsigned int fftFrameSize;
     unsigned int hopsPerFrame;
     unsigned int octaves;
-    unsigned int bps;
+    unsigned int bandsPerSemitone;
     unsigned int arbitrarySegments;
     unsigned int segPeakPickingNeighbours;
     unsigned int segGaussianSize;
@@ -114,13 +114,13 @@ namespace KeyFinder {
     float startingFrequencyA;
     float directSkStretch;
     float detunedBandWeight;
-    temporal_window_t temporalWindow;
-    segmentation_t segmentation;
+    temporal_window_t temporalWindowType;
+    segmentation_t segmentationMethod;
     similarity_measure_t similarityMeasure;
     tone_profile_t toneProfile;
     tuning_method_t tuningMethod;
     std::vector<float> customToneProfile;
-    std::vector<float> bandFreqs;
+    std::vector<float> bandFrequencies;
 
     void generateBandFreqs();
   };

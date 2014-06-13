@@ -38,8 +38,8 @@ namespace KeyFinder {
     fftw_plan plan;
   };
 
-  FftAdapter::FftAdapter(unsigned int fs) : priv(new FftAdapterPrivate) {
-    frameSize = fs;
+  FftAdapter::FftAdapter(unsigned int inFrameSize) : priv(new FftAdapterPrivate) {
+    frameSize = inFrameSize;
     priv->inputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
     priv->outputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
     boost::mutex::scoped_lock lock(fftwPlanMutex);
@@ -109,8 +109,8 @@ namespace KeyFinder {
     fftw_plan plan;
   };
 
-  InverseFftAdapter::InverseFftAdapter(unsigned int fs) : priv(new InverseFftAdapterPrivate) {
-    frameSize = fs;
+  InverseFftAdapter::InverseFftAdapter(unsigned int inFrameSize) : priv(new InverseFftAdapterPrivate) {
+    frameSize = inFrameSize;
     priv->inputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
     priv->outputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
     boost::mutex::scoped_lock lock(fftwPlanMutex);

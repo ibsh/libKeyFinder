@@ -29,18 +29,18 @@ namespace KeyFinder {
     return channels;
   }
 
-  void AudioData::setChannels(unsigned int newChannels) {
-    if (newChannels < 1) throw Exception("New channel count must be > 0");
-    channels = newChannels;
+  void AudioData::setChannels(unsigned int inChannels) {
+    if (inChannels < 1) throw Exception("New channel count must be > 0");
+    channels = inChannels;
   }
 
   unsigned int AudioData::getFrameRate() const {
     return frameRate;
   }
 
-  void AudioData::setFrameRate(unsigned int newFrameRate) {
-    if (newFrameRate < 1) throw Exception("New frame rate must be > 0");
-    frameRate = newFrameRate;
+  void AudioData::setFrameRate(unsigned int inFrameRate) {
+    if (inFrameRate < 1) throw Exception("New frame rate must be > 0");
+    frameRate = inFrameRate;
   }
 
   void AudioData::append(const AudioData& that) {
@@ -120,13 +120,13 @@ namespace KeyFinder {
     setSample(frame * channels + channel, value);
   }
 
-  void AudioData::addToSampleCount(unsigned int newSamples) {
-    samples.resize(getSampleCount() + newSamples, 0.0);
+  void AudioData::addToSampleCount(unsigned int inSamples) {
+    samples.resize(getSampleCount() + inSamples, 0.0);
   }
 
-  void AudioData::addToFrameCount(unsigned int newFrames) {
+  void AudioData::addToFrameCount(unsigned int inFrames) {
     if (channels < 1) throw Exception("Channels must be > 0");
-    addToSampleCount(newFrames * channels);
+    addToSampleCount(inFrames * channels);
   }
 
   unsigned int AudioData::getSampleCount() const {
