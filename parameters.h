@@ -96,7 +96,7 @@ namespace KeyFinder {
     void setDetunedBandWeight(float detunedBandWeight);
     void setTemporalWindowType(temporal_window_t temporalWindowType);
     void setSegmentationMethod(segmentation_t segmentationMethod);
-    void setSimilarityMeasureType(similarity_measure_t similarityMeasure);
+    void setSimilarityMeasure(similarity_measure_t similarityMeasure);
     void setToneProfile(tone_profile_t toneProfile);
     void setTuningMethod(tuning_method_t tuningMethod);
     void setCustomToneProfile(const std::vector<float>& customToneProfile);
