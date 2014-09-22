@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -24,23 +24,19 @@
 namespace KeyFinder {
 
   TemporalWindowFactory::TemporalWindowWrapper::TemporalWindowWrapper(
-    unsigned int frameSize, temporal_window_t temporalWindowType
-  ) : function(temporalWindowType) {
+    unsigned int frameSize
+  ) {
     WindowFunction win;
     temporalWindow.resize(frameSize);
     std::vector<float>::iterator twIt = temporalWindow.begin();
     for (unsigned int i = 0; i < frameSize; i++) {
-      *twIt = win.window(function, i, frameSize);
+      *twIt = win.window(WINDOW_BLACKMAN, i, frameSize);
       std::advance(twIt, 1);
     }
   }
 
   unsigned int TemporalWindowFactory::TemporalWindowWrapper::getFrameSize() const {
     return temporalWindow.size();
-  }
-
-  temporal_window_t TemporalWindowFactory::TemporalWindowWrapper::getFunction() const {
-    return function;
   }
 
   const std::vector<float>* TemporalWindowFactory::TemporalWindowWrapper::getTemporalWindow() const {
@@ -54,20 +50,15 @@ namespace KeyFinder {
       delete temporalWindows[i];
   }
 
-  const std::vector<float>* TemporalWindowFactory::getTemporalWindow(
-    unsigned int frameSize, temporal_window_t function
-  ) {
+  const std::vector<float>* TemporalWindowFactory::getTemporalWindow(unsigned int frameSize) {
     boost::mutex::scoped_lock lock(temporalWindowFactoryMutex);
     for (unsigned int i = 0; i < temporalWindows.size(); i++) {
       TemporalWindowWrapper* wrapper = temporalWindows[i];
-      if (
-        wrapper->getFrameSize() == frameSize &&
-        wrapper->getFunction() == function
-      ) {
+      if (wrapper->getFrameSize() == frameSize) {
         return wrapper->getTemporalWindow();
       }
     }
-    temporalWindows.push_back(new TemporalWindowWrapper(frameSize, function));
+    temporalWindows.push_back(new TemporalWindowWrapper(frameSize));
     return temporalWindows[temporalWindows.size()-1]->getTemporalWindow();
   }
 

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -25,7 +25,7 @@
 #include <boost/thread/mutex.hpp>
 #include <vector>
 #include "lowpassfilter.h"
-#include "parameters.h"
+#include "constants.h"
 
 namespace KeyFinder {
 

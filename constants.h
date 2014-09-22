@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,11 +22,38 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <cmath>
+#include <vector>
+#include "exception.h"
+
 #undef  PI
 #define PI 3.1415926535897932384626433832795
 
 #undef SEMITONES
 #define SEMITONES 12 // per octave, obviously
+
+#undef OCTAVES
+#define OCTAVES 6
+
+#undef BANDS
+#define BANDS SEMITONES * OCTAVES
+
+#undef KEYS
+#define KEYS SEMITONES * 2
+
+#undef TONEPROFILESIZE
+#define TONEPROFILESIZE BANDS * 2
+
+#undef FFTFRAMESIZE
+#define FFTFRAMESIZE 16384
+
+#undef HOPSIZE
+#define HOPSIZE FFTFRAMESIZE / 4
+
+#undef DIRECTSKSTRETCH
+#define DIRECTSKSTRETCH 0.8
+
+static const unsigned int octaves = 6;
 
 namespace KeyFinder {
 
@@ -46,42 +73,19 @@ namespace KeyFinder {
     SILENCE
   };
 
-  enum scale_t {
-    SCALE_MAJOR,
-    SCALE_MINOR
-  };
-
   enum temporal_window_t {
     WINDOW_BLACKMAN,
     WINDOW_HANN,
     WINDOW_HAMMING
   };
 
-  enum segmentation_t {
-    SEGMENTATION_NONE,
-    SEGMENTATION_ARBITRARY,
-    SEGMENTATION_COSINE
+  enum scale_t {
+    SCALE_MAJOR,
+    SCALE_MINOR
   };
 
-  enum similarity_measure_t {
-    SIMILARITY_COSINE,
-    SIMILARITY_CORRELATION
-  };
-
-  enum tone_profile_t {
-    TONE_PROFILE_SILENCE,
-    TONE_PROFILE_KRUMHANSL,
-    TONE_PROFILE_TEMPERLEY,
-    TONE_PROFILE_GOMEZ,
-    TONE_PROFILE_SHAATH,
-    TONE_PROFILE_CUSTOM
-  };
-
-  enum tuning_method_t {
-    TUNING_HARTE,
-    TUNING_BAND_ADAPTIVE
-  };
-
+  float getFrequencyOfBand(unsigned int band);
+  float getLastFrequency();
 }
 
 #endif

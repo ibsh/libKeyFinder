@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,7 +22,7 @@
 #ifndef FFTADAPTER_H
 #define FFTADAPTER_H
 
-#include "exception.h"
+#include "constants.h"
 
 namespace KeyFinder {
 

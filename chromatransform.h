@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,15 +22,14 @@
 #ifndef CHROMATRANSFORM_H
 #define CHROMATRANSFORM_H
 
-#include "exception.h"
-#include "parameters.h"
+#include "constants.h"
 #include "fftadapter.h"
 
 namespace KeyFinder {
 
   class ChromaTransform {
   public:
-    ChromaTransform(unsigned int frameRate, const Parameters& params);
+    ChromaTransform(unsigned int frameRate);
     std::vector<float> chromaVector(const FftAdapter* const fft) const;
   protected:
     unsigned int chromaBands;

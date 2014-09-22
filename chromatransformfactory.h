@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -25,7 +25,7 @@
 #include <boost/thread/mutex.hpp>
 #include <vector>
 #include "chromatransform.h"
-#include "parameters.h"
+#include "constants.h"
 
 namespace KeyFinder {
 
@@ -33,10 +33,7 @@ namespace KeyFinder {
   public:
     ChromaTransformFactory();
     ~ChromaTransformFactory();
-    const ChromaTransform* getChromaTransform(
-      unsigned int frameRate,
-      const Parameters& params
-    );
+    const ChromaTransform* getChromaTransform(unsigned int frameRate);
   private:
     class ChromaTransformWrapper;
     std::vector<ChromaTransformWrapper*> chromaTransforms;
@@ -47,16 +44,13 @@ namespace KeyFinder {
   public:
     ChromaTransformWrapper(
       unsigned int frameRate,
-      const Parameters& params,
       const ChromaTransform* const transform
     );
     ~ChromaTransformWrapper();
     const ChromaTransform* getChromaTransform() const;
-    const Parameters& getParameters() const;
     unsigned int getFrameRate() const;
   private:
     unsigned int frameRate;
-    Parameters params;
     const ChromaTransform* const chromaTransform;
   };
 

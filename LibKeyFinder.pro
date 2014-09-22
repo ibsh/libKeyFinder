@@ -1,6 +1,6 @@
 #*************************************************************************
 #
-# Copyright 2011-2013 Ibrahim Sha'ath
+# Copyright 2011-2014 Ibrahim Sha'ath
 #
 # This file is part of LibKeyFinder.
 #
@@ -19,13 +19,15 @@
 #
 #*************************************************************************
 
+cache()
+
 QT -= gui
 CONFIG -= qt
 
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 0.11.0
+VERSION = 2.0.0
 
 DEFINES += LIBKEYFINDER_LIBRARY
 
@@ -40,11 +42,8 @@ HEADERS += \
     fftadapter.h \
     keyclassifier.h \
     keyfinder.h \
-    keyfinderresult.h \
     lowpassfilter.h \
     lowpassfilterfactory.h \
-    parameters.h \
-    segmentation.h \
     spectrumanalyser.h \
     temporalwindowfactory.h \
     toneprofiles.h \
@@ -61,21 +60,17 @@ SOURCES += \
     keyfinder.cpp \
     lowpassfilter.cpp \
     lowpassfilterfactory.cpp \
-    parameters.cpp \
-    segmentation.cpp \
     spectrumanalyser.cpp \
     temporalwindowfactory.cpp \
     toneprofiles.cpp \
     windowfunctions.cpp \
-    workspace.cpp
+    workspace.cpp \
+    constants.cpp
 
 OTHER_FILES += README
 
-unix|macx{
-  LIBS += -lfftw3 -lboost_system -lboost_thread
-}
-
 macx{
+  QMAKE_MAC_SDK = macosx10.9
   DEPENDPATH += /usr/local/lib
   INCLUDEPATH += /usr/local/include
   CONFIG -= ppc ppc64
@@ -85,6 +80,10 @@ macx{
   headers.path = /usr/local/include/$$TARGET
   headers.files = $$HEADERS
   INSTALLS += headers
+}
+
+unix|macx{
+  LIBS += -lfftw3 -lboost_system -lboost_thread
 }
 
 win32{

@@ -19,21 +19,12 @@
 
 *************************************************************************/
 
-#include "keyfinderresulttest.h"
+#ifndef CONSTANTSTEST_H
+#define CONSTANTSTEST_H
 
-TEST (KeyFinderResultTest, ResultConstructorDefaultsWork) {
-  KeyFinder::KeyDetectionResult kdr;
-  ASSERT_EQ(0, kdr.segments.size());
-  ASSERT_EQ(KeyFinder::SILENCE, kdr.globalKeyEstimate);
-}
+#include "_testhelpers.h"
+#include "keyfinder/constants.h"
 
-TEST (KeyFinderResultTest, SegmentConstructorDefaultsWork) {
-  KeyFinder::KeyDetectionResultSegment kdrs;
-  ASSERT_EQ(0, kdrs.firstHop);
-  ASSERT_EQ(0, kdrs.lastHop);
-  ASSERT_EQ(12, kdrs.chromaVector.size());
-  for (unsigned int i = 0; i < 12; i++)
-    ASSERT_FLOAT_EQ(0.0, kdrs.chromaVector[i]);
-  ASSERT_FLOAT_EQ(0.0, kdrs.energy);
-  ASSERT_EQ(KeyFinder::SILENCE, kdrs.key);
-}
+class ConstantsTest : public ::testing::Test { };
+
+#endif // CONSTANTSTEST_H

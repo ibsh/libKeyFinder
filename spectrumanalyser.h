@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -27,7 +27,7 @@
 #include "audiodata.h"
 #include "fftadapter.h"
 #include "chromatransformfactory.h"
-#include "parameters.h"
+#include "constants.h"
 #include "temporalwindowfactory.h"
 #include "windowfunctions.h"
 
@@ -37,7 +37,6 @@ namespace KeyFinder {
   public:
     SpectrumAnalyser(
       unsigned int frameRate,
-      const Parameters& params,
       ChromaTransformFactory* ctFactory,
       TemporalWindowFactory* twFactory
     );
@@ -46,9 +45,6 @@ namespace KeyFinder {
       FftAdapter* const fft
     ) const;
   protected:
-    unsigned int octaves;
-    unsigned int bandsPerSemitone;
-    unsigned int hopSize;
     const ChromaTransform* ct;
     const std::vector<float>* tw;
   };

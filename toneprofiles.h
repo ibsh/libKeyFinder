@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -27,30 +27,17 @@
 
 #include "binode.h"
 #include "constants.h"
-#include "exception.h"
 
 namespace KeyFinder {
 
   class ToneProfile {
   public:
-    ToneProfile(
-      tone_profile_t toneProfile,
-      scale_t scale,
-      bool offsetToC,
-      const std::vector<float>& customProfile = std::vector<float>(24, 0.0)
-    );
+    ToneProfile(const std::vector<float>& customProfile);
     ~ToneProfile();
-    float similarity(
-      similarity_measure_t similarityMeasure,
-      const std::vector<float>& chromaVector,
-      int offset
-    ) const;
+    float cosineSimilarity(const std::vector<float>& chromaVector, int offset) const;
   private:
-    float cosine(const std::vector<float>& chromaVector, int offset) const;
-    float correlation(const std::vector<float>& chromaVector, int offset) const;
     void free();
     Binode<float>* tonic;
-    float profileMean;
   };
 
 }

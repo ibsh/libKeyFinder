@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -24,7 +24,7 @@
 
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <deque>
-#include "exception.h"
+#include "constants.h"
 
 namespace KeyFinder {
 

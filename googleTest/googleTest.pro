@@ -40,16 +40,14 @@ HEADERS += \
     fftadaptertest.h \
     keyclassifiertest.h \
     keyfindertest.h \
-    keyfinderresulttest.h \
     lowpassfiltertest.h \
     lowpassfilterfactorytest.h \
-    parameterstest.h \
-    segmentationtest.h \
     spectrumanalysertest.h \
     temporalwindowfactorytest.h \
     toneprofilestest.h \
     windowfunctiontest.h \
-    workspacetest.h
+    workspacetest.h \
+    constantstest.h
 
 SOURCES += \
     main.cpp \
@@ -63,16 +61,14 @@ SOURCES += \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \
     keyfindertest.cpp \
-    keyfinderresulttest.cpp \
     lowpassfiltertest.cpp \
     lowpassfilterfactorytest.cpp \
-    parameterstest.cpp \
-    segmentationtest.cpp \
     spectrumanalysertest.cpp \
     temporalwindowfactorytest.cpp \
     toneprofilestest.cpp \
     windowfunctiontest.cpp \
-    workspacetest.cpp
+    workspacetest.cpp \
+    constantstest.cpp
 
 unix|macx{
   DEPENDPATH += /usr/local/lib

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -23,24 +23,22 @@
 
 namespace KeyFinder {
 
-  ChromaTransform::ChromaTransform(unsigned int inFrameRate, const Parameters& params) {
+  ChromaTransform::ChromaTransform(unsigned int inFrameRate) {
     frameRate = inFrameRate;
-    chromaBands = params.getOctaves() * params.getBandsPerOctave();
-    unsigned int fftFrameSize = params.getFftFrameSize();
     if (frameRate < 1) {
       throw Exception("Frame rate must be > 0");
     }
-    if (params.getLastFrequency() > frameRate / 2.0) {
+    if (getLastFrequency() > frameRate / 2.0) {
       throw Exception("Analysis frequencies over Nyquist");
     }
-    if (frameRate / (float)fftFrameSize > (params.getFrequencyOfBand(1) - params.getFrequencyOfBand(0))) {
+    if (frameRate / (float)FFTFRAMESIZE > (getFrequencyOfBand(1) - getFrequencyOfBand(0))) {
       throw Exception("Insufficient low-end resolution");
     }
     chromaBandFftBinOffsets.resize(chromaBands, 0);
     directSpectralKernel.resize(chromaBands, std::vector<float>(0, 0.0));
-    float myQFactor = params.getDirectSkStretch() * (pow(2,(1.0 / params.getBandsPerOctave()))-1);
+    float myQFactor = DIRECTSKSTRETCH * (pow(2,(1.0 / SEMITONES))-1);
     for (unsigned int i = 0; i < chromaBands; i++) {
-      float centreOfWindow = params.getFrequencyOfBand(i) * fftFrameSize / inFrameRate;
+      float centreOfWindow = getFrequencyOfBand(i) * FFTFRAMESIZE / inFrameRate;
       float widthOfWindow = centreOfWindow * myQFactor;
       float beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
       float endOfWindow = beginningOfWindow + widthOfWindow;
@@ -53,7 +51,7 @@ namespace KeyFinder {
       }
       // normalisation by sum of coefficients and frequency of bin; models CQT very closely
       for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++) {
-        directSpectralKernel[i][j] = directSpectralKernel[i][j] / sumOfCoefficients * params.getFrequencyOfBand(i);
+        directSpectralKernel[i][j] = directSpectralKernel[i][j] / sumOfCoefficients * getFrequencyOfBand(i);
       }
     }
   }

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -25,30 +25,19 @@
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <vector>
 #include <cmath>
-#include "parameters.h"
+#include "constants.h"
 
 namespace KeyFinder {
 
   class Chromagram {
   public:
-    Chromagram(
-      unsigned int hops = 0,
-      unsigned int octaves = 0,
-      unsigned int bandsPerSemitone = 0
-    );
+    Chromagram(unsigned int hops = 0);
     void append(const Chromagram& that);
     void setMagnitude(unsigned int hop, unsigned int band, float value);
     float getMagnitude(unsigned int hop, unsigned int band) const;
     unsigned int getHops() const;
-    unsigned int getBands() const;
-    unsigned int getBandsPerSemitone() const;
-    unsigned int getOctaves() const;
-    void reduceToOneOctave();
-    void tuningHarte();
-    void tuningBandAdaptive(float detunedBandWeight);
+    std::vector<float> collapseToOneHop() const;
   private:
-    unsigned int bandsPerSemitone;
-    unsigned int octaves;
     std::vector< std::vector<float> > chromaData;
   };
 

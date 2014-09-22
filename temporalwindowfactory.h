@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -32,10 +32,7 @@ namespace KeyFinder {
   public:
     TemporalWindowFactory();
     ~TemporalWindowFactory();
-    const std::vector<float>* getTemporalWindow(
-      unsigned int frameSize,
-      temporal_window_t function
-    );
+    const std::vector<float>* getTemporalWindow(unsigned int frameSize);
   private:
     class TemporalWindowWrapper;
     std::vector<TemporalWindowWrapper*> temporalWindows;
@@ -44,16 +41,11 @@ namespace KeyFinder {
 
   class TemporalWindowFactory::TemporalWindowWrapper {
   public:
-    TemporalWindowWrapper(
-      unsigned int frameSize,
-      temporal_window_t function
-    );
+    TemporalWindowWrapper(unsigned int frameSize);
     unsigned int getFrameSize() const;
-    temporal_window_t getFunction() const;
     const std::vector<float>* getTemporalWindow() const;
   private:
     std::vector<float> temporalWindow;
-    temporal_window_t function;
   };
 
 

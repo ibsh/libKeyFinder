@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -99,7 +99,7 @@ namespace KeyFinder {
       ss << "Cannot set out-of-bounds sample (" << index << "/" << getSampleCount() << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(value)) {
+    if (!std::isfinite(value)) {
       throw Exception("Cannot set sample to NaN");
     }
     samples[index] = value;

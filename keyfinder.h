@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -23,12 +23,9 @@
 #define KEYFINDER_H
 
 #include "audiodata.h"
-#include "parameters.h"
 #include "lowpassfilterfactory.h"
 #include "chromatransformfactory.h"
 #include "spectrumanalyser.h"
-#include "keyfinderresult.h"
-#include "segmentation.h"
 #include "keyclassifier.h"
 
 namespace KeyFinder {
@@ -37,32 +34,22 @@ namespace KeyFinder {
   public:
     void progressiveChromagram(
       AudioData audio,
-      Workspace& workspace,
-      const Parameters& params = Parameters()
+      Workspace& workspace
     );
-    void finalChromagram(
+    void finalChromagram(Workspace& workspace);
+    key_t keyOfChromagram(
       Workspace& workspace,
-      const Parameters& params = Parameters()
-    );
-    KeyDetectionResult keyOfChromagram(
-      Workspace& workspace,
-      const Parameters& params = Parameters()
+      const std::vector<float>& majorProfile,
+      const std::vector<float>& minorProfile
     ) const;
-    KeyDetectionResult keyOfAudio(
-      const AudioData& audio,
-      const Parameters& params = Parameters()
-    );
+    key_t keyOfAudio(const AudioData& audio);
   private:
     void preprocess(
       AudioData& workingAudio,
       Workspace& workspace,
-      const Parameters& params,
       bool flushRemainderBuffer = false
     );
-    void chromagramOfBufferedAudio(
-      Workspace& workspace,
-      const Parameters& params = Parameters()
-    );
+    void chromagramOfBufferedAudio(Workspace& workspace);
     LowPassFilterFactory   lpfFactory;
     ChromaTransformFactory ctFactory;
     TemporalWindowFactory  twFactory;

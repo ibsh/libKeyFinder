@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2014 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -63,7 +63,7 @@ namespace KeyFinder {
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(real)) {
+    if (!std::isfinite(real)) {
       throw Exception("Cannot set sample to NaN");
     }
     priv->inputReal[i] = real;
@@ -134,7 +134,7 @@ namespace KeyFinder {
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(real) || !boost::math::isfinite(imag)) {
+    if (!std::isfinite(real) || !std::isfinite(imag)) {
       throw Exception("Cannot set sample to NaN");
     }
     priv->inputComplex[i][0] = real;
