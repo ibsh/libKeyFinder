@@ -22,8 +22,6 @@
 #ifndef AUDIOSTREAM_H
 #define AUDIOSTREAM_H
 
-#include <boost/math/special_functions/fpclassify.hpp>
-#include <deque>
 #include "constants.h"
 
 namespace KeyFinder {

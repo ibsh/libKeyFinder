@@ -22,10 +22,8 @@
 #ifndef CHROMATRANSFORMFACTORY_H
 #define CHROMATRANSFORMFACTORY_H
 
-#include <boost/thread/mutex.hpp>
-#include <vector>
-#include "chromatransform.h"
 #include "constants.h"
+#include "chromatransform.h"
 
 namespace KeyFinder {
 
@@ -37,7 +35,7 @@ namespace KeyFinder {
   private:
     class ChromaTransformWrapper;
     std::vector<ChromaTransformWrapper*> chromaTransforms;
-    boost::mutex chromaTransformFactoryMutex;
+    std::mutex chromaTransformFactoryMutex;
   };
 
   class ChromaTransformFactory::ChromaTransformWrapper {

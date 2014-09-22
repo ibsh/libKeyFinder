@@ -71,7 +71,7 @@ namespace KeyFinder {
   const LowPassFilter* LowPassFilterFactory::getLowPassFilter(
     unsigned int inOrder, unsigned int inFrameRate, float inCornerFrequency, unsigned int inFftFrameSize
   ) {
-    boost::mutex::scoped_lock lock(LowPassFilterFactoryMutex);
+    lowPassFilterFactoryMutex.lock();
     for (unsigned int i = 0; i < filters.size(); i++) {
       LowPassFilterWrapper* wrapper = filters[i];
       if (
@@ -88,6 +88,7 @@ namespace KeyFinder {
         inOrder, inFrameRate, inCornerFrequency, inFftFrameSize, new LowPassFilter(inOrder, inFrameRate, inCornerFrequency, inFftFrameSize)
       )
     );
+    lowPassFilterFactoryMutex.unlock();
     return filters[filters.size()-1]->getLowPassFilter();
   }
 

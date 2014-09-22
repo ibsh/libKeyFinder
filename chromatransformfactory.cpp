@@ -47,7 +47,8 @@ namespace KeyFinder {
   }
 
   const ChromaTransform* ChromaTransformFactory::getChromaTransform(unsigned int frameRate) {
-    boost::mutex::scoped_lock lock(chromaTransformFactoryMutex);
+
+    chromaTransformFactoryMutex.lock();
     for (unsigned int i = 0; i < chromaTransforms.size(); i++) {
       ChromaTransformWrapper* wrapper = chromaTransforms[i];
       if (wrapper->getFrameRate() == frameRate) {
@@ -55,6 +56,7 @@ namespace KeyFinder {
       }
     }
     chromaTransforms.push_back(new ChromaTransformWrapper(frameRate, new ChromaTransform(frameRate)));
+    chromaTransformFactoryMutex.unlock();
     return chromaTransforms[chromaTransforms.size()-1]->getChromaTransform();
   }
 

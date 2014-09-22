@@ -22,8 +22,7 @@
 #ifndef KEYCLASSIFIER_H
 #define KEYCLASSIFIER_H
 
-#include <vector>
-
+#include "constants.h"
 #include "toneprofiles.h"
 
 namespace KeyFinder {

@@ -22,9 +22,6 @@
 #ifndef WINDOWFUNCTIONS_H
 #define WINDOWFUNCTIONS_H
 
-#include <cmath>
-#include <vector>
-
 #include "constants.h"
 
 namespace KeyFinder {

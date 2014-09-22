@@ -22,11 +22,8 @@
 #ifndef TONEPROFILES_H
 #define TONEPROFILES_H
 
-#include <cmath>
-#include <vector>
-
-#include "binode.h"
 #include "constants.h"
+#include "binode.h"
 
 namespace KeyFinder {
 

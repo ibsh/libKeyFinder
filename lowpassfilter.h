@@ -22,9 +22,7 @@
 #ifndef LOWPASSFILTER_H
 #define LOWPASSFILTER_H
 
-#include <cmath>
-#include <vector>
-
+#include "constants.h"
 #include "audiodata.h"
 #include "workspace.h"
 

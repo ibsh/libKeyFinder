@@ -24,6 +24,8 @@
 
 #include <cmath>
 #include <vector>
+#include <deque>
+#include <mutex>
 #include "exception.h"
 
 #undef  PI

@@ -51,7 +51,7 @@ namespace KeyFinder {
   }
 
   const std::vector<float>* TemporalWindowFactory::getTemporalWindow(unsigned int frameSize) {
-    boost::mutex::scoped_lock lock(temporalWindowFactoryMutex);
+    temporalWindowFactoryMutex.lock();
     for (unsigned int i = 0; i < temporalWindows.size(); i++) {
       TemporalWindowWrapper* wrapper = temporalWindows[i];
       if (wrapper->getFrameSize() == frameSize) {
@@ -59,6 +59,7 @@ namespace KeyFinder {
       }
     }
     temporalWindows.push_back(new TemporalWindowWrapper(frameSize));
+    temporalWindowFactoryMutex.unlock();
     return temporalWindows[temporalWindows.size()-1]->getTemporalWindow();
   }
 

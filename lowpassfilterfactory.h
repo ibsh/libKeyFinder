@@ -22,10 +22,8 @@
 #ifndef LOWPASSFILTERFACTORY_H
 #define LOWPASSFILTERFACTORY_H
 
-#include <boost/thread/mutex.hpp>
-#include <vector>
-#include "lowpassfilter.h"
 #include "constants.h"
+#include "lowpassfilter.h"
 
 namespace KeyFinder {
 
@@ -42,7 +40,7 @@ namespace KeyFinder {
   private:
     class LowPassFilterWrapper;
     std::vector<LowPassFilterWrapper*> filters;
-    boost::mutex LowPassFilterFactoryMutex;
+    std::mutex lowPassFilterFactoryMutex;
   };
 
   class LowPassFilterFactory::LowPassFilterWrapper {

@@ -22,8 +22,7 @@
 #ifndef TEMPORALWINDOWFACTORY_H
 #define TEMPORALWINDOWFACTORY_H
 
-#include <boost/thread/mutex.hpp>
-#include <vector>
+#include "constants.h"
 #include "windowfunctions.h"
 
 namespace KeyFinder {
@@ -36,7 +35,7 @@ namespace KeyFinder {
   private:
     class TemporalWindowWrapper;
     std::vector<TemporalWindowWrapper*> temporalWindows;
-    boost::mutex temporalWindowFactoryMutex;
+    std::mutex temporalWindowFactoryMutex;
   };
 
   class TemporalWindowFactory::TemporalWindowWrapper {
