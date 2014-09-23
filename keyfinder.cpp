@@ -107,13 +107,9 @@ namespace KeyFinder {
     const std::vector<float>& minorProfile
   ) const {
 
-    // working copy of chromagram
-    Chromagram ch(*workspace.chromagram);
-    ch.collapseToOneHop();
-
     // get key estimate
     KeyClassifier classifier(majorProfile, minorProfile);
-    return classifier.classify(ch.collapseToOneHop());
+    return classifier.classify(workspace.chromagram->collapseToOneHop());
   }
 
 }
