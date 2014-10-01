@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "lowpassfiltertest.h"
+#include "_testhelpers.h"
 
 unsigned int frameRate = 44100;
 float magnitude = 32768.0;

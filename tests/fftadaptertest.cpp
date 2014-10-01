@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "fftadaptertest.h"
+#include "_testhelpers.h"
 
 /*
  * TODO: figure out why this test sometimes fails when the FFT Adapter has not

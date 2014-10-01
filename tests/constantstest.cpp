@@ -19,12 +19,16 @@
 
 *************************************************************************/
 
-#ifndef WINDOWFUNCTIONTEST_H
-#define WINDOWFUNCTIONTEST_H
-
 #include "_testhelpers.h"
-#include "keyfinder/windowfunctions.h"
 
-class WindowFunctionTest : public ::testing::Test { };
+TEST (ConstantsTest, aFewDefaultBandFreqs) {
+  ASSERT_NEAR(32.7,    KeyFinder::getFrequencyOfBand(0), 0.01);
+  ASSERT_NEAR(55.0,    KeyFinder::getFrequencyOfBand(9), 0.01);
+  ASSERT_NEAR(1975.53, KeyFinder::getLastFrequency(),  0.01);
+}
 
-#endif // WINDOWFUNCTIONTEST_H
+TEST (ConstantsTest, FreqBounds) {
+  ASSERT_THROW(KeyFinder::getFrequencyOfBand(-1), KeyFinder::Exception);
+  ASSERT_NO_THROW(KeyFinder::getFrequencyOfBand(71));
+  ASSERT_THROW(KeyFinder::getFrequencyOfBand(72), KeyFinder::Exception);
+}

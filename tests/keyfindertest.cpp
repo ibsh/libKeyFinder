@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "keyfindertest.h"
+#include "_testhelpers.h"
 /*
 TEST (KeyFinderTest, BasicUseCase) {
   unsigned int sampleRate = 44100;

@@ -19,32 +19,15 @@
 
 *************************************************************************/
 
-#include "temporalwindowfactorytest.h"
+#include "_testhelpers.h"
 
-TEST (TemporalWindowFactoryTest, FrameSize) {
-  KeyFinder::TemporalWindowFactory twf;
+TEST (ChromaTransformFactoryTest, RepeatedTransformRequests) {
+  KeyFinder::ChromaTransformFactory ctf;
 
-  const std::vector<float>* tw1 = twf.getTemporalWindow(10);
-  ASSERT_EQ(10, tw1->size());
-}
+  const KeyFinder::ChromaTransform* ct1 = ctf.getChromaTransform(4410);
+  const KeyFinder::ChromaTransform* ct2 = ctf.getChromaTransform(4410);
+  const KeyFinder::ChromaTransform* ct3 = ctf.getChromaTransform(4800);
 
-TEST (TemporalWindowFactoryTest, Function) {
-  KeyFinder::TemporalWindowFactory twf;
-
-  const std::vector<float>* tw1 = twf.getTemporalWindow(1000);
-
-  KeyFinder::WindowFunction win;
-  for (unsigned int i = 0; i < 1000; i++)
-    ASSERT_FLOAT_EQ(win.window(KeyFinder::WINDOW_BLACKMAN, i, 1000), tw1->at(i));
-}
-
-TEST (TemporalWindowFactoryTest, RepeatedWindowRequests) {
-  KeyFinder::TemporalWindowFactory twf;
-
-  const std::vector<float>* tw1 = twf.getTemporalWindow(10);
-  const std::vector<float>* tw2 = twf.getTemporalWindow(10);
-  const std::vector<float>* tw3 = twf.getTemporalWindow(12);
-
-  ASSERT_EQ(tw1, tw2);
-  ASSERT_NE(tw2, tw3);
+  ASSERT_EQ(ct1, ct2);
+  ASSERT_NE(ct2, ct3);
 }

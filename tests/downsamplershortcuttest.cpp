@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "downsamplershortcuttest.h"
+#include "_testhelpers.h"
 
 TEST (DownsamplerShortcutTest, EverythingWorksWithShortcutFactor) {
 

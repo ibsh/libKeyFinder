@@ -19,20 +19,15 @@
 
 *************************************************************************/
 
-#include "workspacetest.h"
+#include "_testhelpers.h"
 
-TEST (WorkspaceTest, ConstructorDefaultsWork) {
-  KeyFinder::Workspace w;
+TEST (LowPassFilterFactoryTest, RepeatedFilterRequests) {
+  KeyFinder::LowPassFilterFactory lpff;
 
-  ASSERT_EQ(0, w.preprocessedBuffer.getChannels());
-  ASSERT_EQ(0, w.preprocessedBuffer.getFrameRate());
-  ASSERT_EQ(0, w.preprocessedBuffer.getSampleCount());
+  const KeyFinder::LowPassFilter* lpf1 = lpff.getLowPassFilter(2, 1, 20.0, 8);
+  const KeyFinder::LowPassFilter* lpf2 = lpff.getLowPassFilter(2, 1, 20.0, 8);
+  const KeyFinder::LowPassFilter* lpf3 = lpff.getLowPassFilter(2, 1, 20.0, 16);
 
-  ASSERT_EQ(0, w.remainderBuffer.getChannels());
-  ASSERT_EQ(0, w.remainderBuffer.getFrameRate());
-  ASSERT_EQ(0, w.remainderBuffer.getSampleCount());
-
-  ASSERT_EQ(NULL, w.chromagram);
-  ASSERT_EQ(NULL, w.fftAdapter);
-  ASSERT_EQ(NULL, w.lpfBuffer);
+  ASSERT_EQ(lpf1, lpf2);
+  ASSERT_NE(lpf2, lpf3);
 }

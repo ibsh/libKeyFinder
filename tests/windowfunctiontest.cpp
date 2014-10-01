@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "windowfunctiontest.h"
+#include "_testhelpers.h"
 
 TEST (WindowFunctionTest, AllTemporalWindowsAreSymmetricalAndRangeFrom0To1) {
   KeyFinder::WindowFunction win;
@@ -65,8 +65,10 @@ TEST (WindowFunctionTest, ConvolutionOfPulseAndRectangle) {
   a[width/2] = 1.0;
   std::vector<float> b(width, 1.0);
   std::vector<float> c = win.convolve(a, b);
-  for(unsigned int i = 0; i < width; i++)
-    ASSERT_FLOAT_EQ(1.0 / width, c[i]);
+  for (unsigned int i = 0; i < width; i++) {
+    float a = c[i];
+    ASSERT_FLOAT_EQ(1.0 / width, a);
+  }
 }
 
 TEST (WindowFunctionTest, ConvolutionOfTwoRectangles) {
@@ -89,6 +91,8 @@ TEST (WindowFunctionTest, ConvolutionOfPulseAndCurve) {
   for(unsigned int i = 0; i < width; i++)
     b[i] = win.window(KeyFinder::WINDOW_BLACKMAN, i, width);
   std::vector<float> c = win.convolve(a, b);
-  for(unsigned int i = 0; i < width; i++)
-    ASSERT_FLOAT_EQ(win.window(KeyFinder::WINDOW_BLACKMAN, i, width) / width, c[i]);
+  for(unsigned int i = 0; i < width; i++) {
+    float a = c[i];
+    ASSERT_FLOAT_EQ(win.window(KeyFinder::WINDOW_BLACKMAN, i, width) / width, a);
+  }
 }

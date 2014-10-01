@@ -19,12 +19,20 @@
 
 *************************************************************************/
 
-#ifndef CHROMAGRAMTEST_H
-#define CHROMAGRAMTEST_H
-
 #include "_testhelpers.h"
-#include "keyfinder/chromagram.h"
 
-class ChromagramTest : public ::testing::Test { };
+TEST (WorkspaceTest, ConstructorDefaultsWork) {
+  KeyFinder::Workspace w;
 
-#endif // CHROMAGRAMTEST_H
+  ASSERT_EQ(0, w.preprocessedBuffer.getChannels());
+  ASSERT_EQ(0, w.preprocessedBuffer.getFrameRate());
+  ASSERT_EQ(0, w.preprocessedBuffer.getSampleCount());
+
+  ASSERT_EQ(0, w.remainderBuffer.getChannels());
+  ASSERT_EQ(0, w.remainderBuffer.getFrameRate());
+  ASSERT_EQ(0, w.remainderBuffer.getSampleCount());
+
+  ASSERT_EQ(NULL, w.chromagram);
+  ASSERT_EQ(NULL, w.fftAdapter);
+  ASSERT_EQ(NULL, w.lpfBuffer);
+}

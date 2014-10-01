@@ -59,7 +59,13 @@ namespace KeyFinder {
   }
 
   std::vector<float> Chromagram::collapseToOneHop() const {
-    return std::vector<float>(BANDS, 0.0);
+    std::vector<float> oneHop = std::vector<float>(BANDS, 0.0);
+    for (unsigned int h = 0; h < getHops(); h++) {
+        for (unsigned int b = 0; b < BANDS; b++) {
+            oneHop[b] += getMagnitude(h, b) / getHops();
+        }
+    }
+    return oneHop;
   }
 
   void Chromagram::append(const Chromagram& that) {

@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "toneprofilestest.h"
+#include "_testhelpers.h"
 
 TEST (ToneProfilesTest, ExceptionOnWrongCustomSize) {
   std::vector<float> vec(71, 0.0);

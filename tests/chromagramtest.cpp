@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "chromagramtest.h"
+#include "_testhelpers.h"
 
 TEST (ChromagramTest, ConstructorDefaultsWork) {
   KeyFinder::Chromagram c;
@@ -97,11 +97,14 @@ TEST (ChromagramTest, Append) {
 }
 
 TEST (ChromagramTest, CollapseToOneHop) {
+
   KeyFinder::Chromagram c(3);
-  c.setMagnitude(0,  0, 10.0);
-  c.setMagnitude(0,  0, 15.0);
-  c.setMagnitude(0,  0, 20.0);
-  c.collapseToOneHop();
-  ASSERT_EQ(1, c.getHops());
-  ASSERT_FLOAT_EQ(15.0, c.getMagnitude(0, 0));
+  c.setMagnitude(0, 0, 10.0);
+  c.setMagnitude(1, 0, 15.0);
+  c.setMagnitude(2, 0, 20.0);
+
+  std::vector<float> d = c.collapseToOneHop();
+
+  ASSERT_EQ(72, d.size());
+  ASSERT_FLOAT_EQ(15.0, d[0]);
 }

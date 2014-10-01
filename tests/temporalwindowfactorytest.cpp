@@ -19,12 +19,35 @@
 
 *************************************************************************/
 
-#ifndef CHROMATRANSFORMFACTORYTEST_H
-#define CHROMATRANSFORMFACTORYTEST_H
-
 #include "_testhelpers.h"
-#include "keyfinder/chromatransformfactory.h"
 
-class ChromaTransformFactoryTest : public ::testing::Test { };
+TEST (TemporalWindowFactoryTest, FrameSize) {
+  KeyFinder::TemporalWindowFactory twf;
 
-#endif // CHROMATRANSFORMFACTORYTEST_H
+  const std::vector<float>* tw1 = twf.getTemporalWindow(10);
+  ASSERT_EQ(10, tw1->size());
+}
+
+TEST (TemporalWindowFactoryTest, Function) {
+  KeyFinder::TemporalWindowFactory twf;
+
+  const std::vector<float>* tw1 = twf.getTemporalWindow(1000);
+
+  KeyFinder::WindowFunction win;
+  for (unsigned int i = 0; i < 1000; i++) {
+    float a = win.window(KeyFinder::WINDOW_BLACKMAN, i, 1000);
+    float b = tw1->at(i);
+    ASSERT_FLOAT_EQ(a, b);
+  }
+}
+
+TEST (TemporalWindowFactoryTest, RepeatedWindowRequests) {
+  KeyFinder::TemporalWindowFactory twf;
+
+  const std::vector<float>* tw1 = twf.getTemporalWindow(10);
+  const std::vector<float>* tw2 = twf.getTemporalWindow(10);
+  const std::vector<float>* tw3 = twf.getTemporalWindow(12);
+
+  ASSERT_EQ(tw1, tw2);
+  ASSERT_NE(tw2, tw3);
+}

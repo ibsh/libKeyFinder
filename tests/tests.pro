@@ -26,28 +26,13 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-CONFIG -= ppc ppc64
-CONFIG += x86 x86_64
+CONFIG += c++11
+LIBS += -stdlib=libc++
+QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
 
-HEADERS += \
-    _testhelpers.h \
-    audiodatatest.h \
-    binodetest.h \
-    chromagramtest.h \
-    chromatransformtest.h \
-    chromatransformfactorytest.h \
-    downsamplershortcuttest.h \
-    fftadaptertest.h \
-    keyclassifiertest.h \
-    keyfindertest.h \
-    lowpassfiltertest.h \
-    lowpassfilterfactorytest.h \
-    spectrumanalysertest.h \
-    temporalwindowfactorytest.h \
-    toneprofilestest.h \
-    windowfunctiontest.h \
-    workspacetest.h \
-    constantstest.h
+LIBS += -lkeyfinder
+
+HEADERS += _testhelpers.h
 
 SOURCES += \
     main.cpp \
@@ -57,6 +42,7 @@ SOURCES += \
     chromagramtest.cpp \
     chromatransformtest.cpp \
     chromatransformfactorytest.cpp \
+    constantstest.cpp \
     downsamplershortcuttest.cpp \
     fftadaptertest.cpp \
     keyclassifiertest.cpp \
@@ -67,21 +53,25 @@ SOURCES += \
     temporalwindowfactorytest.cpp \
     toneprofilestest.cpp \
     windowfunctiontest.cpp \
-    workspacetest.cpp \
-    constantstest.cpp
+    workspacetest.cpp
+
+macx{
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
+  QMAKE_MAC_SDK = macosx10.9
+  DEPENDPATH += /usr/local/lib
+  INCLUDEPATH += /usr/local/include
+  CONFIG -= ppc ppc64
+  CONFIG += x86 x86_64
+}
 
 unix|macx{
   DEPENDPATH += /usr/local/lib
-  INCLUDEPATH += /usr/local/include
+  INCLUDEPATH += /usr/local/include catch
   LIBS += -L/usr/local/lib -L/usr/lib
-  LIBS += -lkeyfinder -lboost_system -lboost_thread
 }
 
 win32{
   INCLUDEPATH += C:/minGW32/local/include
   DEPENDPATH += C:/minGW32/local/bin
   LIBS += -LC:/minGW32/local/bin -LC:/minGW32/local/lib
-  LIBS += -lkeyfinder0 -lboost_system-48-mt-1_52 -lboost_thread-48-mt-1_52
 }
-
-LIBS += -lgtest

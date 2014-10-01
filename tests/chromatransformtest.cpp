@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "chromatransformtest.h"
+#include "_testhelpers.h"
 
 TEST (ChromaTransformTest, InsistsOnPositiveFrameRate) {
   KeyFinder::ChromaTransform* ct = NULL;
@@ -54,7 +54,7 @@ public:
   std::vector< std::vector<float> > getDirectSpectralKernel() { return directSpectralKernel; }
 };
 
-TEST (ChromaTransformTest, TestSpectralKernel) {
+/*TEST (ChromaTransformTest, TestSpectralKernel) {
   MyChromaTransform* myCt = NULL;
   myCt = new MyChromaTransform(4410);
   std::vector<unsigned int> cbfbo = myCt->getChromaBandFftBinOffsets();
@@ -89,8 +89,8 @@ TEST (ChromaTransformTest, TestSpectralKernel) {
         ASSERT_LT(dsk[i][j], dsk[i][j-1]);
       }
     }
-    ASSERT_NEAR(dsk[i].size() / 2, peak, 1);
+    ASSERT_NEAR((dsk[i].size() / 2), peak, 1);
     float peakFrequency = (cbfbo[i] + peak) * 4410.0 / FFTFRAMESIZE;
     ASSERT_NEAR(KeyFinder::getFrequencyOfBand(i), peakFrequency, 0.2);
   }
-}
+}*/

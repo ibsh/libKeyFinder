@@ -19,12 +19,5 @@
 
 *************************************************************************/
 
-#ifndef DOWNSAMPLERSHORTCUTTEST_H
-#define DOWNSAMPLERSHORTCUTTEST_H
-
-#include "_testhelpers.h"
-#include "keyfinder/lowpassfilter.h"
-
-class DownsamplerShortcutTest : public ::testing::Test { };
-
-#endif // DOWNSAMPLERSHORTCUTTEST_H
+#define CATCH_CONFIG_MAIN
+#include "catch.hpp"

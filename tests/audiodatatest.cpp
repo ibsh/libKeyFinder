@@ -19,47 +19,47 @@
 
 *************************************************************************/
 
-#include "audiodatatest.h"
+#include "_testhelpers.h"
 
-TEST (AudioDataTest, ConstructorWorks) {
+TEST_CASE ("AudioDataTest/ConstructorWorks") {
   KeyFinder::AudioData a;
   ASSERT_EQ(0, a.getChannels());
   ASSERT_EQ(0, a.getFrameRate());
   ASSERT_EQ(0, a.getSampleCount());
 }
 
-TEST (AudioDataTest, Channels) {
+TEST_CASE ("AudioDataTest/Channels") {
   KeyFinder::AudioData a;
   a.setChannels(2);
   ASSERT_EQ(2, a.getChannels());
   ASSERT_THROW(a.setChannels(0), KeyFinder::Exception);
 }
 
-TEST (AudioDataTest, FrameRate) {
+TEST_CASE ("AudioDataTest/FrameRate") {
   KeyFinder::AudioData a;
   a.setFrameRate(44100);
   ASSERT_EQ(44100, a.getFrameRate());
   ASSERT_THROW(a.setFrameRate(0), KeyFinder::Exception);
 }
 
-TEST (AudioDataTest, SampleInitialisation) {
+TEST_CASE ("AudioDataTest/SampleInitialisation") {
   KeyFinder::AudioData a;
   a.addToSampleCount(100);
   ASSERT_EQ(100, a.getSampleCount());
   // init values
   for (int i = 0; i < 100; i++) {
-    ASSERT_FLOAT_EQ(0.0, a.getSample(i));
+    ASSERT(0.0 == a.getSample(i));
   }
 }
 
-TEST (AudioDataTest, SampleMutator) {
+TEST_CASE ("AudioDataTest/SampleMutator") {
   KeyFinder::AudioData a;
   a.addToSampleCount(1);
   a.setSample(0, 10.0);
   ASSERT_FLOAT_EQ(10.0, a.getSample(0));
 }
 
-TEST (AudioDataTest, SampleMutatorBounds) {
+TEST_CASE ("AudioDataTest/SampleMutatorBounds") {
   KeyFinder::AudioData a;
   a.addToSampleCount(5);
   ASSERT_THROW(a.getSample(-1), KeyFinder::Exception);
@@ -72,13 +72,13 @@ TEST (AudioDataTest, SampleMutatorBounds) {
   ASSERT_THROW(a.setSample(0, NAN), KeyFinder::Exception);
 }
 
-TEST (AudioDataTest, FrameAccessBeforeChannelsInitialised) {
+TEST_CASE ("AudioDataTest/FrameAccessBeforeChannelsInitialised") {
   KeyFinder::AudioData a;
   a.addToSampleCount(4);
   ASSERT_THROW(a.getSampleByFrame(0, 0), KeyFinder::Exception);
 }
 
-TEST (AudioDataTest, FrameMutator) {
+TEST_CASE ("AudioDataTest/FrameMutator") {
   KeyFinder::AudioData a;
   a.setChannels(4);
   a.addToFrameCount(5);
@@ -93,7 +93,7 @@ TEST (AudioDataTest, FrameMutator) {
   ASSERT_FLOAT_EQ(20.0, a.getSampleByFrame(1, 2));
 }
 
-TEST (AudioDataTest, FrameMutatorBounds) {
+TEST_CASE ("AudioDataTest/FrameMutatorBounds") {
   KeyFinder::AudioData a;
   a.setChannels(2);
   a.addToFrameCount(10);
@@ -103,7 +103,7 @@ TEST (AudioDataTest, FrameMutatorBounds) {
   ASSERT_THROW(a.getSampleByFrame( 0, 2), KeyFinder::Exception);
 }
 
-TEST (AudioDataTest, AppendToNew) {
+TEST_CASE ("AudioDataTest/AppendToNew") {
   KeyFinder::AudioData a;
   KeyFinder::AudioData b;
 
@@ -121,7 +121,7 @@ TEST (AudioDataTest, AppendToNew) {
   ASSERT_EQ(1, a.getFrameCount());
 }
 
-TEST (AudioDataTest, PrependToNew) {
+TEST_CASE ("AudioDataTest/PrependToNew") {
   KeyFinder::AudioData a;
   KeyFinder::AudioData b;
 
@@ -139,7 +139,7 @@ TEST (AudioDataTest, PrependToNew) {
   ASSERT_EQ(1, a.getFrameCount());
 }
 
-TEST (AudioDataTest, AppendToInitialised) {
+TEST_CASE ("AudioDataTest/AppendToInitialised") {
   KeyFinder::AudioData a;
   KeyFinder::AudioData b;
 
@@ -170,7 +170,7 @@ TEST (AudioDataTest, AppendToInitialised) {
   ASSERT_FLOAT_EQ(20.0, a.getSampleByFrame(1, 0));
 }
 
-TEST (AudioDataTest, PrependToInitialised) {
+TEST_CASE ("AudioDataTest/PrependToInitialised") {
   KeyFinder::AudioData a;
   KeyFinder::AudioData b;
 
@@ -201,7 +201,7 @@ TEST (AudioDataTest, PrependToInitialised) {
   ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(1, 0));
 }
 
-TEST (AudioDataTest, DiscardFromFront) {
+TEST_CASE ("AudioDataTest/DiscardFromFront") {
   KeyFinder::AudioData a;
 
   a.setChannels(1);
@@ -217,7 +217,7 @@ TEST (AudioDataTest, DiscardFromFront) {
   ASSERT_FLOAT_EQ(10.0, a.getSampleByFrame(0, 0));
 }
 
-TEST (AudioDataTest, SliceFromBack) {
+TEST_CASE ("AudioDataTest/SliceFromBack") {
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(1);
@@ -249,7 +249,7 @@ TEST (AudioDataTest, SliceFromBack) {
   delete b;
 }
 
-TEST (AudioDataTest, MakeMono) {
+TEST_CASE ("AudioDataTest/MakeMono") {
   KeyFinder::AudioData a;
   a.setChannels(2);
   a.addToSampleCount(20);
@@ -263,7 +263,7 @@ TEST (AudioDataTest, MakeMono) {
   }
 }
 
-TEST (AudioDataTest, DownsamplerInsistsOnMonophonicAudio) {
+TEST_CASE ("AudioDataTest/DownsamplerInsistsOnMonophonicAudio") {
   KeyFinder::AudioData a;
   a.setChannels(2);
   a.setFrameRate(100);
@@ -274,7 +274,7 @@ TEST (AudioDataTest, DownsamplerInsistsOnMonophonicAudio) {
   ASSERT_NO_THROW(a.downsample(5));
 }
 
-TEST (AudioDataTest, DownsamplerResamplesIntegralRelationship) {
+TEST_CASE ("AudioDataTest/DownsamplerResamplesIntegralRelationship") {
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(100);
@@ -292,7 +292,7 @@ TEST (AudioDataTest, DownsamplerResamplesIntegralRelationship) {
   ASSERT_FLOAT_EQ(500.0, a.getSample(1));
 }
 
-TEST (AudioDataTest, DownsamplerResamplesNonintegralRelationship) {
+TEST_CASE ("AudioDataTest/DownsamplerResamplesNonintegralRelationship") {
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(100);
@@ -313,7 +313,7 @@ TEST (AudioDataTest, DownsamplerResamplesNonintegralRelationship) {
   ASSERT_FLOAT_EQ(1000.0, a.getSample(2));
 }
 
-TEST (AudioDataTest, DownsamplerResamplesSineWave) {
+TEST_CASE ("AudioDataTest/DownsamplerResamplesSineWave") {
   unsigned int frameRate = 10000;
   unsigned int frames = frameRate * 4;
   float freq = 20;
@@ -334,11 +334,12 @@ TEST (AudioDataTest, DownsamplerResamplesSineWave) {
 
   ASSERT_EQ(newFrameRate, a.getFrameRate());
   ASSERT_EQ(newFrames, a.getSampleCount());
-  for (unsigned int i = 0; i < newFrames; i++)
+  for (unsigned int i = 0; i < newFrames; i++) {
     ASSERT_NEAR(sine_wave(i, freq, newFrameRate, magnitude), a.getSample(i), magnitude * 0.05);
+  }
 }
 
-TEST (AudioDataTest, Iterators) {
+TEST_CASE ("AudioDataTest/Iterators") {
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(1);

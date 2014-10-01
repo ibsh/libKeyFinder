@@ -19,16 +19,26 @@
 
 *************************************************************************/
 
-#include "constantstest.h"
+#include "_testhelpers.h"
 
-TEST (ConstantsTest, aFewDefaultBandFreqs) {
-  ASSERT_NEAR(32.7,    KeyFinder::getFrequencyOfBand(0), 0.01);
-  ASSERT_NEAR(55.0,    KeyFinder::getFrequencyOfBand(9), 0.01);
-  ASSERT_NEAR(1975.53, KeyFinder::getLastFrequency(),  0.01);
+TEST_CASE ("BinodeTest/ConstructorDefaultsWork") {
+  KeyFinder::Binode<float> bf;
+  ASSERT_FLOAT_EQ(0.0, bf.data);
+  ASSERT_EQ(NULL, bf.l);
+  ASSERT_EQ(NULL, bf.r);
+
+  KeyFinder::Binode<int> bi;
+  ASSERT_EQ(0, bi.data);
+  ASSERT_EQ(NULL, bi.l);
+  ASSERT_EQ(NULL, bi.r);
 }
 
-TEST (ConstantsTest, FreqBounds) {
-  ASSERT_THROW(KeyFinder::getFrequencyOfBand(-1), KeyFinder::Exception);
-  ASSERT_NO_THROW(KeyFinder::getFrequencyOfBand(71));
-  ASSERT_THROW(KeyFinder::getFrequencyOfBand(72), KeyFinder::Exception);
+TEST_CASE ("BinodeTest/ConstructorArgumentsWork") {
+  KeyFinder::Binode<float> bf(365.25);
+  ASSERT_FLOAT_EQ(365.25, bf.data);
+  ASSERT_EQ(NULL, bf.l);
+  ASSERT_EQ(NULL, bf.r);
+
+  KeyFinder::Binode<int> bi(14);
+  ASSERT_EQ(14, bi.data);
 }

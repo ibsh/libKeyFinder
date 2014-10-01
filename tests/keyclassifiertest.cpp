@@ -19,7 +19,7 @@
 
 *************************************************************************/
 
-#include "keyclassifiertest.h"
+#include "_testhelpers.h"
 
 /*
 TEST (KeyClassifierTest, DetectsSilence) {
