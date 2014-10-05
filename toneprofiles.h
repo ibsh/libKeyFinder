@@ -34,7 +34,7 @@ namespace KeyFinder {
     float cosineSimilarity(const std::vector<float>& chromaVector, int offset) const;
   private:
     void free();
-    Binode<float>* tonic;
+    std::vector<Binode<float>*> tonics;
   };
 
 }

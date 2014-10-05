@@ -27,20 +27,24 @@ namespace KeyFinder {
 
     if (customProfile.size() != BANDS) throw Exception("Tone profile must have 72 elements");
 
-    // copy into doubly-linked circular list
-    tonic = new Binode<float>((float)customProfile[0]);
-    Binode<float> *q = tonic;
-    for (unsigned int i = 1; i<SEMITONES; i++) {
-      q->r = new Binode<float>((float)customProfile[i]);
-      q->r->l = q;
-      q = q->r;
-    }
-    q->r = tonic;
-    tonic->l = q;
+    for (unsigned int o = 0; o < OCTAVES; o++) {
+      // copy into doubly-linked circular list
+      Binode<float> *tonic = new Binode<float>((float)customProfile[o * SEMITONES]);
+      Binode<float> *q = tonic;
+      for (unsigned int i = 1; i<SEMITONES; i++) {
+        q->r = new Binode<float>((float)customProfile[o * SEMITONES + i]);
+        q->r->l = q;
+        q = q->r;
+      }
+      q->r = tonic;
+      tonic->l = q;
 
-    // offset from A to C (3 semitones)
-    for (unsigned int i=0; i<3; i++) {
-      tonic = tonic->r;
+      // offset from A to C (3 semitones)
+      for (unsigned int i=0; i<3; i++) {
+        tonic = tonic->r;
+      }
+
+      tonics.push_back(tonic);
     }
   }
 
@@ -49,37 +53,44 @@ namespace KeyFinder {
   }
 
   void ToneProfile::free() {
-    Binode<float>* p = tonic;
-    do {
-      Binode<float>* zap = p;
-      p = p->r;
-      delete zap;
-    } while (p!=tonic);
+    for (unsigned int o = 0; o < OCTAVES; o++) {
+      Binode<float>* p = tonics[o];
+      do {
+        Binode<float>* zap = p;
+        p = p->r;
+        delete zap;
+      } while (p != tonics[o]);
+    }
   }
 
-  /*
-  Determines cosine similarity between input vector and profile scale.
-  input = array of 12 floats relating to an octave starting at A natural
-  offset = which scale to test against; 0 = A, 1 = Bb, 2 = B, 3 = C etc
-  */
   float ToneProfile::cosineSimilarity(const std::vector<float>& input, int offset) const {
-    // Rotate starting pointer left for offset. Each step shifts the position
-    // of the tonic one step further right of the starting pointer (or one semitone up).
-    Binode<float>* p = tonic;
-    for (int i=0; i<offset; i++)
-      p = p->l;
+
+    if (input.size() != BANDS) throw Exception("Chroma data must have 72 elements");
+
     float intersection = 0.0;
     float profileNorm = 0.0;
     float inputNorm = 0.0;
-    for (unsigned int i = 0; i < SEMITONES; i++) {
-      intersection += input[i] * p->data;
-      profileNorm += pow((p->data),2);
-      inputNorm += pow((input[i]),2);
-      p = p->r;
+
+    for (unsigned int o = 0; o < OCTAVES; o++) {
+    // Rotate starting pointer left for offset. Each step shifts the position
+    // of the tonic one step further right of the starting pointer (or one semitone up).
+      Binode<float>* p = tonics[o];
+      for (int i=0; i<offset; i++) {
+        p = p->l;
+      }
+      for (unsigned int i = o * SEMITONES; i < (o + 1) * SEMITONES; i++) {
+        intersection += input[i] * p->data;
+        profileNorm += pow((p->data),2);
+        inputNorm += pow((input[i]),2);
+        p = p->r;
+      }
     }
-    if (profileNorm > 0 && inputNorm > 0) // div by zero check
+
+    if (profileNorm > 0 && inputNorm > 0) {
+      // div by zero check
       return intersection / (sqrt(profileNorm) * sqrt(inputNorm));
-    else
+    } else {
       return 0;
+    }
   }
 }
