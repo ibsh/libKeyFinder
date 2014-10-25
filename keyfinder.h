@@ -37,8 +37,8 @@ namespace KeyFinder {
       Workspace& workspace
     );
     void finalChromagram(Workspace& workspace);
-    key_t keyOfChromagram(
-      Workspace& workspace,
+    key_t keyOfChromaVector(
+      const std::vector<float>& chromaVector,
       const std::vector<float>& majorProfile,
       const std::vector<float>& minorProfile
     ) const;
