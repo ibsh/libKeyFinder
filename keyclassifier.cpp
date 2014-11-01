@@ -24,8 +24,8 @@
 namespace KeyFinder {
 
   KeyClassifier::KeyClassifier(
-    const std::vector<float>& majorProfile,
-    const std::vector<float>& minorProfile
+    const std::vector<double>& majorProfile,
+    const std::vector<double>& minorProfile
   ) {
 
     if (majorProfile.size() != BANDS) throw Exception("Tone profile must have 72 elements");
@@ -33,7 +33,7 @@ namespace KeyFinder {
 
     major   = new ToneProfile(majorProfile);
     minor   = new ToneProfile(minorProfile);
-    silence = new ToneProfile(std::vector<float>(BANDS, 0.0));
+    silence = new ToneProfile(std::vector<double>(BANDS, 0.0));
   }
 
   KeyClassifier::~KeyClassifier() {
@@ -42,11 +42,11 @@ namespace KeyFinder {
     delete silence;
   }
 
-  key_t KeyClassifier::classify(const std::vector<float>& chromaVector) {
-    std::vector<float> scores(24);
-    float bestScore = 0.0;
+  key_t KeyClassifier::classify(const std::vector<double>& chromaVector) {
+    std::vector<double> scores(24);
+    double bestScore = 0.0;
     for (unsigned int i = 0; i < SEMITONES; i++) {
-      float score;
+      double score;
       score = major->cosineSimilarity(chromaVector, i); // major
       scores[i*2] = score;
       score = minor->cosineSimilarity(chromaVector, i); // minor

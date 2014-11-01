@@ -39,7 +39,7 @@ namespace KeyFinder {
     LowPassFilterPrivate(
       unsigned int order,
       unsigned int frameRate,
-      float cornerFrequency,
+      double cornerFrequency,
       unsigned int fftFrameSize
     );
     void filter(
@@ -50,11 +50,11 @@ namespace KeyFinder {
     unsigned int order;
     unsigned int delay;         // always order / 2
     unsigned int impulseLength; // always order + 1
-    float gain;
-    std::vector<float> coefficients;
+    double gain;
+    std::vector<double> coefficients;
   };
 
-  LowPassFilter::LowPassFilter(unsigned int order, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
+  LowPassFilter::LowPassFilter(unsigned int order, unsigned int frameRate, double cornerFrequency, unsigned int fftFrameSize) {
     priv = new LowPassFilterPrivate(order, frameRate, cornerFrequency, fftFrameSize);
   }
 
@@ -66,20 +66,20 @@ namespace KeyFinder {
     return &priv->coefficients;
   }
 
-  LowPassFilterPrivate::LowPassFilterPrivate(unsigned int inOrder, unsigned int frameRate, float cornerFrequency, unsigned int fftFrameSize) {
+  LowPassFilterPrivate::LowPassFilterPrivate(unsigned int inOrder, unsigned int frameRate, double cornerFrequency, unsigned int fftFrameSize) {
     if (inOrder % 2 != 0) throw Exception("LPF order must be an even number");
     if (inOrder > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
     order = inOrder;
     delay = order / 2;
     impulseLength = order + 1;
-    float cutoffPoint = cornerFrequency / frameRate;
+    double cutoffPoint = cornerFrequency / frameRate;
     InverseFftAdapter* ifft = new InverseFftAdapter(fftFrameSize);
 
     // Build frequency domain response
-    float tau = 0.5 / cutoffPoint;
+    double tau = 0.5 / cutoffPoint;
     for (unsigned int i = 0; i < fftFrameSize/2; i++) {
-      float input = 0.0;
-      if (i / (float) fftFrameSize <= cutoffPoint) input = tau;
+      double input = 0.0;
+      if (i / (double) fftFrameSize <= cutoffPoint) input = tau;
       ifft->setInput(i, input, 0.0);
       ifft->setInput(fftFrameSize - i - 1, input, 0.0);
     }
@@ -96,7 +96,7 @@ namespace KeyFinder {
     for (unsigned int i = 0; i < impulseLength; i++) {
       // Grabbing the very end and the very beginning of the real FFT output?
       unsigned int index = (fftFrameSize - centre + i) % fftFrameSize;
-      float coeff = ifft->getOutput(index);
+      double coeff = ifft->getOutput(index);
       coeff *= win.window(WINDOW_HAMMING, i, impulseLength);
       coefficients[i] = coeff;
       gain += coeff;
@@ -109,28 +109,28 @@ namespace KeyFinder {
 
     if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
 
-    std::vector<float>* buffer = workspace.lpfBuffer;
+    std::vector<double>* buffer = workspace.lpfBuffer;
 
     if (buffer == NULL) {
-      workspace.lpfBuffer = new std::vector<float>(impulseLength, 0.0);
+      workspace.lpfBuffer = new std::vector<double>(impulseLength, 0.0);
       buffer = workspace.lpfBuffer;
     } else {
       // clear delay buffer
-      std::vector<float>::iterator bufferIterator = buffer->begin();
+      std::vector<double>::iterator bufferIterator = buffer->begin();
       while (bufferIterator < buffer->end()) {
         *bufferIterator = 0.0;
         std::advance(bufferIterator, 1);
       }
     }
 
-    std::vector<float>::iterator bufferFront = buffer->begin();
-    std::vector<float>::iterator bufferBack;
-    std::vector<float>::iterator bufferTemp;
+    std::vector<double>::iterator bufferFront = buffer->begin();
+    std::vector<double>::iterator bufferBack;
+    std::vector<double>::iterator bufferTemp;
 
     unsigned int sampleCount = audio.getSampleCount();
     audio.resetIterators();
 
-    float sum;
+    double sum;
     // for each frame (running off the end of the sample stream by delay)
     for (unsigned int inSample = 0; inSample < sampleCount + delay; inSample++) {
       // shuffle old samples along delay buffer
@@ -154,7 +154,7 @@ namespace KeyFinder {
       if (outSample % shortcutFactor > 0) continue;
       sum = 0.0;
       bufferTemp = bufferFront;
-      std::vector<float>::const_iterator coefficientIterator = coefficients.begin();
+      std::vector<double>::const_iterator coefficientIterator = coefficients.begin();
       while (coefficientIterator < coefficients.end()) {
         sum += *coefficientIterator * *bufferTemp;
         std::advance(coefficientIterator, 1);

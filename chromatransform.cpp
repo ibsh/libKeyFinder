@@ -31,21 +31,21 @@ namespace KeyFinder {
     if (getLastFrequency() > frameRate / 2.0) {
       throw Exception("Analysis frequencies over Nyquist");
     }
-    if (frameRate / (float)FFTFRAMESIZE > (getFrequencyOfBand(1) - getFrequencyOfBand(0))) {
+    if (frameRate / (double)FFTFRAMESIZE > (getFrequencyOfBand(1) - getFrequencyOfBand(0))) {
       throw Exception("Insufficient low-end resolution");
     }
     chromaBandFftBinOffsets.resize(chromaBands, 0);
-    directSpectralKernel.resize(chromaBands, std::vector<float>(0, 0.0));
-    float myQFactor = DIRECTSKSTRETCH * (pow(2,(1.0 / SEMITONES))-1);
+    directSpectralKernel.resize(chromaBands, std::vector<double>(0, 0.0));
+    double myQFactor = DIRECTSKSTRETCH * (pow(2,(1.0 / SEMITONES))-1);
     for (unsigned int i = 0; i < chromaBands; i++) {
-      float centreOfWindow = getFrequencyOfBand(i) * FFTFRAMESIZE / inFrameRate;
-      float widthOfWindow = centreOfWindow * myQFactor;
-      float beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
-      float endOfWindow = beginningOfWindow + widthOfWindow;
-      float sumOfCoefficients = 0.0;
+      double centreOfWindow = getFrequencyOfBand(i) * FFTFRAMESIZE / inFrameRate;
+      double widthOfWindow = centreOfWindow * myQFactor;
+      double beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
+      double endOfWindow = beginningOfWindow + widthOfWindow;
+      double sumOfCoefficients = 0.0;
       chromaBandFftBinOffsets[i] = ceil(beginningOfWindow); // first useful fft bin
       for (unsigned int fftBin = chromaBandFftBinOffsets[i]; fftBin <= floor(endOfWindow); fftBin++) {
-        float coefficient = kernelWindow(fftBin - beginningOfWindow, widthOfWindow);
+        double coefficient = kernelWindow(fftBin - beginningOfWindow, widthOfWindow);
         sumOfCoefficients += coefficient;
         directSpectralKernel[i].push_back(coefficient);
       }
@@ -56,17 +56,17 @@ namespace KeyFinder {
     }
   }
 
-  float ChromaTransform::kernelWindow(float n, float N) const {
+  double ChromaTransform::kernelWindow(double n, double N) const {
     // discretely sampled continuous function, but different to other window functions
     return 1.0 - cos((2 * PI * n) / N);
   }
 
-  std::vector<float> ChromaTransform::chromaVector(const FftAdapter* const fftAdapter) const {
-    std::vector<float> chromaVector(chromaBands);
+  std::vector<double> ChromaTransform::chromaVector(const FftAdapter* const fftAdapter) const {
+    std::vector<double> chromaVector(chromaBands);
     for (unsigned int i = 0; i < chromaBands; i++) {
-      float sum = 0.0;
+      double sum = 0.0;
       for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++) {
-        float magnitude = fftAdapter->getOutputMagnitude(chromaBandFftBinOffsets[i]+j);
+        double magnitude = fftAdapter->getOutputMagnitude(chromaBandFftBinOffsets[i]+j);
         sum += (magnitude * directSpectralKernel[i][j]);
       }
       chromaVector[i] = sum;

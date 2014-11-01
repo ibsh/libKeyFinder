@@ -56,7 +56,7 @@ namespace KeyFinder {
     return frameSize;
   }
 
-  void FftAdapter::setInput(unsigned int i, float real) {
+  void FftAdapter::setInput(unsigned int i, double real) {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -68,7 +68,7 @@ namespace KeyFinder {
     priv->inputReal[i] = real;
   }
 
-  float FftAdapter::getOutputReal(unsigned int i) const {
+  double FftAdapter::getOutputReal(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -77,7 +77,7 @@ namespace KeyFinder {
     return priv->outputComplex[i][0];
   }
 
-  float FftAdapter::getOutputImaginary(unsigned int i) const {
+  double FftAdapter::getOutputImaginary(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -86,7 +86,7 @@ namespace KeyFinder {
     return priv->outputComplex[i][1];
   }
 
-  float FftAdapter::getOutputMagnitude(unsigned int i) const {
+  double FftAdapter::getOutputMagnitude(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -128,7 +128,7 @@ namespace KeyFinder {
     return frameSize;
   }
 
-  void InverseFftAdapter::setInput(unsigned int i, float real, float imag) {
+  void InverseFftAdapter::setInput(unsigned int i, double real, double imag) {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -141,7 +141,7 @@ namespace KeyFinder {
     priv->inputComplex[i][1] = imag;
   }
 
-  float InverseFftAdapter::getOutput(unsigned int i) const {
+  double InverseFftAdapter::getOutput(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";

@@ -29,7 +29,7 @@ namespace KeyFinder {
     progressiveChromagram(originalAudio, workspace);
     finalChromagram(workspace);
 
-    return keyOfChromaVector(workspace.chromagram->collapseToOneHop(), std::vector<float>(BANDS, 0.0), std::vector<float>(BANDS, 0.0));
+    return keyOfChromaVector(workspace.chromagram->collapseToOneHop(), std::vector<double>(BANDS, 0.0), std::vector<double>(BANDS, 0.0));
   }
 
   void KeyFinder::progressiveChromagram(
@@ -48,7 +48,7 @@ namespace KeyFinder {
       preprocess(flush, workspace, true);
     }
     // zero padding
-    unsigned int paddedHopCount = ceil(workspace.preprocessedBuffer.getSampleCount() / (float)HOPSIZE);
+    unsigned int paddedHopCount = ceil(workspace.preprocessedBuffer.getSampleCount() / (double)HOPSIZE);
     unsigned int finalSampleLength = FFTFRAMESIZE + ((paddedHopCount - 1) * HOPSIZE);
     workspace.preprocessedBuffer.addToSampleCount(finalSampleLength - workspace.preprocessedBuffer.getSampleCount());
     chromagramOfBufferedAudio(workspace);
@@ -68,8 +68,8 @@ namespace KeyFinder {
 
     // TODO: there is presumably some good maths to determine filter frequencies.
     // For now, this approximates original experiment values for default params.
-    float lpfCutoff = getLastFrequency() * 1.012;
-    float dsCutoff = getLastFrequency() * 1.10;
+    double lpfCutoff = getLastFrequency() * 1.012;
+    double dsCutoff = getLastFrequency() * 1.10;
     unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
 
     if (!flushRemainderBuffer && workingAudio.getSampleCount() % downsampleFactor != 0) {
@@ -102,9 +102,9 @@ namespace KeyFinder {
   }
 
   key_t KeyFinder::keyOfChromaVector(
-    const std::vector<float>& chromaVector,
-    const std::vector<float>& majorProfile,
-    const std::vector<float>& minorProfile
+    const std::vector<double>& chromaVector,
+    const std::vector<double>& majorProfile,
+    const std::vector<double>& minorProfile
   ) const {
 
     // get key estimate

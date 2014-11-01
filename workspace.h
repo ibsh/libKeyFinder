@@ -37,7 +37,7 @@ namespace KeyFinder {
     AudioData preprocessedBuffer;
     Chromagram* chromagram;
     FftAdapter* fftAdapter;
-    std::vector<float>* lpfBuffer;
+    std::vector<double>* lpfBuffer;
   };
 
 }

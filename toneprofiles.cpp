@@ -23,16 +23,16 @@
 
 namespace KeyFinder {
 
-  ToneProfile::ToneProfile(const std::vector<float>& customProfile) {
+  ToneProfile::ToneProfile(const std::vector<double>& customProfile) {
 
     if (customProfile.size() != BANDS) throw Exception("Tone profile must have 72 elements");
 
     for (unsigned int o = 0; o < OCTAVES; o++) {
       // copy into doubly-linked circular list
-      Binode<float> *tonic = new Binode<float>((float)customProfile[o * SEMITONES]);
-      Binode<float> *q = tonic;
+      Binode<double> *tonic = new Binode<double>((double)customProfile[o * SEMITONES]);
+      Binode<double> *q = tonic;
       for (unsigned int i = 1; i<SEMITONES; i++) {
-        q->r = new Binode<float>((float)customProfile[o * SEMITONES + i]);
+        q->r = new Binode<double>((double)customProfile[o * SEMITONES + i]);
         q->r->l = q;
         q = q->r;
       }
@@ -54,27 +54,27 @@ namespace KeyFinder {
 
   void ToneProfile::free() {
     for (unsigned int o = 0; o < OCTAVES; o++) {
-      Binode<float>* p = tonics[o];
+      Binode<double>* p = tonics[o];
       do {
-        Binode<float>* zap = p;
+        Binode<double>* zap = p;
         p = p->r;
         delete zap;
       } while (p != tonics[o]);
     }
   }
 
-  float ToneProfile::cosineSimilarity(const std::vector<float>& input, int offset) const {
+  double ToneProfile::cosineSimilarity(const std::vector<double>& input, int offset) const {
 
     if (input.size() != BANDS) throw Exception("Chroma data must have 72 elements");
 
-    float intersection = 0.0;
-    float profileNorm = 0.0;
-    float inputNorm = 0.0;
+    double intersection = 0.0;
+    double profileNorm = 0.0;
+    double inputNorm = 0.0;
 
     for (unsigned int o = 0; o < OCTAVES; o++) {
     // Rotate starting pointer left for offset. Each step shifts the position
     // of the tonic one step further right of the starting pointer (or one semitone up).
-      Binode<float>* p = tonics[o];
+      Binode<double>* p = tonics[o];
       for (int i=0; i<offset; i++) {
         p = p->l;
       }

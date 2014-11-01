@@ -34,7 +34,7 @@ namespace KeyFinder {
     const LowPassFilter* getLowPassFilter(
       unsigned int order,
       unsigned int frameRate,
-      float cornerFrequency,
+      double cornerFrequency,
       unsigned int fftFrameSize
     );
   private:
@@ -48,7 +48,7 @@ namespace KeyFinder {
     LowPassFilterWrapper(
       unsigned int order,
       unsigned int frameRate,
-      float cornerFrequency,
+      double cornerFrequency,
       unsigned int fftFrameSize,
       const LowPassFilter* const filter
     );
@@ -56,12 +56,12 @@ namespace KeyFinder {
     const LowPassFilter* getLowPassFilter() const;
     unsigned int getOrder() const;
     unsigned int getFrameRate() const;
-    float getCornerFrequency() const;
+    double getCornerFrequency() const;
     unsigned int getFftFrameSize() const;
   private:
     unsigned int order;
     unsigned int frameRate;
-    float cornerFrequency;
+    double cornerFrequency;
     unsigned int fftFrameSize;
     const LowPassFilter* lowPassFilter;
   };

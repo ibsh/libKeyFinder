@@ -31,7 +31,7 @@ namespace KeyFinder {
   public:
     TemporalWindowFactory();
     ~TemporalWindowFactory();
-    const std::vector<float>* getTemporalWindow(unsigned int frameSize);
+    const std::vector<double>* getTemporalWindow(unsigned int frameSize);
   private:
     class TemporalWindowWrapper;
     std::vector<TemporalWindowWrapper*> temporalWindows;
@@ -42,9 +42,9 @@ namespace KeyFinder {
   public:
     TemporalWindowWrapper(unsigned int frameSize);
     unsigned int getFrameSize() const;
-    const std::vector<float>* getTemporalWindow() const;
+    const std::vector<double>* getTemporalWindow() const;
   private:
-    std::vector<float> temporalWindow;
+    std::vector<double> temporalWindow;
   };
 
 

@@ -28,7 +28,7 @@ namespace KeyFinder {
   ) {
     WindowFunction win;
     temporalWindow.resize(frameSize);
-    std::vector<float>::iterator twIt = temporalWindow.begin();
+    std::vector<double>::iterator twIt = temporalWindow.begin();
     for (unsigned int i = 0; i < frameSize; i++) {
       *twIt = win.window(WINDOW_BLACKMAN, i, frameSize);
       std::advance(twIt, 1);
@@ -39,7 +39,7 @@ namespace KeyFinder {
     return temporalWindow.size();
   }
 
-  const std::vector<float>* TemporalWindowFactory::TemporalWindowWrapper::getTemporalWindow() const {
+  const std::vector<double>* TemporalWindowFactory::TemporalWindowWrapper::getTemporalWindow() const {
     return &temporalWindow;
   }
 
@@ -50,7 +50,7 @@ namespace KeyFinder {
       delete temporalWindows[i];
   }
 
-  const std::vector<float>* TemporalWindowFactory::getTemporalWindow(unsigned int frameSize) {
+  const std::vector<double>* TemporalWindowFactory::getTemporalWindow(unsigned int frameSize) {
     temporalWindowFactoryMutex.lock();
     for (unsigned int i = 0; i < temporalWindows.size(); i++) {
       TemporalWindowWrapper* wrapper = temporalWindows[i];

@@ -35,7 +35,7 @@ namespace KeyFinder {
     LowPassFilter(
       unsigned int order,
       unsigned int frameRate,
-      float cornerFrequency,
+      double cornerFrequency,
       unsigned int fftFrameSize
     );
     void filter(

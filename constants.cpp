@@ -24,7 +24,7 @@
 namespace KeyFinder {
 
 
-  static float FREQUENCIES[] = {
+  static double FREQUENCIES[] = {
     32.7031956625748,
     34.647828872109,
     36.708095989676,
@@ -99,7 +99,7 @@ namespace KeyFinder {
     1975.5332050245
   };
 
-  float getFrequencyOfBand(unsigned int band) {
+  double getFrequencyOfBand(unsigned int band) {
     if (band >= BANDS) {
       std::ostringstream ss;
       ss << "Cannot get frequency of out-of-bounds band index (" << band << "/" << BANDS << ")";
@@ -108,7 +108,7 @@ namespace KeyFinder {
     return FREQUENCIES[band];
   }
 
-  float getLastFrequency() {
+  double getLastFrequency() {
     return FREQUENCIES[BANDS - 1];
   }
 

@@ -68,7 +68,7 @@ namespace KeyFinder {
   }
 
   // get sample by absolute index
-  float AudioData::getSample(unsigned int index) const {
+  double AudioData::getSample(unsigned int index) const {
     if (index >= getSampleCount()) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << index << "/" << getSampleCount() << ")";
@@ -78,7 +78,7 @@ namespace KeyFinder {
   }
 
   // get sample by frame and channel
-  float AudioData::getSampleByFrame(unsigned int frame, unsigned int channel) const {
+  double AudioData::getSampleByFrame(unsigned int frame, unsigned int channel) const {
     if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
@@ -93,7 +93,7 @@ namespace KeyFinder {
   }
 
   // set sample by absolute index
-  void AudioData::setSample(unsigned int index, float value) {
+  void AudioData::setSample(unsigned int index, double value) {
     if (index >= getSampleCount()) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << index << "/" << getSampleCount() << ")";
@@ -106,7 +106,7 @@ namespace KeyFinder {
   }
 
   // set sample by frame and channel
-  void AudioData::setSampleByFrame(unsigned int frame, unsigned int channel, float value) {
+  void AudioData::setSampleByFrame(unsigned int frame, unsigned int channel, double value) {
     if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
@@ -140,10 +140,10 @@ namespace KeyFinder {
 
   void AudioData::reduceToMono() {
     if (channels < 2) return;
-    std::deque<float>::const_iterator readAt = samples.begin();
-    std::deque<float>::iterator writeAt = samples.begin();
+    std::deque<double>::const_iterator readAt = samples.begin();
+    std::deque<double>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {
-      float sum = 0.0;
+      double sum = 0.0;
       for (unsigned int c = 0; c < channels; c++) {
         sum += *readAt;
         std::advance(readAt, 1);
@@ -159,10 +159,10 @@ namespace KeyFinder {
   void AudioData::downsample(unsigned int factor, bool shortcut) {
     if (factor == 1) return;
     if (channels > 1) throw Exception("Apply to monophonic only");
-    std::deque<float>::const_iterator readAt = samples.begin();
-    std::deque<float>::iterator writeAt = samples.begin();
+    std::deque<double>::const_iterator readAt = samples.begin();
+    std::deque<double>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {
-      float mean = 0.0;
+      double mean = 0.0;
       if (shortcut) {
         mean = *readAt;
         std::advance(readAt, factor);
@@ -172,13 +172,13 @@ namespace KeyFinder {
             mean += *readAt;
             std::advance(readAt, 1);
           }
-          mean /= (float)factor;
+          mean /= (double)factor;
         }
       }
       *writeAt = mean;
       std::advance(writeAt, 1);
     }
-    samples.resize(ceil((float)getSampleCount() / (float)factor));
+    samples.resize(ceil((double)getSampleCount() / (double)factor));
     setFrameRate(getFrameRate() / factor);
   }
 
@@ -189,7 +189,7 @@ namespace KeyFinder {
       throw Exception(ss.str().c_str());
     }
     unsigned int discardSampleCount = discardFrameCount * channels;
-    std::deque<float>::iterator discardToHere = samples.begin();
+    std::deque<double>::iterator discardToHere = samples.begin();
     std::advance(discardToHere, discardSampleCount);
     samples.erase(samples.begin(), discardToHere);
   }
@@ -204,9 +204,9 @@ namespace KeyFinder {
     that->channels = channels;
     that->setFrameRate(getFrameRate());
     that->addToSampleCount(sliceSampleCount);
-    std::deque<float>::const_iterator readAt = samples.begin();
+    std::deque<double>::const_iterator readAt = samples.begin();
     std::advance(readAt, getSampleCount() - sliceSampleCount);
-    std::deque<float>::iterator writeAt = that->samples.begin();
+    std::deque<double>::iterator writeAt = that->samples.begin();
     while (readAt < samples.end()) {
       *writeAt = *readAt;
       std::advance(readAt, 1);
@@ -237,11 +237,11 @@ namespace KeyFinder {
     std::advance(writeIterator, by);
   }
 
-  float AudioData::getSampleAtReadIterator() const {
+  double AudioData::getSampleAtReadIterator() const {
     return *readIterator;
   }
 
-  void AudioData::setSampleAtWriteIterator(float value) {
+  void AudioData::setSampleAtWriteIterator(double value) {
     *writeIterator = value;
   }
 

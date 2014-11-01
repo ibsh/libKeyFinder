@@ -38,9 +38,9 @@ namespace KeyFinder {
     );
     void finalChromagram(Workspace& workspace);
     key_t keyOfChromaVector(
-      const std::vector<float>& chromaVector,
-      const std::vector<float>& majorProfile,
-      const std::vector<float>& minorProfile
+      const std::vector<double>& chromaVector,
+      const std::vector<double>& majorProfile,
+      const std::vector<double>& minorProfile
     ) const;
     key_t keyOfAudio(const AudioData& audio);
   private:

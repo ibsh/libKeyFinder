@@ -30,12 +30,12 @@ namespace KeyFinder {
   public:
     Chromagram(unsigned int hops = 0);
     void append(const Chromagram& that);
-    void setMagnitude(unsigned int hop, unsigned int band, float value);
-    float getMagnitude(unsigned int hop, unsigned int band) const;
+    void setMagnitude(unsigned int hop, unsigned int band, double value);
+    double getMagnitude(unsigned int hop, unsigned int band) const;
     unsigned int getHops() const;
-    std::vector<float> collapseToOneHop() const;
+    std::vector<double> collapseToOneHop() const;
   private:
-    std::vector< std::vector<float> > chromaData;
+    std::vector< std::vector<double> > chromaData;
   };
 
 }

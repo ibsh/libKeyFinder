@@ -26,7 +26,7 @@ namespace KeyFinder {
   LowPassFilterFactory::LowPassFilterWrapper::LowPassFilterWrapper(
     unsigned int inOrder,
     unsigned int inFrameRate,
-    float inCornerFrequency,
+    double inCornerFrequency,
     unsigned int inFftFrameSize,
     const LowPassFilter* const inLowPassFilter
   ) {
@@ -53,7 +53,7 @@ namespace KeyFinder {
     return frameRate;
   }
 
-  float LowPassFilterFactory::LowPassFilterWrapper::getCornerFrequency() const {
+  double LowPassFilterFactory::LowPassFilterWrapper::getCornerFrequency() const {
     return cornerFrequency;
   }
 
@@ -69,7 +69,7 @@ namespace KeyFinder {
   }
 
   const LowPassFilter* LowPassFilterFactory::getLowPassFilter(
-    unsigned int inOrder, unsigned int inFrameRate, float inCornerFrequency, unsigned int inFftFrameSize
+    unsigned int inOrder, unsigned int inFrameRate, double inCornerFrequency, unsigned int inFftFrameSize
   ) {
     lowPassFilterFactoryMutex.lock();
     for (unsigned int i = 0; i < filters.size(); i++) {

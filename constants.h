@@ -98,8 +98,8 @@ namespace KeyFinder {
     SCALE_MINOR
   };
 
-  float getFrequencyOfBand(unsigned int band);
-  float getLastFrequency();
+  double getFrequencyOfBand(unsigned int band);
+  double getLastFrequency();
 }
 
 #endif

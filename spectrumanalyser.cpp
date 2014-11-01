@@ -47,15 +47,15 @@ namespace KeyFinder {
     for (unsigned int hop = 0; hop < hops; hop++) {
       audio.resetIterators();
       audio.advanceReadIterator(hop * HOPSIZE);
-      std::vector<float>::const_iterator twIt = tw->begin();
+      std::vector<double>::const_iterator twIt = tw->begin();
       for (unsigned int sample = 0; sample < frmSize; sample++) {
         fftAdapter->setInput(sample, audio.getSampleAtReadIterator() * *twIt);
         audio.advanceReadIterator();
         std::advance(twIt, 1);
       }
       fftAdapter->execute();
-      std::vector<float> cv = ct->chromaVector(fftAdapter);
-      std::vector<float>::const_iterator cvIt = cv.begin();
+      std::vector<double> cv = ct->chromaVector(fftAdapter);
+      std::vector<double>::const_iterator cvIt = cv.begin();
       for (unsigned int band = 0; band < BANDS; band++) {
         ch->setMagnitude(hop, band, *cvIt);
         std::advance(cvIt, 1);

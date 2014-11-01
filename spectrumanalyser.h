@@ -45,7 +45,7 @@ namespace KeyFinder {
     ) const;
   protected:
     const ChromaTransform* ct;
-    const std::vector<float>* tw;
+    const std::vector<double>* tw;
   };
 
 }

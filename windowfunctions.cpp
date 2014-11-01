@@ -23,7 +23,7 @@
 
 namespace KeyFinder {
 
-  float WindowFunction::window(temporal_window_t windowType, int n, int N) const {
+  double WindowFunction::window(temporal_window_t windowType, int n, int N) const {
     if (windowType == WINDOW_HANN) {
       return 0.5 * (1.0 - cos((2 * PI * n)/(N-1)));
     } else if (windowType == WINDOW_HAMMING) {
@@ -33,20 +33,20 @@ namespace KeyFinder {
     }
   }
 
-  float WindowFunction::gaussianWindow(int n, int N, float sigma) const {
+  double WindowFunction::gaussianWindow(int n, int N, double sigma) const {
     return exp(-1 * (pow(n - (N / 2), 2) / (2 * sigma * sigma)));
   }
 
-  std::vector<float> WindowFunction::convolve(
-    const std::vector<float>& input, const std::vector<float>& window
+  std::vector<double> WindowFunction::convolve(
+    const std::vector<double>& input, const std::vector<double>& window
   ) const {
     unsigned int inputSize = input.size();
     unsigned int padding = window.size() / 2;
-    std::vector<float> convolved(inputSize, 0.0);
+    std::vector<double> convolved(inputSize, 0.0);
     // TODO: this implements zero padding for boundary effects,
     // write something mean-based later.
     for (unsigned int sample = 0; sample < inputSize; sample++) {
-      float convolution = 0.0;
+      double convolution = 0.0;
       for (unsigned int k = 0; k < window.size(); k++) {
         int frm = (signed)sample - (signed)padding + (signed)k;
         if (frm >= 0 && frm < (signed)inputSize) // don't run off either end
