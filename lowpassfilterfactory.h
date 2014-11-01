@@ -39,7 +39,7 @@ namespace KeyFinder {
     );
   private:
     class LowPassFilterWrapper;
-    std::vector<LowPassFilterWrapper*> filters;
+    std::vector<LowPassFilterWrapper*> lowPassFilters;
     std::mutex lowPassFilterFactoryMutex;
   };
 

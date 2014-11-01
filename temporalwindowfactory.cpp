@@ -59,8 +59,9 @@ namespace KeyFinder {
       }
     }
     temporalWindows.push_back(new TemporalWindowWrapper(frameSize));
+    unsigned int newTemporalWindowIndex = temporalWindows.size()-1;
     temporalWindowFactoryMutex.unlock();
-    return temporalWindows[temporalWindows.size()-1]->getTemporalWindow();
+    return temporalWindows[newTemporalWindowIndex]->getTemporalWindow();
   }
 
 }

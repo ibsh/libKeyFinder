@@ -56,8 +56,9 @@ namespace KeyFinder {
       }
     }
     chromaTransforms.push_back(new ChromaTransformWrapper(frameRate, new ChromaTransform(frameRate)));
+    unsigned int newChromaTransformIndex = chromaTransforms.size()-1;
     chromaTransformFactoryMutex.unlock();
-    return chromaTransforms[chromaTransforms.size()-1]->getChromaTransform();
+    return chromaTransforms[newChromaTransformIndex]->getChromaTransform();
   }
 
 }

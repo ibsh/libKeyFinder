@@ -61,19 +61,19 @@ namespace KeyFinder {
     return fftFrameSize;
   }
 
-  LowPassFilterFactory::LowPassFilterFactory() : filters(0) { }
+  LowPassFilterFactory::LowPassFilterFactory() : lowPassFilters(0) { }
 
   LowPassFilterFactory::~LowPassFilterFactory() {
-    for (unsigned int i = 0; i < filters.size(); i++)
-      delete filters[i];
+    for (unsigned int i = 0; i < lowPassFilters.size(); i++)
+      delete lowPassFilters[i];
   }
 
   const LowPassFilter* LowPassFilterFactory::getLowPassFilter(
     unsigned int inOrder, unsigned int inFrameRate, double inCornerFrequency, unsigned int inFftFrameSize
   ) {
     lowPassFilterFactoryMutex.lock();
-    for (unsigned int i = 0; i < filters.size(); i++) {
-      LowPassFilterWrapper* wrapper = filters[i];
+    for (unsigned int i = 0; i < lowPassFilters.size(); i++) {
+      LowPassFilterWrapper* wrapper = lowPassFilters[i];
       if (
         wrapper->getOrder() == inOrder &&
         wrapper->getFrameRate() == inFrameRate &&
@@ -83,13 +83,14 @@ namespace KeyFinder {
         return wrapper->getLowPassFilter();
       }
     }
-    filters.push_back(
+    lowPassFilters.push_back(
       new LowPassFilterWrapper(
         inOrder, inFrameRate, inCornerFrequency, inFftFrameSize, new LowPassFilter(inOrder, inFrameRate, inCornerFrequency, inFftFrameSize)
       )
     );
+    unsigned int newLowPassFilterIndex = lowPassFilters.size()-1;
     lowPassFilterFactoryMutex.unlock();
-    return filters[filters.size()-1]->getLowPassFilter();
+    return lowPassFilters[newLowPassFilterIndex]->getLowPassFilter();
   }
 
 }
