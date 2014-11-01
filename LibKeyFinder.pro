@@ -76,8 +76,6 @@ OTHER_FILES += README
 macx{
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
   QMAKE_MAC_SDK = macosx10.9
-  DEPENDPATH += /usr/local/lib
-  INCLUDEPATH += /usr/local/include
   CONFIG -= ppc ppc64
   CONFIG += x86 x86_64
 # installs
@@ -88,6 +86,8 @@ macx{
 }
 
 unix|macx{
+  INCLUDEPATH += /usr/local/include
+  LIBS += -L/usr/local/lib/
   LIBS += -lfftw3
 }
 
