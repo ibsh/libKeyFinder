@@ -32,7 +32,6 @@ namespace KeyFinder {
     ChromaTransform(unsigned int frameRate);
     std::vector<double> chromaVector(const FftAdapter* const fft) const;
   protected:
-    unsigned int chromaBands;
     unsigned int frameRate;
     // ragged 2D array; narrow for bass, wide for treble.
     std::vector< std::vector<double> > directSpectralKernel;

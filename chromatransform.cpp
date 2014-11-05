@@ -24,31 +24,41 @@
 namespace KeyFinder {
 
   ChromaTransform::ChromaTransform(unsigned int inFrameRate) {
+
     frameRate = inFrameRate;
     if (frameRate < 1) {
       throw Exception("Frame rate must be > 0");
     }
+
     if (getLastFrequency() > frameRate / 2.0) {
       throw Exception("Analysis frequencies over Nyquist");
     }
+
     if (frameRate / (double)FFTFRAMESIZE > (getFrequencyOfBand(1) - getFrequencyOfBand(0))) {
       throw Exception("Insufficient low-end resolution");
     }
-    chromaBandFftBinOffsets.resize(chromaBands, 0);
-    directSpectralKernel.resize(chromaBands, std::vector<double>(0, 0.0));
+
+    chromaBandFftBinOffsets.resize(BANDS, 0);
+    directSpectralKernel.resize(BANDS, std::vector<double>(0, 0.0));
+
     double myQFactor = DIRECTSKSTRETCH * (pow(2,(1.0 / SEMITONES))-1);
-    for (unsigned int i = 0; i < chromaBands; i++) {
+
+    for (unsigned int i = 0; i < BANDS; i++) {
+
       double centreOfWindow = getFrequencyOfBand(i) * FFTFRAMESIZE / inFrameRate;
       double widthOfWindow = centreOfWindow * myQFactor;
       double beginningOfWindow = centreOfWindow - (widthOfWindow / 2);
       double endOfWindow = beginningOfWindow + widthOfWindow;
+
       double sumOfCoefficients = 0.0;
+
       chromaBandFftBinOffsets[i] = ceil(beginningOfWindow); // first useful fft bin
       for (unsigned int fftBin = chromaBandFftBinOffsets[i]; fftBin <= floor(endOfWindow); fftBin++) {
         double coefficient = kernelWindow(fftBin - beginningOfWindow, widthOfWindow);
         sumOfCoefficients += coefficient;
         directSpectralKernel[i].push_back(coefficient);
       }
+
       // normalisation by sum of coefficients and frequency of bin; models CQT very closely
       for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++) {
         directSpectralKernel[i][j] = directSpectralKernel[i][j] / sumOfCoefficients * getFrequencyOfBand(i);
@@ -62,8 +72,8 @@ namespace KeyFinder {
   }
 
   std::vector<double> ChromaTransform::chromaVector(const FftAdapter* const fftAdapter) const {
-    std::vector<double> chromaVector(chromaBands);
-    for (unsigned int i = 0; i < chromaBands; i++) {
+    std::vector<double> chromaVector(BANDS);
+    for (unsigned int i = 0; i < BANDS; i++) {
       double sum = 0.0;
       for (unsigned int j = 0; j < directSpectralKernel[i].size(); j++) {
         double magnitude = fftAdapter->getOutputMagnitude(chromaBandFftBinOffsets[i]+j);
