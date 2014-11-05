@@ -59,6 +59,7 @@ namespace KeyFinder {
     Workspace& workspace,
     bool flushRemainderBuffer
   ) {
+
     workingAudio.reduceToMono();
 
     if (workspace.remainderBuffer.getChannels() > 0) {
@@ -72,8 +73,9 @@ namespace KeyFinder {
     double dsCutoff = getLastFrequency() * 1.10;
     unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
 
-    if (!flushRemainderBuffer && workingAudio.getSampleCount() % downsampleFactor != 0) {
-      AudioData* remainder = workingAudio.sliceSamplesFromBack(workingAudio.getSampleCount() % downsampleFactor);
+    unsigned int bufferExcess = workingAudio.getSampleCount() % downsampleFactor;
+    if (!flushRemainderBuffer && bufferExcess != 0) {
+      AudioData* remainder = workingAudio.sliceSamplesFromBack(bufferExcess);
       workspace.remainderBuffer.append(*remainder);
       delete remainder;
     }

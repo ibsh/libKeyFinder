@@ -44,7 +44,7 @@ namespace KeyFinder {
       FftAdapter* const fft
     ) const;
   protected:
-    const ChromaTransform* ct;
+    const ChromaTransform* chromaTransform;
     const std::vector<double>* tw;
   };
 

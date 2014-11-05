@@ -28,7 +28,7 @@ namespace KeyFinder {
     ChromaTransformFactory* spFactory,
     TemporalWindowFactory* twFactory
   ) {
-    ct = spFactory->getChromaTransform(frameRate);
+    chromaTransform = spFactory->getChromaTransform(frameRate);
     tw = twFactory->getTemporalWindow(FFTFRAMESIZE);
   }
 
@@ -36,25 +36,34 @@ namespace KeyFinder {
     AudioData& audio,
     FftAdapter* const fftAdapter
   ) const {
-    if (audio.getChannels() != 1)
+
+    if (audio.getChannels() != 1) {
       throw Exception("Audio must be monophonic to be analysed");
+    }
+
     unsigned int frmSize = fftAdapter->getFrameSize();
     if (audio.getSampleCount() < frmSize) {
       return new Chromagram(0);
     }
+
     unsigned int hops = 1 + ((audio.getSampleCount() - frmSize) / HOPSIZE);
     Chromagram* ch = new Chromagram(hops);
+
     for (unsigned int hop = 0; hop < hops; hop++) {
+
       audio.resetIterators();
       audio.advanceReadIterator(hop * HOPSIZE);
+
       std::vector<double>::const_iterator twIt = tw->begin();
       for (unsigned int sample = 0; sample < frmSize; sample++) {
         fftAdapter->setInput(sample, audio.getSampleAtReadIterator() * *twIt);
         audio.advanceReadIterator();
         std::advance(twIt, 1);
       }
+
       fftAdapter->execute();
-      std::vector<double> cv = ct->chromaVector(fftAdapter);
+
+      std::vector<double> cv = chromaTransform->chromaVector(fftAdapter);
       std::vector<double>::const_iterator cvIt = cv.begin();
       for (unsigned int band = 0; band < BANDS; band++) {
         ch->setMagnitude(hop, band, *cvIt);
