@@ -71,13 +71,7 @@ SOURCES += \
 
 OTHER_FILES += README
 
-unix|macx{
-  LIBS += -lfftw3 -lboost_system -lboost_thread
-}
-
 macx{
-  DEPENDPATH += /usr/local/lib
-  INCLUDEPATH += /usr/local/include
   CONFIG -= ppc ppc64
   CONFIG += x86 x86_64
 # installs
@@ -85,6 +79,12 @@ macx{
   headers.path = /usr/local/include/$$TARGET
   headers.files = $$HEADERS
   INSTALLS += headers
+}
+
+unix|macx{
+  INCLUDEPATH += /usr/local/include
+  LIBS += -L/usr/local/lib/
+  LIBS += -lfftw3 -lboost_system -lboost_thread
 }
 
 win32{
