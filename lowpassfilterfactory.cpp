@@ -71,7 +71,6 @@ namespace KeyFinder {
   const LowPassFilter* LowPassFilterFactory::getLowPassFilter(
     unsigned int inOrder, unsigned int inFrameRate, double inCornerFrequency, unsigned int inFftFrameSize
   ) {
-    lowPassFilterFactoryMutex.lock();
     for (unsigned int i = 0; i < lowPassFilters.size(); i++) {
       LowPassFilterWrapper* wrapper = lowPassFilters[i];
       if (
@@ -83,6 +82,7 @@ namespace KeyFinder {
         return wrapper->getLowPassFilter();
       }
     }
+    lowPassFilterFactoryMutex.lock();
     lowPassFilters.push_back(
       new LowPassFilterWrapper(
         inOrder, inFrameRate, inCornerFrequency, inFftFrameSize, new LowPassFilter(inOrder, inFrameRate, inCornerFrequency, inFftFrameSize)

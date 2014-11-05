@@ -47,14 +47,13 @@ namespace KeyFinder {
   }
 
   const ChromaTransform* ChromaTransformFactory::getChromaTransform(unsigned int frameRate) {
-
-    chromaTransformFactoryMutex.lock();
     for (unsigned int i = 0; i < chromaTransforms.size(); i++) {
       ChromaTransformWrapper* wrapper = chromaTransforms[i];
       if (wrapper->getFrameRate() == frameRate) {
         return wrapper->getChromaTransform();
       }
     }
+    chromaTransformFactoryMutex.lock();
     chromaTransforms.push_back(new ChromaTransformWrapper(frameRate, new ChromaTransform(frameRate)));
     unsigned int newChromaTransformIndex = chromaTransforms.size()-1;
     chromaTransformFactoryMutex.unlock();
