@@ -100,6 +100,9 @@ namespace KeyFinder {
 
   double getFrequencyOfBand(unsigned int band);
   double getLastFrequency();
+
+  const std::vector<double>& toneProfileMajor();
+  const std::vector<double>& toneProfileMinor();
 }
 
 #endif
