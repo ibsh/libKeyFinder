@@ -71,7 +71,7 @@ TEST (LowPassFilterTest, InitialisesNullBuffer) {
 
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(filterOrder, frameRate, cornerFrequency, filterFFT);
   KeyFinder::Workspace w;
-  std::vector<float>* nullPtr = NULL;
+  std::vector<double>* nullPtr = NULL;
   ASSERT_EQ(nullPtr, w.lpfBuffer);
   lpf->filter(a, w);
   ASSERT_NE(nullPtr, w.lpfBuffer);
@@ -193,7 +193,7 @@ TEST (LowPassFilterTest, WorksOnRepetitiveWaves) {
 
 TEST (LowPassFilterTest, DefaultFilterMatchesFisherCoefficients) {
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(160, 44100, 2000.0, 2048);
-  std::vector<float>* myCoeffs = (std::vector<float>*)lpf->getCoefficients();
+  std::vector<double>* myCoeffs = (std::vector<double>*)lpf->getCoefficients();
   delete lpf;
 
   float fisherCoeffsFirstHalf[] = {

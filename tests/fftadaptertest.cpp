@@ -30,7 +30,7 @@
 TEST (FftAdapterTest, ForwardAndBackward) {
 
   unsigned int frameSize = 4096;
-  std::vector<float> original(frameSize);
+  std::vector<double> original(frameSize);
   KeyFinder::FftAdapter forwards(frameSize);
 
   for (unsigned int i = 0; i < frameSize; i++) {
