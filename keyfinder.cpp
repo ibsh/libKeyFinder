@@ -29,7 +29,7 @@ namespace KeyFinder {
     progressiveChromagram(originalAudio, workspace);
     finalChromagram(workspace);
 
-    return keyOfChromaVector(workspace.chromagram->collapseToOneHop(), toneProfileMajor(), toneProfileMinor());
+    return keyOfChromaVector(workspace.chromagram->collapseToOneHop());
   }
 
   void KeyFinder::progressiveChromagram(
@@ -103,15 +103,19 @@ namespace KeyFinder {
     }
   }
 
-  key_t KeyFinder::keyOfChromaVector(
-    const std::vector<double>& chromaVector,
-    const std::vector<double>& majorProfile,
-    const std::vector<double>& minorProfile
-  ) const {
+  key_t KeyFinder::keyOfChromaVector(const std::vector<double>& chromaVector) const {
 
     // get key estimate
-    KeyClassifier classifier(majorProfile, minorProfile);
+    KeyClassifier classifier(toneProfileMajor(), toneProfileMinor());
     return classifier.classify(chromaVector);
   }
+
+  key_t KeyFinder::keyOfChromagram(const Workspace& workspace) const {
+
+    // get key estimate
+    KeyClassifier classifier(toneProfileMajor(), toneProfileMinor());
+    return classifier.classify(workspace.chromagram->collapseToOneHop());
+  }
+
 
 }
