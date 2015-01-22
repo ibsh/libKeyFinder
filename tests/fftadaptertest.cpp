@@ -60,7 +60,7 @@ TEST (FftAdapterTest, ForwardAndBackward) {
     } else if (i == 13) {
       ASSERT_FLOAT_EQ(2000 / 2 * frameSize, out);
     } else if (i == 20) {
-      ASSERT_FLOAT_EQ(500 / 2 * frameSize, out);
+      ASSERT_NEAR(500 / 2 * frameSize, out, 0.1);
     } else {
       ASSERT_GT(5, out);
     }
@@ -77,5 +77,4 @@ TEST (FftAdapterTest, ForwardAndBackward) {
   for (unsigned int i = 0; i < frameSize; i++) {
     ASSERT_NEAR(original[i], backwards.getOutput(i), 0.001);
   }
-
 }
