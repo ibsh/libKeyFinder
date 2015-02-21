@@ -117,5 +117,84 @@ namespace KeyFinder {
     return classifier.classify(workspace.chromagram->collapseToOneHop());
   }
 
-
+  std::string KeyFinder::stringForKey(const key_t key) const {
+        
+      switch (key) {
+          case A_MAJOR:
+              return "A major";
+              break;
+          case A_MINOR:
+              return "A minor";
+              break;
+          case B_FLAT_MAJOR:
+              return "B♭ major";
+              break;
+          case B_FLAT_MINOR:
+              return "B♭ minor";
+              break;
+          case B_MAJOR:
+              return "B major";
+              break;
+          case B_MINOR:
+              return "B minor";
+              break;
+          case C_MAJOR:
+              return "C major";
+              break;
+          case C_MINOR:
+              return "C minor";
+              break;
+          case D_FLAT_MAJOR:
+              return "D♭ major";
+              break;
+          case D_FLAT_MINOR:
+              return "D♭ minor";
+              break;
+          case D_MAJOR:
+              return "D major";
+              break;
+          case D_MINOR:
+              return "D minor";
+              break;
+          case E_FLAT_MAJOR:
+              return "E♭ major";
+              break;
+          case E_FLAT_MINOR:
+              return "E♭ minor";
+              break;
+          case E_MAJOR:
+              return "E major";
+              break;
+          case E_MINOR:
+              return "E minor";
+              break;
+          case F_MAJOR:
+              return "F major";
+              break;
+          case F_MINOR:
+              return "F minor";
+              break;
+          case G_FLAT_MAJOR:
+              return "G♭ major";
+              break;
+          case G_FLAT_MINOR:
+              return "G♭ minor";
+              break;
+          case G_MAJOR:
+              return "G major";
+              break;
+          case G_MINOR:
+              return "G minor";
+              break;
+          case A_FLAT_MAJOR:
+              return "A♭ major";
+              break;
+          case A_FLAT_MINOR:
+              return "A♭ minor";
+              break;
+          default:
+              return "…";
+              break;
+      }
+  }
 }

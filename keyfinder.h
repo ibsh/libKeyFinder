@@ -41,6 +41,7 @@ namespace KeyFinder {
     key_t keyOfChromagram(const Workspace& workspace) const;
     // for analysis of a whole audio file
     key_t keyOfAudio(const AudioData& audio);
+    std::string stringForKey(const key_t key) const;
   private:
     void preprocess(
       AudioData& workingAudio,
