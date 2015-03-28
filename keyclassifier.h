@@ -29,10 +29,7 @@ namespace KeyFinder {
 
   class KeyClassifier {
   public:
-    KeyClassifier(
-      const std::vector<double>& majorProfile,
-      const std::vector<double>& minorProfile
-    );
+    KeyClassifier(const std::vector<double>& majorProfile, const std::vector<double>& minorProfile);
     ~KeyClassifier();
     key_t classify(const std::vector<double>& chromaVector);
   private:

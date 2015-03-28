@@ -89,7 +89,6 @@ namespace KeyFinder {
 
   enum temporal_window_t {
     WINDOW_BLACKMAN,
-    WINDOW_HANN,
     WINDOW_HAMMING
   };
 

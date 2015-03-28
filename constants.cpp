@@ -23,7 +23,7 @@
 
 namespace KeyFinder {
 
-static double FREQUENCIES[] = {
+  static double FREQUENCIES[] = {
     32.7031956625748,
     34.647828872109,
     36.708095989676,
@@ -96,58 +96,58 @@ static double FREQUENCIES[] = {
     1760,
     1864.65504607236,
     1975.5332050245
-};
+  };
 
-double getFrequencyOfBand(unsigned int band) {
+  double getFrequencyOfBand(unsigned int band) {
     if (band >= BANDS) {
-        std::ostringstream ss;
-        ss << "Cannot get frequency of out-of-bounds band index (" << band << "/" << BANDS << ")";
-        throw Exception(ss.str().c_str());
+      std::ostringstream ss;
+      ss << "Cannot get frequency of out-of-bounds band index (" << band << "/" << BANDS << ")";
+      throw Exception(ss.str().c_str());
     }
     return FREQUENCIES[band];
-}
+  }
 
-double getLastFrequency() {
+  double getLastFrequency() {
     return FREQUENCIES[BANDS - 1];
-}
+  }
 
-static double MAJOR_PROFILE[BANDS] = {
+  static double MAJOR_PROFILE[BANDS] = {
     0.590367,0.511196,0.463529,0.547705,0.578197,0.577471,0.521408,0.51501,0.565525,0.471842,0.530646,0.5677,
     0.469045,0.347205,0.4369,0.35776,0.421047,0.497678,0.45982,0.493422,0.869321,0.263126,0.372917,0.476318,
     0.484631,0.377118,0.586315,0.175495,0.499155,0.416563,0.788139,0.490581,0.666977,0.547991,0.349053,0.552369,
     0.89028,0.581749,0.361003,0.710253,0.491727,0.81119,0.454961,0.64412,0.562036,0.926055,0.602864,0.598517,
     0.476712,0.454392,0.431224,0.5092,0.471623,0.514956,0.709271,0.365433,0.377051,0.512927,0.551785,0.666306,
     0.441314,0.450942,0.383653,0.423338,0.415036,0.187509,0.0117283,0.52787,0.48703,0.571977,0.480718,0.58931,
-};
+  };
 
-static double MINOR_PROFILE[BANDS] = {
+  static double MINOR_PROFILE[BANDS] = {
     0.651976,0.460644,0.435801,0.455051,0.462245,0.496864,0.50428,0.490362,0.477778,0.405223,0.492359,0.44178,
     0.654614,0.454992,0.44975,0.576108,0.471863,0.401543,0.455923,0.592709,0.549752,0.277443,0.56678,0.527289,
     0.711141,0.340602,0.43511,0.669186,0.41622,0.453799,0.412935,0.661778,0.423937,0.445397,0.51135,0.455339,
     0.759161,0.307475,0.447751,0.610989,0.458292,0.410662,0.441664,0.723392,0.516989,0.314214,0.495184,0.410861,
     0.687254,0.416202,0.551014,0.585042,0.43786,0.525857,0.436595,0.694656,0.362816,0.413173,0.540443,0.512847,
     0.682956,0.490991,0.523954,0.6005,0.415258,0.584566,0.537484,0.656801,0.389409,0.452719,0.587015,0.427652,
-};
+  };
 
-static std::vector<double> tpMajor;
-static std::vector<double> tpMinor;
+  static std::vector<double> tpMajor;
+  static std::vector<double> tpMinor;
 
-const std::vector<double>& toneProfileMajor() {
+  const std::vector<double>& toneProfileMajor() {
     if (tpMajor.size() == 0) {
-        for (unsigned int b = 0; b < BANDS; b++) {
-            tpMajor.push_back(MAJOR_PROFILE[b]);
-        }
+      for (unsigned int b = 0; b < BANDS; b++) {
+        tpMajor.push_back(MAJOR_PROFILE[b]);
+      }
     }
     return tpMajor;
-}
+  }
 
-const std::vector<double>& toneProfileMinor() {
+  const std::vector<double>& toneProfileMinor() {
     if (tpMinor.size() == 0) {
-        for (unsigned int b = 0; b < BANDS; b++) {
-            tpMinor.push_back(MINOR_PROFILE[b]);
-        }
+      for (unsigned int b = 0; b < BANDS; b++) {
+        tpMinor.push_back(MINOR_PROFILE[b]);
+      }
     }
     return tpMinor;
-}
+  }
 
 }

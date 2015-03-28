@@ -40,10 +40,7 @@ namespace KeyFinder {
 
   class ChromaTransformFactory::ChromaTransformWrapper {
   public:
-    ChromaTransformWrapper(
-      unsigned int frameRate,
-      const ChromaTransform* const transform
-    );
+    ChromaTransformWrapper(unsigned int frameRate, const ChromaTransform* const transform);
     ~ChromaTransformWrapper();
     const ChromaTransform* getChromaTransform() const;
     unsigned int getFrameRate() const;

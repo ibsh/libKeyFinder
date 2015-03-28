@@ -32,21 +32,20 @@ namespace KeyFinder {
 
   class KeyFinder {
   public:
+
     // for progressive analysis
-    void progressiveChromagram(
-      AudioData audio,
-      Workspace& workspace
-    );
+    void progressiveChromagram(AudioData audio, Workspace& workspace);
     void finalChromagram(Workspace& workspace);
     key_t keyOfChromagram(const Workspace& workspace) const;
+
     // for analysis of a whole audio file
     key_t keyOfAudio(const AudioData& audio);
+
+    // for experimentation with alternative tone profiles
+    key_t keyOfChromaVector(const std::vector<double>& chromaVector, const std::vector<double>& overrideMajorProfile, const std::vector<double>& overrideMinorProfile) const;
+
   private:
-    void preprocess(
-      AudioData& workingAudio,
-      Workspace& workspace,
-      bool flushRemainderBuffer = false
-    );
+    void preprocess(AudioData& workingAudio, Workspace& workspace, bool flushRemainderBuffer = false);
     void chromagramOfBufferedAudio(Workspace& workspace);
     key_t keyOfChromaVector(const std::vector<double>& chromaVector) const;
     LowPassFilterFactory   lpfFactory;

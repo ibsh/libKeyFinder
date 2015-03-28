@@ -30,7 +30,9 @@ namespace KeyFinder {
   }
 
   void AudioData::setChannels(unsigned int inChannels) {
-    if (inChannels < 1) throw Exception("New channel count must be > 0");
+    if (inChannels < 1) {
+      throw Exception("New channel count must be > 0");
+    }
     channels = inChannels;
   }
 
@@ -39,7 +41,9 @@ namespace KeyFinder {
   }
 
   void AudioData::setFrameRate(unsigned int inFrameRate) {
-    if (inFrameRate < 1) throw Exception("New frame rate must be > 0");
+    if (inFrameRate < 1) {
+      throw Exception("New frame rate must be > 0");
+    }
     frameRate = inFrameRate;
   }
 
@@ -48,10 +52,12 @@ namespace KeyFinder {
       channels = that.channels;
       frameRate = that.frameRate;
     }
-    if (that.channels != channels)
+    if (that.channels != channels) {
       throw Exception("Cannot append audio data with a different number of channels");
-    if (that.frameRate != frameRate)
+    }
+    if (that.frameRate != frameRate) {
       throw Exception("Cannot append audio data with a different frame rate");
+    }
     samples.insert(samples.end(), that.samples.begin(), that.samples.end());
   }
 
@@ -60,10 +66,12 @@ namespace KeyFinder {
       channels = that.channels;
       frameRate = that.frameRate;
     }
-    if (that.channels != channels)
+    if (that.channels != channels) {
       throw Exception("Cannot prepend audio data with a different number of channels");
-    if (that.frameRate != frameRate)
+    }
+    if (that.frameRate != frameRate) {
       throw Exception("Cannot prepend audio data with a different frame rate");
+    }
     samples.insert(samples.begin(), that.samples.begin(), that.samples.end());
   }
 
@@ -125,7 +133,9 @@ namespace KeyFinder {
   }
 
   void AudioData::addToFrameCount(unsigned int inFrames) {
-    if (channels < 1) throw Exception("Channels must be > 0");
+    if (channels < 1) {
+      throw Exception("Channels must be > 0");
+    }
     addToSampleCount(inFrames * channels);
   }
 
@@ -134,12 +144,16 @@ namespace KeyFinder {
   }
 
   unsigned int AudioData::getFrameCount() const {
-    if (channels < 1) throw Exception("Channels must be > 0");
+    if (channels < 1) {
+      throw Exception("Channels must be > 0");
+    }
     return getSampleCount() / channels;
   }
 
   void AudioData::reduceToMono() {
-    if (channels < 2) return;
+    if (channels < 2) {
+      return;
+    }
     std::deque<double>::const_iterator readAt = samples.begin();
     std::deque<double>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {
@@ -157,8 +171,12 @@ namespace KeyFinder {
 
   // Strictly to be applied AFTER low pass filtering
   void AudioData::downsample(unsigned int factor, bool shortcut) {
-    if (factor == 1) return;
-    if (channels > 1) throw Exception("Apply to monophonic only");
+    if (factor == 1) {
+      return;
+    }
+    if (channels > 1) {
+      throw Exception("Apply to monophonic only");
+    }
     std::deque<double>::const_iterator readAt = samples.begin();
     std::deque<double>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {

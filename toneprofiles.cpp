@@ -25,10 +25,11 @@ namespace KeyFinder {
 
   ToneProfile::ToneProfile(const std::vector<double>& customProfile) {
 
-    if (customProfile.size() != BANDS) throw Exception("Tone profile must have 72 elements");
+    if (customProfile.size() != BANDS) {
+      throw Exception("Tone profile must have 72 elements");
+    }
 
     for (unsigned int o = 0; o < OCTAVES; o++) {
-      // copy into doubly-linked circular list
       Binode<double> *tonic = new Binode<double>((double)customProfile[o * SEMITONES]);
       Binode<double> *q = tonic;
       for (unsigned int i = 1; i<SEMITONES; i++) {
@@ -72,8 +73,8 @@ namespace KeyFinder {
     double inputNorm = 0.0;
 
     for (unsigned int o = 0; o < OCTAVES; o++) {
-    // Rotate starting pointer left for offset. Each step shifts the position
-    // of the tonic one step further right of the starting pointer (or one semitone up).
+      // Rotate starting pointer left for offset. Each step shifts the position
+      // of the tonic one step further right of the starting pointer (or one semitone up).
       Binode<double>* p = tonics[o];
       for (int i=0; i<offset; i++) {
         p = p->l;

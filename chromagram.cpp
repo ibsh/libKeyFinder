@@ -23,9 +23,7 @@
 
 namespace KeyFinder {
 
-  Chromagram::Chromagram(unsigned int hops) :
-    chromaData(hops, std::vector<double>(BANDS, 0.0))
-  { }
+  Chromagram::Chromagram(unsigned int hops) : chromaData(hops, std::vector<double>(BANDS, 0.0)) { }
 
   double Chromagram::getMagnitude(unsigned int hop, unsigned int band) const {
     if (hop >= getHops()) {
@@ -61,9 +59,9 @@ namespace KeyFinder {
   std::vector<double> Chromagram::collapseToOneHop() const {
     std::vector<double> oneHop = std::vector<double>(BANDS, 0.0);
     for (unsigned int h = 0; h < getHops(); h++) {
-        for (unsigned int b = 0; b < BANDS; b++) {
-            oneHop[b] += getMagnitude(h, b) / getHops();
-        }
+      for (unsigned int b = 0; b < BANDS; b++) {
+        oneHop[b] += getMagnitude(h, b) / getHops();
+      }
     }
     return oneHop;
   }

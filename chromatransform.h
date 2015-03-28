@@ -33,9 +33,7 @@ namespace KeyFinder {
     std::vector<double> chromaVector(const FftAdapter* const fft) const;
   protected:
     unsigned int frameRate;
-    // ragged 2D array; narrow for bass, wide for treble.
     std::vector< std::vector<double> > directSpectralKernel;
-    // which fft bin to multiply by first coefficient.
     std::vector<unsigned int> chromaBandFftBinOffsets;
     double kernelWindow(double n, double N) const;
   };

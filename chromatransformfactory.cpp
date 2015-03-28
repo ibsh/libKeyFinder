@@ -23,9 +23,7 @@
 
 namespace KeyFinder {
 
-  ChromaTransformFactory::ChromaTransformWrapper::ChromaTransformWrapper(
-    unsigned int inFrameRate, const ChromaTransform* const inChromaTransform
-  ) : frameRate(inFrameRate), chromaTransform(inChromaTransform) { }
+  ChromaTransformFactory::ChromaTransformWrapper::ChromaTransformWrapper(unsigned int inFrameRate, const ChromaTransform* const inChromaTransform) : frameRate(inFrameRate), chromaTransform(inChromaTransform) { }
 
   ChromaTransformFactory::ChromaTransformWrapper::~ChromaTransformWrapper() {
     delete chromaTransform;
@@ -42,8 +40,9 @@ namespace KeyFinder {
   ChromaTransformFactory::ChromaTransformFactory() : chromaTransforms(0) { }
 
   ChromaTransformFactory::~ChromaTransformFactory() {
-    for (unsigned int i = 0; i < chromaTransforms.size(); i++)
+    for (unsigned int i = 0; i < chromaTransforms.size(); i++) {
       delete chromaTransforms[i];
+    }
   }
 
   const ChromaTransform* ChromaTransformFactory::getChromaTransform(unsigned int frameRate) {

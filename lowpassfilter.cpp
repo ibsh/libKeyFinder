@@ -36,17 +36,8 @@ namespace KeyFinder {
 
   class LowPassFilterPrivate {
   public:
-    LowPassFilterPrivate(
-      unsigned int order,
-      unsigned int frameRate,
-      double cornerFrequency,
-      unsigned int fftFrameSize
-    );
-    void filter(
-      AudioData& audio,
-      Workspace& workspace,
-      unsigned int shortcutFactor = 1
-    ) const;
+    LowPassFilterPrivate(unsigned int order, unsigned int frameRate, double cornerFrequency, unsigned int fftFrameSize);
+    void filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor = 1) const;
     unsigned int order;
     unsigned int delay;         // always order / 2
     unsigned int impulseLength; // always order + 1
@@ -67,8 +58,12 @@ namespace KeyFinder {
   }
 
   LowPassFilterPrivate::LowPassFilterPrivate(unsigned int inOrder, unsigned int frameRate, double cornerFrequency, unsigned int fftFrameSize) {
-    if (inOrder % 2 != 0) throw Exception("LPF order must be an even number");
-    if (inOrder > fftFrameSize / 4) throw Exception("LPF order must be <= FFT frame size / 4");
+    if (inOrder % 2 != 0) {
+      throw Exception("LPF order must be an even number");
+    }
+    if (inOrder > fftFrameSize / 4) {
+      throw Exception("LPF order must be <= FFT frame size / 4");
+    }
     order = inOrder;
     delay = order / 2;
     impulseLength = order + 1;
@@ -79,7 +74,9 @@ namespace KeyFinder {
     double tau = 0.5 / cutoffPoint;
     for (unsigned int i = 0; i < fftFrameSize/2; i++) {
       double input = 0.0;
-      if (i / (double) fftFrameSize <= cutoffPoint) input = tau;
+      if (i / (double) fftFrameSize <= cutoffPoint) {
+        input = tau;
+      }
       ifft->setInput(i, input, 0.0);
       ifft->setInput(fftFrameSize - i - 1, input, 0.0);
     }
@@ -107,7 +104,9 @@ namespace KeyFinder {
 
   void LowPassFilterPrivate::filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor) const {
 
-    if (audio.getChannels() > 1) throw Exception("Monophonic audio only");
+    if (audio.getChannels() > 1) {
+      throw Exception("Monophonic audio only");
+    }
 
     std::vector<double>* buffer = workspace.lpfBuffer;
 
@@ -136,8 +135,9 @@ namespace KeyFinder {
       // shuffle old samples along delay buffer
       bufferBack = bufferFront;
       std::advance(bufferFront, 1);
-      if (bufferFront == buffer->end())
+      if (bufferFront == buffer->end()) {
         bufferFront = buffer->begin();
+      }
 
       // load new sample into back of delay buffer
       if (audio.readIteratorWithinUpperBound()) {
@@ -148,10 +148,13 @@ namespace KeyFinder {
       }
       // start doing the maths once the delay has passed
       int outSample = (signed)inSample - (signed)delay;
-      if (outSample < 0) continue;
-      // and, if shortcut != 1, only do the maths for the useful samples (this
-      // is mathematically dodgy, but it's faster and it usually works);
-      if (outSample % shortcutFactor > 0) continue;
+      if (outSample < 0) {
+        continue;
+      }
+      // and, if shortcut != 1, only do the maths for the useful samples (this is mathematically dodgy, but it's faster and it usually works)
+      if (outSample % shortcutFactor > 0) {
+        continue;
+      }
       sum = 0.0;
       bufferTemp = bufferFront;
       std::vector<double>::const_iterator coefficientIterator = coefficients.begin();
@@ -159,8 +162,9 @@ namespace KeyFinder {
         sum += *coefficientIterator * *bufferTemp;
         std::advance(coefficientIterator, 1);
         std::advance(bufferTemp, 1);
-        if (bufferTemp == buffer->end())
+        if (bufferTemp == buffer->end()) {
           bufferTemp = buffer->begin();
+        }
       }
       audio.setSampleAtWriteIterator(sum);
       audio.advanceWriteIterator(shortcutFactor);

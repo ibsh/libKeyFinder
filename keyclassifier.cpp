@@ -23,13 +23,15 @@
 
 namespace KeyFinder {
 
-  KeyClassifier::KeyClassifier(
-    const std::vector<double>& majorProfile,
-    const std::vector<double>& minorProfile
-  ) {
+  KeyClassifier::KeyClassifier(const std::vector<double>& majorProfile, const std::vector<double>& minorProfile) {
 
-    if (majorProfile.size() != BANDS) throw Exception("Tone profile must have 72 elements");
-    if (minorProfile.size() != BANDS) throw Exception("Tone profile must have 72 elements");
+    if (majorProfile.size() != BANDS) {
+      throw Exception("Tone profile must have 72 elements");
+    }
+
+    if (minorProfile.size() != BANDS) {
+      throw Exception("Tone profile must have 72 elements");
+    }
 
     major   = new ToneProfile(majorProfile);
     minor   = new ToneProfile(minorProfile);

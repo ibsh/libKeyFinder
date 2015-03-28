@@ -23,19 +23,12 @@
 
 namespace KeyFinder {
 
-  SpectrumAnalyser::SpectrumAnalyser(
-    unsigned int frameRate,
-    ChromaTransformFactory* spFactory,
-    TemporalWindowFactory* twFactory
-  ) {
+  SpectrumAnalyser::SpectrumAnalyser(unsigned int frameRate, ChromaTransformFactory* spFactory, TemporalWindowFactory* twFactory) {
     chromaTransform = spFactory->getChromaTransform(frameRate);
     tw = twFactory->getTemporalWindow(FFTFRAMESIZE);
   }
 
-  Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(
-    AudioData& audio,
-    FftAdapter* const fftAdapter
-  ) const {
+  Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(AudioData& audio, FftAdapter* const fftAdapter) const {
 
     if (audio.getChannels() != 1) {
       throw Exception("Audio must be monophonic to be analysed");
