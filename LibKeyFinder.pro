@@ -76,8 +76,8 @@ OTHER_FILES += README
 macx{
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
   QMAKE_MAC_SDK = macosx10.9
-  CONFIG -= ppc ppc64
-  CONFIG += x86 x86_64
+  CONFIG -= ppc ppc64 x86
+  CONFIG += x86_64
 # installs
   QMAKE_LFLAGS_SONAME  = -Wl,-install_name,/usr/local/lib/
   headers.path = /usr/local/include/$$TARGET
