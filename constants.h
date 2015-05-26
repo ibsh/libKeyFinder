@@ -55,8 +55,6 @@
 #undef DIRECTSKSTRETCH
 #define DIRECTSKSTRETCH 0.8
 
-static const unsigned int octaves = 6;
-
 namespace KeyFinder {
 
   enum key_t {

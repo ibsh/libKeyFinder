@@ -22,16 +22,19 @@
 #include "_testhelpers.h"
 
 TEST (WindowFunctionTest, AllTemporalWindowsAreSymmetricalAndRangeFrom0To1) {
+
   KeyFinder::WindowFunction win;
   unsigned int evenWidth = 24;
   unsigned int oddWidth = 25;
-  for (unsigned int w = 0; w < 6; w++) {
+
+  for (unsigned int w = 0; w < 4; w++) {
+
     KeyFinder::temporal_window_t type;
-    if (w % 3 == 0) type = KeyFinder::WINDOW_HANN;
-    else if (w % 3 == 1) type = KeyFinder::WINDOW_HAMMING;
-    else type = KeyFinder::WINDOW_BLACKMAN;
+    if (w % 2 == 0) type = KeyFinder::WINDOW_BLACKMAN;
+    else type = KeyFinder::WINDOW_HAMMING;
+
     unsigned int width;
-    if (w % 2 == 0) width = evenWidth;
+    if (w / 2 == 0) width = evenWidth;
     else width = oddWidth;
 
     ASSERT_NEAR(0.0, win.window(type,         0, width), 0.1);
