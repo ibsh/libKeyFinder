@@ -31,28 +31,28 @@
 #undef  PI
 #define PI 3.1415926535897932384626433832795
 
-#undef SEMITONES
+#undef  SEMITONES
 #define SEMITONES 12 // per octave, obviously
 
-#undef OCTAVES
+#undef  OCTAVES
 #define OCTAVES 6
 
-#undef BANDS
+#undef  BANDS
 #define BANDS (SEMITONES * OCTAVES)
 
-#undef KEYS
+#undef  KEYS
 #define KEYS (SEMITONES * 2)
 
-#undef TONEPROFILESIZE
+#undef  TONEPROFILESIZE
 #define TONEPROFILESIZE (BANDS * 2)
 
-#undef FFTFRAMESIZE
+#undef  FFTFRAMESIZE
 #define FFTFRAMESIZE 16384
 
-#undef HOPSIZE
+#undef  HOPSIZE
 #define HOPSIZE (FFTFRAMESIZE / 4)
 
-#undef DIRECTSKSTRETCH
+#undef  DIRECTSKSTRETCH
 #define DIRECTSKSTRETCH 0.8
 
 namespace KeyFinder {
