@@ -123,9 +123,9 @@ TEST (KeyFinderTest, KeyOfChromagramReturnsSilence) {
 TEST (KeyFinderTest, KeyOfChromagramPassesThroughChromaData) {
   KeyFinder::Workspace w;
   w.chromagram = new KeyFinder::Chromagram(1);
-  w.chromagram->setMagnitude(0, 0, 1.0);
-  w.chromagram->setMagnitude(0, 3, 1.0);
-  w.chromagram->setMagnitude(0, 7, 1.0);
+  w.chromagram->setMagnitude(0, 24 + 0, 10000.0);
+  w.chromagram->setMagnitude(0, 24 + 3, 10000.0);
+  w.chromagram->setMagnitude(0, 24 + 7, 10000.0);
   KeyFinder::KeyFinder kf;
 
   ASSERT_EQ(KeyFinder::C_MINOR, kf.keyOfChromagram(w));
@@ -134,9 +134,9 @@ TEST (KeyFinderTest, KeyOfChromagramPassesThroughChromaData) {
 TEST (KeyFinderTest, KeyOfChromagramCollapsesTimeDimension) {
   KeyFinder::Workspace w;
   w.chromagram = new KeyFinder::Chromagram(5);
-  w.chromagram->setMagnitude(2, 0, 1.0);
-  w.chromagram->setMagnitude(2, 3, 1.0);
-  w.chromagram->setMagnitude(2, 7, 1.0);
+  w.chromagram->setMagnitude(1, 24 + 0, 1.0);
+  w.chromagram->setMagnitude(2, 24 + 3, 1.0);
+  w.chromagram->setMagnitude(3, 24 + 7, 1.0);
   KeyFinder::KeyFinder kf;
   ASSERT_EQ(KeyFinder::C_MINOR, kf.keyOfChromagram(w));
 }
