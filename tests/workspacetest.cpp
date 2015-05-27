@@ -19,37 +19,20 @@
 
 *************************************************************************/
 
-#ifndef TEMPORALWINDOWFACTORY_H
-#define TEMPORALWINDOWFACTORY_H
+#include "_testhelpers.h"
 
-#include "constants.h"
-#include "windowfunctions.h"
+TEST (WorkspaceTest, ConstructorDefaultsWork) {
+  KeyFinder::Workspace w;
 
-namespace KeyFinder {
+  ASSERT_EQ(0, w.preprocessedBuffer.getChannels());
+  ASSERT_EQ(0, w.preprocessedBuffer.getFrameRate());
+  ASSERT_EQ(0, w.preprocessedBuffer.getSampleCount());
 
-  class TemporalWindowFactory {
-  public:
-    TemporalWindowFactory();
-    ~TemporalWindowFactory();
-    const std::vector<double>* getTemporalWindow(unsigned int frameSize);
-  private:
-    class TemporalWindowWrapper;
-    std::vector<TemporalWindowWrapper*> temporalWindows;
-    std::mutex temporalWindowFactoryMutex;
-  };
+  ASSERT_EQ(0, w.remainderBuffer.getChannels());
+  ASSERT_EQ(0, w.remainderBuffer.getFrameRate());
+  ASSERT_EQ(0, w.remainderBuffer.getSampleCount());
 
-  class TemporalWindowFactory::TemporalWindowWrapper {
-  public:
-    TemporalWindowWrapper(unsigned int frameSize);
-    unsigned int getFrameSize() const;
-    const std::vector<double>* getTemporalWindow() const;
-  private:
-    std::vector<double> temporalWindow;
-  };
-
-
-
-
+  ASSERT_EQ(NULL, w.chromagram);
+  ASSERT_EQ(NULL, w.fftAdapter);
+  ASSERT_EQ(NULL, w.lpfBuffer);
 }
-
-#endif

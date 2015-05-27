@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,24 +22,20 @@
 #ifndef CHROMATRANSFORM_H
 #define CHROMATRANSFORM_H
 
-#include "exception.h"
-#include "parameters.h"
+#include "constants.h"
 #include "fftadapter.h"
 
 namespace KeyFinder {
 
   class ChromaTransform {
   public:
-    ChromaTransform(unsigned int frameRate, const Parameters& params);
-    std::vector<float> chromaVector(const FftAdapter* const fft) const;
+    ChromaTransform(unsigned int frameRate);
+    std::vector<double> chromaVector(const FftAdapter* const fft) const;
   protected:
-    unsigned int chromaBands;
     unsigned int frameRate;
-    // ragged 2D array; narrow for bass, wide for treble.
-    std::vector< std::vector<float> > directSpectralKernel;
-    // which fft bin to multiply by first coefficient.
+    std::vector< std::vector<double> > directSpectralKernel;
     std::vector<unsigned int> chromaBandFftBinOffsets;
-    float kernelWindow(float n, float N) const;
+    double kernelWindow(double n, double N) const;
   };
 
 }

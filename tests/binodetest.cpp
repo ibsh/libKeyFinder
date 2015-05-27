@@ -19,37 +19,26 @@
 
 *************************************************************************/
 
-#ifndef TEMPORALWINDOWFACTORY_H
-#define TEMPORALWINDOWFACTORY_H
+#include "_testhelpers.h"
 
-#include "constants.h"
-#include "windowfunctions.h"
+TEST_CASE ("BinodeTest/ConstructorDefaultsWork") {
+  KeyFinder::Binode<float> bf;
+  ASSERT_FLOAT_EQ(0.0, bf.data);
+  ASSERT_EQ(NULL, bf.l);
+  ASSERT_EQ(NULL, bf.r);
 
-namespace KeyFinder {
-
-  class TemporalWindowFactory {
-  public:
-    TemporalWindowFactory();
-    ~TemporalWindowFactory();
-    const std::vector<double>* getTemporalWindow(unsigned int frameSize);
-  private:
-    class TemporalWindowWrapper;
-    std::vector<TemporalWindowWrapper*> temporalWindows;
-    std::mutex temporalWindowFactoryMutex;
-  };
-
-  class TemporalWindowFactory::TemporalWindowWrapper {
-  public:
-    TemporalWindowWrapper(unsigned int frameSize);
-    unsigned int getFrameSize() const;
-    const std::vector<double>* getTemporalWindow() const;
-  private:
-    std::vector<double> temporalWindow;
-  };
-
-
-
-
+  KeyFinder::Binode<int> bi;
+  ASSERT_EQ(0, bi.data);
+  ASSERT_EQ(NULL, bi.l);
+  ASSERT_EQ(NULL, bi.r);
 }
 
-#endif
+TEST_CASE ("BinodeTest/ConstructorArgumentsWork") {
+  KeyFinder::Binode<float> bf(365.25);
+  ASSERT_FLOAT_EQ(365.25, bf.data);
+  ASSERT_EQ(NULL, bf.l);
+  ASSERT_EQ(NULL, bf.r);
+
+  KeyFinder::Binode<int> bi(14);
+  ASSERT_EQ(14, bi.data);
+}

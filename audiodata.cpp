@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -30,7 +30,9 @@ namespace KeyFinder {
   }
 
   void AudioData::setChannels(unsigned int inChannels) {
-    if (inChannels < 1) throw Exception("New channel count must be > 0");
+    if (inChannels < 1) {
+      throw Exception("New channel count must be > 0");
+    }
     channels = inChannels;
   }
 
@@ -39,7 +41,9 @@ namespace KeyFinder {
   }
 
   void AudioData::setFrameRate(unsigned int inFrameRate) {
-    if (inFrameRate < 1) throw Exception("New frame rate must be > 0");
+    if (inFrameRate < 1) {
+      throw Exception("New frame rate must be > 0");
+    }
     frameRate = inFrameRate;
   }
 
@@ -48,10 +52,12 @@ namespace KeyFinder {
       channels = that.channels;
       frameRate = that.frameRate;
     }
-    if (that.channels != channels)
+    if (that.channels != channels) {
       throw Exception("Cannot append audio data with a different number of channels");
-    if (that.frameRate != frameRate)
+    }
+    if (that.frameRate != frameRate) {
       throw Exception("Cannot append audio data with a different frame rate");
+    }
     samples.insert(samples.end(), that.samples.begin(), that.samples.end());
   }
 
@@ -60,15 +66,17 @@ namespace KeyFinder {
       channels = that.channels;
       frameRate = that.frameRate;
     }
-    if (that.channels != channels)
+    if (that.channels != channels) {
       throw Exception("Cannot prepend audio data with a different number of channels");
-    if (that.frameRate != frameRate)
+    }
+    if (that.frameRate != frameRate) {
       throw Exception("Cannot prepend audio data with a different frame rate");
+    }
     samples.insert(samples.begin(), that.samples.begin(), that.samples.end());
   }
 
   // get sample by absolute index
-  float AudioData::getSample(unsigned int index) const {
+  double AudioData::getSample(unsigned int index) const {
     if (index >= getSampleCount()) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << index << "/" << getSampleCount() << ")";
@@ -78,7 +86,7 @@ namespace KeyFinder {
   }
 
   // get sample by frame and channel
-  float AudioData::getSampleByFrame(unsigned int frame, unsigned int channel) const {
+  double AudioData::getSampleByFrame(unsigned int frame, unsigned int channel) const {
     if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
@@ -93,20 +101,20 @@ namespace KeyFinder {
   }
 
   // set sample by absolute index
-  void AudioData::setSample(unsigned int index, float value) {
+  void AudioData::setSample(unsigned int index, double value) {
     if (index >= getSampleCount()) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << index << "/" << getSampleCount() << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(value)) {
+    if (!std::isfinite(value)) {
       throw Exception("Cannot set sample to NaN");
     }
     samples[index] = value;
   }
 
   // set sample by frame and channel
-  void AudioData::setSampleByFrame(unsigned int frame, unsigned int channel, float value) {
+  void AudioData::setSampleByFrame(unsigned int frame, unsigned int channel, double value) {
     if (frame >= getFrameCount()) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds frame (" << frame << "/" << getFrameCount() << ")";
@@ -125,7 +133,9 @@ namespace KeyFinder {
   }
 
   void AudioData::addToFrameCount(unsigned int inFrames) {
-    if (channels < 1) throw Exception("Channels must be > 0");
+    if (channels < 1) {
+      throw Exception("Channels must be > 0");
+    }
     addToSampleCount(inFrames * channels);
   }
 
@@ -134,16 +144,20 @@ namespace KeyFinder {
   }
 
   unsigned int AudioData::getFrameCount() const {
-    if (channels < 1) throw Exception("Channels must be > 0");
+    if (channels < 1) {
+      throw Exception("Channels must be > 0");
+    }
     return getSampleCount() / channels;
   }
 
   void AudioData::reduceToMono() {
-    if (channels < 2) return;
-    std::deque<float>::const_iterator readAt = samples.begin();
-    std::deque<float>::iterator writeAt = samples.begin();
+    if (channels < 2) {
+      return;
+    }
+    std::deque<double>::const_iterator readAt = samples.begin();
+    std::deque<double>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {
-      float sum = 0.0;
+      double sum = 0.0;
       for (unsigned int c = 0; c < channels; c++) {
         sum += *readAt;
         std::advance(readAt, 1);
@@ -157,12 +171,16 @@ namespace KeyFinder {
 
   // Strictly to be applied AFTER low pass filtering
   void AudioData::downsample(unsigned int factor, bool shortcut) {
-    if (factor == 1) return;
-    if (channels > 1) throw Exception("Apply to monophonic only");
-    std::deque<float>::const_iterator readAt = samples.begin();
-    std::deque<float>::iterator writeAt = samples.begin();
+    if (factor == 1) {
+      return;
+    }
+    if (channels > 1) {
+      throw Exception("Apply to monophonic only");
+    }
+    std::deque<double>::const_iterator readAt = samples.begin();
+    std::deque<double>::iterator writeAt = samples.begin();
     while (readAt < samples.end()) {
-      float mean = 0.0;
+      double mean = 0.0;
       if (shortcut) {
         mean = *readAt;
         std::advance(readAt, factor);
@@ -172,13 +190,13 @@ namespace KeyFinder {
             mean += *readAt;
             std::advance(readAt, 1);
           }
-          mean /= (float)factor;
+          mean /= (double)factor;
         }
       }
       *writeAt = mean;
       std::advance(writeAt, 1);
     }
-    samples.resize(ceil((float)getSampleCount() / (float)factor));
+    samples.resize(ceil((double)getSampleCount() / (double)factor));
     setFrameRate(getFrameRate() / factor);
   }
 
@@ -189,30 +207,37 @@ namespace KeyFinder {
       throw Exception(ss.str().c_str());
     }
     unsigned int discardSampleCount = discardFrameCount * channels;
-    std::deque<float>::iterator discardToHere = samples.begin();
+    std::deque<double>::iterator discardToHere = samples.begin();
     std::advance(discardToHere, discardSampleCount);
     samples.erase(samples.begin(), discardToHere);
   }
 
   AudioData* AudioData::sliceSamplesFromBack(unsigned int sliceSampleCount) {
+
     if (sliceSampleCount > getSampleCount()) {
       std::ostringstream ss;
       ss << "Cannot slice " << sliceSampleCount << " samples of " << getSampleCount();
       throw Exception(ss.str().c_str());
     }
+
+    unsigned int samplesToLeaveIntact = getSampleCount() - sliceSampleCount;
+
     AudioData* that = new AudioData();
     that->channels = channels;
     that->setFrameRate(getFrameRate());
     that->addToSampleCount(sliceSampleCount);
-    std::deque<float>::const_iterator readAt = samples.begin();
-    std::advance(readAt, getSampleCount() - sliceSampleCount);
-    std::deque<float>::iterator writeAt = that->samples.begin();
+
+    std::deque<double>::const_iterator readAt = samples.begin();
+    std::advance(readAt, samplesToLeaveIntact);
+    std::deque<double>::iterator writeAt = that->samples.begin();
     while (readAt < samples.end()) {
       *writeAt = *readAt;
       std::advance(readAt, 1);
       std::advance(writeAt, 1);
     }
-    samples.resize(getSampleCount() - sliceSampleCount);
+
+    samples.resize(samplesToLeaveIntact);
+
     return that;
   }
 
@@ -237,11 +262,11 @@ namespace KeyFinder {
     std::advance(writeIterator, by);
   }
 
-  float AudioData::getSampleAtReadIterator() const {
+  double AudioData::getSampleAtReadIterator() const {
     return *readIterator;
   }
 
-  void AudioData::setSampleAtWriteIterator(float value) {
+  void AudioData::setSampleAtWriteIterator(double value) {
     *writeIterator = value;
   }
 

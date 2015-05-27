@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -24,12 +24,10 @@
 // Included here to allow substitution of a separate implementation .cpp
 #include <cmath>
 #include <fftw3.h>
-#include <boost/math/special_functions/fpclassify.hpp>
-#include <boost/thread/mutex.hpp>
 
 namespace KeyFinder {
 
-  boost::mutex fftwPlanMutex;
+  std::mutex fftwPlanMutex;
 
   class FftAdapterPrivate {
   public:
@@ -42,8 +40,9 @@ namespace KeyFinder {
     frameSize = inFrameSize;
     priv->inputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
     priv->outputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
-    boost::mutex::scoped_lock lock(fftwPlanMutex);
+    fftwPlanMutex.lock();
     priv->plan = fftw_plan_dft_r2c_1d(frameSize, priv->inputReal, priv->outputComplex, FFTW_ESTIMATE);
+    fftwPlanMutex.unlock();
   }
 
   FftAdapter::~FftAdapter() {
@@ -57,19 +56,19 @@ namespace KeyFinder {
     return frameSize;
   }
 
-  void FftAdapter::setInput(unsigned int i, float real) {
+  void FftAdapter::setInput(unsigned int i, double real) {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(real)) {
+    if (!std::isfinite(real)) {
       throw Exception("Cannot set sample to NaN");
     }
     priv->inputReal[i] = real;
   }
 
-  float FftAdapter::getOutputReal(unsigned int i) const {
+  double FftAdapter::getOutputReal(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -78,7 +77,7 @@ namespace KeyFinder {
     return priv->outputComplex[i][0];
   }
 
-  float FftAdapter::getOutputImaginary(unsigned int i) const {
+  double FftAdapter::getOutputImaginary(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -87,7 +86,7 @@ namespace KeyFinder {
     return priv->outputComplex[i][1];
   }
 
-  float FftAdapter::getOutputMagnitude(unsigned int i) const {
+  double FftAdapter::getOutputMagnitude(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";
@@ -113,8 +112,9 @@ namespace KeyFinder {
     frameSize = inFrameSize;
     priv->inputComplex = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * frameSize);
     priv->outputReal = (double*)fftw_malloc(sizeof(double) * frameSize);
-    boost::mutex::scoped_lock lock(fftwPlanMutex);
+    fftwPlanMutex.lock();
     priv->plan = fftw_plan_dft_c2r_1d(frameSize, priv->inputComplex, priv->outputReal, FFTW_ESTIMATE);
+    fftwPlanMutex.unlock();
   }
 
   InverseFftAdapter::~InverseFftAdapter() {
@@ -128,20 +128,20 @@ namespace KeyFinder {
     return frameSize;
   }
 
-  void InverseFftAdapter::setInput(unsigned int i, float real, float imag) {
+  void InverseFftAdapter::setInput(unsigned int i, double real, double imag) {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot set out-of-bounds sample (" << i << "/" << frameSize << ")";
       throw Exception(ss.str().c_str());
     }
-    if (!boost::math::isfinite(real) || !boost::math::isfinite(imag)) {
+    if (!std::isfinite(real) || !std::isfinite(imag)) {
       throw Exception("Cannot set sample to NaN");
     }
     priv->inputComplex[i][0] = real;
     priv->inputComplex[i][1] = imag;
   }
 
-  float InverseFftAdapter::getOutput(unsigned int i) const {
+  double InverseFftAdapter::getOutput(unsigned int i) const {
     if (i >= frameSize) {
       std::ostringstream ss;
       ss << "Cannot get out-of-bounds sample (" << i << "/" << frameSize << ")";

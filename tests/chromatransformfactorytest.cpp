@@ -19,37 +19,15 @@
 
 *************************************************************************/
 
-#ifndef TEMPORALWINDOWFACTORY_H
-#define TEMPORALWINDOWFACTORY_H
+#include "_testhelpers.h"
 
-#include "constants.h"
-#include "windowfunctions.h"
+TEST (ChromaTransformFactoryTest, RepeatedTransformRequests) {
+  KeyFinder::ChromaTransformFactory ctf;
 
-namespace KeyFinder {
+  const KeyFinder::ChromaTransform* ct1 = ctf.getChromaTransform(4410);
+  const KeyFinder::ChromaTransform* ct2 = ctf.getChromaTransform(4410);
+  const KeyFinder::ChromaTransform* ct3 = ctf.getChromaTransform(4800);
 
-  class TemporalWindowFactory {
-  public:
-    TemporalWindowFactory();
-    ~TemporalWindowFactory();
-    const std::vector<double>* getTemporalWindow(unsigned int frameSize);
-  private:
-    class TemporalWindowWrapper;
-    std::vector<TemporalWindowWrapper*> temporalWindows;
-    std::mutex temporalWindowFactoryMutex;
-  };
-
-  class TemporalWindowFactory::TemporalWindowWrapper {
-  public:
-    TemporalWindowWrapper(unsigned int frameSize);
-    unsigned int getFrameSize() const;
-    const std::vector<double>* getTemporalWindow() const;
-  private:
-    std::vector<double> temporalWindow;
-  };
-
-
-
-
+  ASSERT_EQ(ct1, ct2);
+  ASSERT_NE(ct2, ct3);
 }
-
-#endif

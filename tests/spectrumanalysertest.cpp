@@ -19,37 +19,6 @@
 
 *************************************************************************/
 
-#ifndef TEMPORALWINDOWFACTORY_H
-#define TEMPORALWINDOWFACTORY_H
+#include "_testhelpers.h"
 
-#include "constants.h"
-#include "windowfunctions.h"
-
-namespace KeyFinder {
-
-  class TemporalWindowFactory {
-  public:
-    TemporalWindowFactory();
-    ~TemporalWindowFactory();
-    const std::vector<double>* getTemporalWindow(unsigned int frameSize);
-  private:
-    class TemporalWindowWrapper;
-    std::vector<TemporalWindowWrapper*> temporalWindows;
-    std::mutex temporalWindowFactoryMutex;
-  };
-
-  class TemporalWindowFactory::TemporalWindowWrapper {
-  public:
-    TemporalWindowWrapper(unsigned int frameSize);
-    unsigned int getFrameSize() const;
-    const std::vector<double>* getTemporalWindow() const;
-  private:
-    std::vector<double> temporalWindow;
-  };
-
-
-
-
-}
-
-#endif
+// TODO: this.

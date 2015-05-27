@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -23,45 +23,42 @@
 
 namespace KeyFinder {
 
-  SpectrumAnalyser::SpectrumAnalyser(
-    unsigned int frameRate,
-    const Parameters& params,
-    ChromaTransformFactory* spFactory,
-    TemporalWindowFactory* twFactory
-  ) {
-    octaves = params.getOctaves();
-    bandsPerSemitone = params.getBandsPerSemitone();
-    hopSize = params.getHopSize();
-    ct = spFactory->getChromaTransform(frameRate, params);
-    tw = twFactory->getTemporalWindow(
-      params.getFftFrameSize(), params.getTemporalWindow()
-    );
+  SpectrumAnalyser::SpectrumAnalyser(unsigned int frameRate, ChromaTransformFactory* spFactory, TemporalWindowFactory* twFactory) {
+    chromaTransform = spFactory->getChromaTransform(frameRate);
+    tw = twFactory->getTemporalWindow(FFTFRAMESIZE);
   }
 
-  Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(
-    AudioData& audio,
-    FftAdapter* const fftAdapter
-  ) const {
-    if (audio.getChannels() != 1)
+  Chromagram* SpectrumAnalyser::chromagramOfWholeFrames(AudioData& audio, FftAdapter* const fftAdapter) const {
+
+    if (audio.getChannels() != 1) {
       throw Exception("Audio must be monophonic to be analysed");
+    }
+
     unsigned int frmSize = fftAdapter->getFrameSize();
-    if (audio.getSampleCount() < frmSize)
-      return new Chromagram(0, octaves, bandsPerSemitone);
-    unsigned int hops = 1 + ((audio.getSampleCount() - frmSize) / hopSize);
-    Chromagram* ch = new Chromagram(hops, octaves, bandsPerSemitone);
+    if (audio.getSampleCount() < frmSize) {
+      return new Chromagram(0);
+    }
+
+    unsigned int hops = 1 + ((audio.getSampleCount() - frmSize) / HOPSIZE);
+    Chromagram* ch = new Chromagram(hops);
+
     for (unsigned int hop = 0; hop < hops; hop++) {
+
       audio.resetIterators();
-      audio.advanceReadIterator(hop * hopSize);
-      std::vector<float>::const_iterator twIt = tw->begin();
+      audio.advanceReadIterator(hop * HOPSIZE);
+
+      std::vector<double>::const_iterator twIt = tw->begin();
       for (unsigned int sample = 0; sample < frmSize; sample++) {
         fftAdapter->setInput(sample, audio.getSampleAtReadIterator() * *twIt);
         audio.advanceReadIterator();
         std::advance(twIt, 1);
       }
+
       fftAdapter->execute();
-      std::vector<float> cv = ct->chromaVector(fftAdapter);
-      std::vector<float>::const_iterator cvIt = cv.begin();
-      for (unsigned int band = 0; band < ch->getBands(); band++) {
+
+      std::vector<double> cv = chromaTransform->chromaVector(fftAdapter);
+      std::vector<double>::const_iterator cvIt = cv.begin();
+      for (unsigned int band = 0; band < BANDS; band++) {
         ch->setMagnitude(hop, band, *cvIt);
         std::advance(cvIt, 1);
       }

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -23,50 +23,36 @@
 
 namespace KeyFinder {
 
-  KeyDetectionResult KeyFinder::keyOfAudio(
-    const AudioData& originalAudio,
-    const Parameters& params
-  ) {
+  key_t KeyFinder::keyOfAudio(const AudioData& originalAudio) {
+
     Workspace workspace;
+    progressiveChromagram(originalAudio, workspace);
+    finalChromagram(workspace);
 
-    progressiveChromagram(originalAudio, workspace, params);
-    finalChromagram(workspace, params);
-
-    return keyOfChromagram(workspace, params);
+    return keyOfChromaVector(workspace.chromagram->collapseToOneHop());
   }
 
-  void KeyFinder::progressiveChromagram(
-    AudioData audio,
-    Workspace& workspace,
-    const Parameters& params
-  ) {
-    preprocess(audio, workspace, params);
+  void KeyFinder::progressiveChromagram(AudioData audio, Workspace& workspace) {
+    preprocess(audio, workspace);
     workspace.preprocessedBuffer.append(audio);
-    chromagramOfBufferedAudio(workspace, params);
+    chromagramOfBufferedAudio(workspace);
   }
 
-  void KeyFinder::finalChromagram(
-    Workspace& workspace,
-    const Parameters& params
-  ) {
+  void KeyFinder::finalChromagram(Workspace& workspace) {
     // flush remainder buffer
     if (workspace.remainderBuffer.getSampleCount() > 0) {
       AudioData flush;
-      preprocess(flush, workspace, params, true);
+      preprocess(flush, workspace, true);
     }
     // zero padding
-    unsigned int paddedHopCount = ceil(workspace.preprocessedBuffer.getSampleCount() / (float)params.getHopSize());
-    unsigned int finalSampleLength = params.getFftFrameSize() + ((paddedHopCount - 1) * params.getHopSize());
+    unsigned int paddedHopCount = ceil(workspace.preprocessedBuffer.getSampleCount() / (double)HOPSIZE);
+    unsigned int finalSampleLength = FFTFRAMESIZE + ((paddedHopCount - 1) * HOPSIZE);
     workspace.preprocessedBuffer.addToSampleCount(finalSampleLength - workspace.preprocessedBuffer.getSampleCount());
-    chromagramOfBufferedAudio(workspace, params);
+    chromagramOfBufferedAudio(workspace);
   }
 
-  void KeyFinder::preprocess(
-    AudioData& workingAudio,
-    Workspace& workspace,
-    const Parameters& params,
-    bool flushRemainderBuffer
-  ) {
+  void KeyFinder::preprocess(AudioData& workingAudio, Workspace& workspace, bool flushRemainderBuffer) {
+
     workingAudio.reduceToMono();
 
     if (workspace.remainderBuffer.getChannels() > 0) {
@@ -74,43 +60,32 @@ namespace KeyFinder {
       workspace.remainderBuffer.discardFramesFromFront(workspace.remainderBuffer.getFrameCount());
     }
 
-    // TODO: there is presumably some good maths to determine filter frequencies.
-    // For now, this approximates original experiment values for default params.
-    float lpfCutoff = params.getLastFrequency() * 1.012;
-    float dsCutoff = params.getLastFrequency() * 1.10;
+    // TODO: there is presumably some good maths to determine filter frequencies. For now, this approximates original experiment values.
+    double lpfCutoff = getLastFrequency() * 1.012;
+    double dsCutoff = getLastFrequency() * 1.10;
     unsigned int downsampleFactor = (int) floor(workingAudio.getFrameRate() / 2 / dsCutoff);
 
-    if (!flushRemainderBuffer && workingAudio.getSampleCount() % downsampleFactor != 0) {
-      AudioData* remainder = workingAudio.sliceSamplesFromBack(workingAudio.getSampleCount() % downsampleFactor);
+    unsigned int bufferExcess = workingAudio.getSampleCount() % downsampleFactor;
+    if (!flushRemainderBuffer && bufferExcess != 0) {
+      AudioData* remainder = workingAudio.sliceSamplesFromBack(bufferExcess);
       workspace.remainderBuffer.append(*remainder);
       delete remainder;
     }
 
-    // get filter
     const LowPassFilter* lpf = lpfFactory.getLowPassFilter(160, workingAudio.getFrameRate(), lpfCutoff, 2048);
-    lpf->filter(workingAudio, workspace, downsampleFactor); // downsampleFactor shortcut
+    lpf->filter(workingAudio, workspace, downsampleFactor);
     // note we don't delete the LPF; it's stored in the factory for reuse
 
     workingAudio.downsample(downsampleFactor);
   }
 
-  void KeyFinder::chromagramOfBufferedAudio(
-    Workspace& workspace,
-    const Parameters& params
-  ) {
-    if (workspace.fftAdapter == NULL)
-      workspace.fftAdapter = new FftAdapter(params.getFftFrameSize());
-    SpectrumAnalyser sa(workspace.preprocessedBuffer.getFrameRate(), params, &ctFactory, &twFactory);
-    Chromagram* c = sa.chromagramOfWholeFrames(workspace.preprocessedBuffer, workspace.fftAdapter);
-    // deal with tuning if necessary
-    if (c->getBandsPerSemitone() > 1) {
-      if (params.getTuningMethod() == TUNING_BAND_ADAPTIVE) {
-        c->tuningBandAdaptive(params.getDetunedBandWeight());
-      } else if (params.getTuningMethod() == TUNING_HARTE) {
-        c->tuningHarte();
-      }
+  void KeyFinder::chromagramOfBufferedAudio(Workspace& workspace) {
+    if (workspace.fftAdapter == NULL) {
+      workspace.fftAdapter = new FftAdapter(FFTFRAMESIZE);
     }
-    workspace.preprocessedBuffer.discardFramesFromFront(params.getHopSize() * c->getHops());
+    SpectrumAnalyser sa(workspace.preprocessedBuffer.getFrameRate(), &ctFactory, &twFactory);
+    Chromagram* c = sa.chromagramOfWholeFrames(workspace.preprocessedBuffer, workspace.fftAdapter);
+    workspace.preprocessedBuffer.discardFramesFromFront(HOPSIZE * c->getHops());
     if (workspace.chromagram == NULL) {
       workspace.chromagram = c;
     } else {
@@ -119,63 +94,19 @@ namespace KeyFinder {
     }
   }
 
-  KeyDetectionResult KeyFinder::keyOfChromagram(
-    Workspace& workspace,
-    const Parameters& params
-  ) const {
+  key_t KeyFinder::keyOfChromaVector(const std::vector<double>& chromaVector) const {
+    KeyClassifier classifier(toneProfileMajor(), toneProfileMinor());
+    return classifier.classify(chromaVector);
+  }
 
-    KeyDetectionResult result;
+  key_t KeyFinder::keyOfChromaVector(const std::vector<double> &chromaVector, const std::vector<double> &overrideMajorProfile, const std::vector<double> &overrideMinorProfile) const {
+    KeyClassifier classifier(overrideMajorProfile, overrideMinorProfile);
+    return classifier.classify(chromaVector);
+  }
 
-    // working copy of chromagram
-    Chromagram ch(*workspace.chromagram);
-    ch.reduceToOneOctave();
-
-    // get harmonic change signal and segment
-    Segmentation segmenter;
-    std::vector<unsigned int> segmentBoundaries = segmenter.getSegmentationBoundaries(ch, params);
-    segmentBoundaries.push_back(ch.getHops()); // sentinel
-
-    // get key estimates for each segment
-    KeyClassifier classifier(
-      params.getSimilarityMeasure(),
-      params.getToneProfile(),
-      params.getOffsetToC(),
-      params.getCustomToneProfile()
-    );
-
-    std::vector<float> keyWeights(24); // TODO: not ideal using int cast of key_t enum. Hash?
-
-    for (int segmentBoundary = 0; segmentBoundary < (signed) segmentBoundaries.size() - 1; segmentBoundary++) {
-      KeyDetectionResultSegment segment;
-      segment.firstHop = segmentBoundaries[segmentBoundary];
-      segment.lastHop  = segmentBoundaries[segmentBoundary+1] - 1;
-      // collapse segment's time dimension
-      std::vector<float> segmentChroma(ch.getBands(), 0.0);
-      for (unsigned int hop = segment.firstHop; hop <= segment.lastHop; hop++) {
-        for (unsigned int band = 0; band < ch.getBands(); band++) {
-          float value = ch.getMagnitude(hop, band);
-          segmentChroma[band] += value;
-          segment.energy += value;
-        }
-      }
-      segment.chromaVector = segmentChroma;
-      segment.key = classifier.classify(segmentChroma);
-      if (segment.key != SILENCE)
-        keyWeights[segment.key] += segment.energy;
-      result.segments.push_back(segment);
-    }
-
-    // get global key
-    result.globalKeyEstimate = SILENCE;
-    float mostCommonKeyWeight = 0.0;
-    for (int k = 0; k < (signed)keyWeights.size(); k++) {
-      if (keyWeights[k] > mostCommonKeyWeight) {
-        mostCommonKeyWeight = keyWeights[k];
-        result.globalKeyEstimate = (key_t)k;
-      }
-    }
-
-    return result;
+  key_t KeyFinder::keyOfChromagram(const Workspace& workspace) const {
+    KeyClassifier classifier(toneProfileMajor(), toneProfileMinor());
+    return classifier.classify(workspace.chromagram->collapseToOneHop());
   }
 
 }

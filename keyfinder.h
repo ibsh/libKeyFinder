@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -23,46 +23,31 @@
 #define KEYFINDER_H
 
 #include "audiodata.h"
-#include "parameters.h"
 #include "lowpassfilterfactory.h"
 #include "chromatransformfactory.h"
 #include "spectrumanalyser.h"
-#include "keyfinderresult.h"
-#include "segmentation.h"
 #include "keyclassifier.h"
 
 namespace KeyFinder {
 
   class KeyFinder {
   public:
-    void progressiveChromagram(
-      AudioData audio,
-      Workspace& workspace,
-      const Parameters& params = Parameters()
-    );
-    void finalChromagram(
-      Workspace& workspace,
-      const Parameters& params = Parameters()
-    );
-    KeyDetectionResult keyOfChromagram(
-      Workspace& workspace,
-      const Parameters& params = Parameters()
-    ) const;
-    KeyDetectionResult keyOfAudio(
-      const AudioData& audio,
-      const Parameters& params = Parameters()
-    );
+
+    // for progressive analysis
+    void progressiveChromagram(AudioData audio, Workspace& workspace);
+    void finalChromagram(Workspace& workspace);
+    key_t keyOfChromagram(const Workspace& workspace) const;
+
+    // for analysis of a whole audio file
+    key_t keyOfAudio(const AudioData& audio);
+
+    // for experimentation with alternative tone profiles
+    key_t keyOfChromaVector(const std::vector<double>& chromaVector, const std::vector<double>& overrideMajorProfile, const std::vector<double>& overrideMinorProfile) const;
+
   private:
-    void preprocess(
-      AudioData& workingAudio,
-      Workspace& workspace,
-      const Parameters& params,
-      bool flushRemainderBuffer = false
-    );
-    void chromagramOfBufferedAudio(
-      Workspace& workspace,
-      const Parameters& params = Parameters()
-    );
+    void preprocess(AudioData& workingAudio, Workspace& workspace, bool flushRemainderBuffer = false);
+    void chromagramOfBufferedAudio(Workspace& workspace);
+    key_t keyOfChromaVector(const std::vector<double>& chromaVector) const;
     LowPassFilterFactory   lpfFactory;
     ChromaTransformFactory ctFactory;
     TemporalWindowFactory  twFactory;

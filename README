@@ -23,7 +23,7 @@ For the most basic use case, do something like this:
   // Run the analysis
   KeyFinder::KeyDetectionResult r =  k.keyOfAudio(a);
 
-  // And do something with the result!
+  // And do something with the result
   doSomethingWith(r.globalKeyEstimate);
 
 Alternatively, you can transform a stream of audio into a chromatic representation, and make progressive estimates of the key:
@@ -34,20 +34,23 @@ Alternatively, you can transform a stream of audio into a chromatic representati
   a.addToSampleCount(yourAudioStream.packetLength);
 
   static KeyFinder::KeyFinder k;
+  
   // the workspace holds the memory allocations for analysis of a single track
   KeyFinder::Workspace w;
 
-  while (yourPacket = newAudioPacket()) {
-    while (int i = 0; i < newAudioPacket.length; i++) {
-      a.setSample(i, newAudioPacket[i]);
+  while (someType yourPacket = newAudioPacket()) {
+  
+    while (int i = 0; i < yourPacket.length; i++) {
+      a.setSample(i, yourPacket[i]);
     }
     k.progressiveChromagram(a, w);
+	
     // if you want to grab progressive key estimates...
     KeyFinder::KeyDetectionResult r = k.keyOfChromagram(w);
     doSomethingWithMostRecentKeyEstimate(r.globalKeyEstimate);
   }
 
-  // if you want to squeeze every last bit of audio from the working buffer...
+  // to squeeze every last bit of audio from the working buffer...
   k.finalChromagram(w);
 
   // and finally...

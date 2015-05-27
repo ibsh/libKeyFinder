@@ -19,37 +19,15 @@
 
 *************************************************************************/
 
-#ifndef TEMPORALWINDOWFACTORY_H
-#define TEMPORALWINDOWFACTORY_H
+#include "_testhelpers.h"
 
-#include "constants.h"
-#include "windowfunctions.h"
+TEST (LowPassFilterFactoryTest, RepeatedFilterRequests) {
+  KeyFinder::LowPassFilterFactory lpff;
 
-namespace KeyFinder {
+  const KeyFinder::LowPassFilter* lpf1 = lpff.getLowPassFilter(2, 1, 20.0, 8);
+  const KeyFinder::LowPassFilter* lpf2 = lpff.getLowPassFilter(2, 1, 20.0, 8);
+  const KeyFinder::LowPassFilter* lpf3 = lpff.getLowPassFilter(2, 1, 20.0, 16);
 
-  class TemporalWindowFactory {
-  public:
-    TemporalWindowFactory();
-    ~TemporalWindowFactory();
-    const std::vector<double>* getTemporalWindow(unsigned int frameSize);
-  private:
-    class TemporalWindowWrapper;
-    std::vector<TemporalWindowWrapper*> temporalWindows;
-    std::mutex temporalWindowFactoryMutex;
-  };
-
-  class TemporalWindowFactory::TemporalWindowWrapper {
-  public:
-    TemporalWindowWrapper(unsigned int frameSize);
-    unsigned int getFrameSize() const;
-    const std::vector<double>* getTemporalWindow() const;
-  private:
-    std::vector<double> temporalWindow;
-  };
-
-
-
-
+  ASSERT_EQ(lpf1, lpf2);
+  ASSERT_NE(lpf2, lpf3);
 }
-
-#endif

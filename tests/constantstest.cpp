@@ -19,37 +19,16 @@
 
 *************************************************************************/
 
-#ifndef TEMPORALWINDOWFACTORY_H
-#define TEMPORALWINDOWFACTORY_H
+#include "_testhelpers.h"
 
-#include "constants.h"
-#include "windowfunctions.h"
-
-namespace KeyFinder {
-
-  class TemporalWindowFactory {
-  public:
-    TemporalWindowFactory();
-    ~TemporalWindowFactory();
-    const std::vector<double>* getTemporalWindow(unsigned int frameSize);
-  private:
-    class TemporalWindowWrapper;
-    std::vector<TemporalWindowWrapper*> temporalWindows;
-    std::mutex temporalWindowFactoryMutex;
-  };
-
-  class TemporalWindowFactory::TemporalWindowWrapper {
-  public:
-    TemporalWindowWrapper(unsigned int frameSize);
-    unsigned int getFrameSize() const;
-    const std::vector<double>* getTemporalWindow() const;
-  private:
-    std::vector<double> temporalWindow;
-  };
-
-
-
-
+TEST (ConstantsTest, aFewDefaultBandFreqs) {
+  ASSERT_NEAR(32.7,    KeyFinder::getFrequencyOfBand(0), 0.01);
+  ASSERT_NEAR(55.0,    KeyFinder::getFrequencyOfBand(9), 0.01);
+  ASSERT_NEAR(1975.53, KeyFinder::getLastFrequency(),  0.01);
 }
 
-#endif
+TEST (ConstantsTest, FreqBounds) {
+  ASSERT_THROW(KeyFinder::getFrequencyOfBand(-1), KeyFinder::Exception);
+  ASSERT_NO_THROW(KeyFinder::getFrequencyOfBand(71));
+  ASSERT_THROW(KeyFinder::getFrequencyOfBand(72), KeyFinder::Exception);
+}

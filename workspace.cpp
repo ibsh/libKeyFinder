@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -23,10 +23,7 @@
 
 namespace KeyFinder {
 
-  Workspace::Workspace() :
-    remainderBuffer(), preprocessedBuffer(),
-    chromagram(NULL), fftAdapter(NULL), lpfBuffer(NULL)
-  { }
+  Workspace::Workspace() : remainderBuffer(), preprocessedBuffer(), chromagram(NULL), fftAdapter(NULL), lpfBuffer(NULL) { }
 
   Workspace::~Workspace() {
     if (fftAdapter != NULL)

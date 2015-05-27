@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,28 +22,72 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <cmath>
+#include <vector>
+#include <deque>
+#include <mutex>
+#include "exception.h"
+
 #undef  PI
 #define PI 3.1415926535897932384626433832795
 
-#undef SEMITONES
+#undef  SEMITONES
 #define SEMITONES 12 // per octave, obviously
+
+#undef  OCTAVES
+#define OCTAVES 6
+
+#undef  BANDS
+#define BANDS (SEMITONES * OCTAVES)
+
+#undef  KEYS
+#define KEYS (SEMITONES * 2)
+
+#undef  TONEPROFILESIZE
+#define TONEPROFILESIZE (BANDS * 2)
+
+#undef  FFTFRAMESIZE
+#define FFTFRAMESIZE 16384
+
+#undef  HOPSIZE
+#define HOPSIZE (FFTFRAMESIZE / 4)
+
+#undef  DIRECTSKSTRETCH
+#define DIRECTSKSTRETCH 0.8
 
 namespace KeyFinder {
 
   enum key_t {
-    A_MAJOR,      A_MINOR,
-    B_FLAT_MAJOR, B_FLAT_MINOR,
-    B_MAJOR,      B_MINOR,
-    C_MAJOR,      C_MINOR,
-    D_FLAT_MAJOR, D_FLAT_MINOR,
-    D_MAJOR,      D_MINOR,
-    E_FLAT_MAJOR, E_FLAT_MINOR,
-    E_MAJOR,      E_MINOR,
-    F_MAJOR,      F_MINOR,
-    G_FLAT_MAJOR, G_FLAT_MINOR,
-    G_MAJOR,      G_MINOR,
-    A_FLAT_MAJOR, A_FLAT_MINOR,
-    SILENCE
+    A_MAJOR = 0,
+    A_MINOR,
+    B_FLAT_MAJOR,
+    B_FLAT_MINOR,
+    B_MAJOR,
+    B_MINOR = 5,
+    C_MAJOR,
+    C_MINOR,
+    D_FLAT_MAJOR,
+    D_FLAT_MINOR,
+    D_MAJOR = 10,
+    D_MINOR,
+    E_FLAT_MAJOR,
+    E_FLAT_MINOR,
+    E_MAJOR,
+    E_MINOR = 15,
+    F_MAJOR,
+    F_MINOR,
+    G_FLAT_MAJOR,
+    G_FLAT_MINOR,
+    G_MAJOR = 20,
+    G_MINOR,
+    A_FLAT_MAJOR,
+    A_FLAT_MINOR,
+    SILENCE = 24
+  };
+
+  enum temporal_window_t {
+    WINDOW_BLACKMAN,
+    WINDOW_HAMMING
   };
 
   enum scale_t {
@@ -51,37 +95,11 @@ namespace KeyFinder {
     SCALE_MINOR
   };
 
-  enum temporal_window_t {
-    WINDOW_BLACKMAN,
-    WINDOW_HANN,
-    WINDOW_HAMMING
-  };
+  double getFrequencyOfBand(unsigned int band);
+  double getLastFrequency();
 
-  enum segmentation_t {
-    SEGMENTATION_NONE,
-    SEGMENTATION_ARBITRARY,
-    SEGMENTATION_COSINE
-  };
-
-  enum similarity_measure_t {
-    SIMILARITY_COSINE,
-    SIMILARITY_CORRELATION
-  };
-
-  enum tone_profile_t {
-    TONE_PROFILE_SILENCE,
-    TONE_PROFILE_KRUMHANSL,
-    TONE_PROFILE_TEMPERLEY,
-    TONE_PROFILE_GOMEZ,
-    TONE_PROFILE_SHAATH,
-    TONE_PROFILE_CUSTOM
-  };
-
-  enum tuning_method_t {
-    TUNING_HARTE,
-    TUNING_BAND_ADAPTIVE
-  };
-
+  const std::vector<double>& toneProfileMajor();
+  const std::vector<double>& toneProfileMinor();
 }
 
 #endif

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,7 +22,7 @@
 #ifndef FFTADAPTER_H
 #define FFTADAPTER_H
 
-#include "exception.h"
+#include "constants.h"
 
 namespace KeyFinder {
 
@@ -34,11 +34,11 @@ namespace KeyFinder {
     FftAdapter(unsigned int frameSize);
     ~FftAdapter();
     unsigned int getFrameSize() const;
-    void setInput(unsigned int sample, float real);
+    void setInput(unsigned int sample, double real);
     void execute();
-    float getOutputReal(unsigned int bin) const;
-    float getOutputImaginary(unsigned int bin) const;
-    float getOutputMagnitude(unsigned int bin) const;
+    double getOutputReal(unsigned int bin) const;
+    double getOutputImaginary(unsigned int bin) const;
+    double getOutputMagnitude(unsigned int bin) const;
   protected:
     unsigned int frameSize;
     FftAdapterPrivate* priv;
@@ -49,9 +49,9 @@ namespace KeyFinder {
     InverseFftAdapter(unsigned int frameSize);
     ~InverseFftAdapter();
     unsigned int getFrameSize() const;
-    void setInput(unsigned int sample, float real, float imaginary);
+    void setInput(unsigned int sample, double real, double imaginary);
     void execute();
-    float getOutput(unsigned int bin) const;
+    double getOutput(unsigned int bin) const;
   protected:
     unsigned int frameSize;
     InverseFftAdapterPrivate* priv;

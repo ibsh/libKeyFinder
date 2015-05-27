@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,9 +22,7 @@
 #ifndef AUDIOSTREAM_H
 #define AUDIOSTREAM_H
 
-#include <boost/math/special_functions/fpclassify.hpp>
-#include <deque>
-#include "exception.h"
+#include "constants.h"
 
 namespace KeyFinder {
 
@@ -34,17 +32,17 @@ namespace KeyFinder {
 
     unsigned int getChannels() const;
     unsigned int getFrameRate() const;
-    float getSample(unsigned int index) const;
-    float getSampleByFrame(unsigned int frame, unsigned int channel) const;
-    float getSampleAtReadIterator() const;
+    double getSample(unsigned int index) const;
+    double getSampleByFrame(unsigned int frame, unsigned int channel) const;
+    double getSampleAtReadIterator() const;
     unsigned int getSampleCount() const;
     unsigned int getFrameCount() const;
 
     void setChannels(unsigned int newChannels);
     void setFrameRate(unsigned int newFrameRate);
-    void setSample(unsigned int index, float value);
-    void setSampleByFrame(unsigned int frame, unsigned int channels, float value);
-    void setSampleAtWriteIterator(float value);
+    void setSample(unsigned int index, double value);
+    void setSampleByFrame(unsigned int frame, unsigned int channels, double value);
+    void setSampleAtWriteIterator(double value);
     void addToSampleCount(unsigned int newSamples);
     void addToFrameCount(unsigned int newFrames);
 
@@ -62,11 +60,11 @@ namespace KeyFinder {
     AudioData* sliceSamplesFromBack(unsigned int sliceSampleCount);
 
   private:
-    std::deque<float> samples;
+    std::deque<double> samples;
     unsigned int channels;
     unsigned int frameRate;
-    std::deque<float>::const_iterator readIterator;
-    std::deque<float>::iterator writeIterator;
+    std::deque<double>::const_iterator readIterator;
+    std::deque<double>::iterator writeIterator;
   };
 
 }

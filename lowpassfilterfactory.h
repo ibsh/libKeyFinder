@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,10 +22,8 @@
 #ifndef LOWPASSFILTERFACTORY_H
 #define LOWPASSFILTERFACTORY_H
 
-#include <boost/thread/mutex.hpp>
-#include <vector>
+#include "constants.h"
 #include "lowpassfilter.h"
-#include "parameters.h"
 
 namespace KeyFinder {
 
@@ -33,37 +31,26 @@ namespace KeyFinder {
   public:
     LowPassFilterFactory();
     ~LowPassFilterFactory();
-    const LowPassFilter* getLowPassFilter(
-      unsigned int order,
-      unsigned int frameRate,
-      float cornerFrequency,
-      unsigned int fftFrameSize
-    );
+    const LowPassFilter* getLowPassFilter(unsigned int order, unsigned int frameRate, double cornerFrequency, unsigned int fftFrameSize);
   private:
     class LowPassFilterWrapper;
-    std::vector<LowPassFilterWrapper*> filters;
-    boost::mutex LowPassFilterFactoryMutex;
+    std::vector<LowPassFilterWrapper*> lowPassFilters;
+    std::mutex lowPassFilterFactoryMutex;
   };
 
   class LowPassFilterFactory::LowPassFilterWrapper {
   public:
-    LowPassFilterWrapper(
-      unsigned int order,
-      unsigned int frameRate,
-      float cornerFrequency,
-      unsigned int fftFrameSize,
-      const LowPassFilter* const filter
-    );
+    LowPassFilterWrapper(unsigned int order, unsigned int frameRate, double cornerFrequency, unsigned int fftFrameSize, const LowPassFilter* const filter);
     ~LowPassFilterWrapper();
     const LowPassFilter* getLowPassFilter() const;
     unsigned int getOrder() const;
     unsigned int getFrameRate() const;
-    float getCornerFrequency() const;
+    double getCornerFrequency() const;
     unsigned int getFftFrameSize() const;
   private:
     unsigned int order;
     unsigned int frameRate;
-    float cornerFrequency;
+    double cornerFrequency;
     unsigned int fftFrameSize;
     const LowPassFilter* lowPassFilter;
   };

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,27 +22,20 @@
 #ifndef KEYCLASSIFIER_H
 #define KEYCLASSIFIER_H
 
-#include <vector>
-
+#include "constants.h"
 #include "toneprofiles.h"
 
 namespace KeyFinder {
 
   class KeyClassifier {
   public:
-    KeyClassifier(
-      similarity_measure_t similarityMeasure,
-      tone_profile_t toneProfile,
-      bool offsetToC,
-      const std::vector<float>& customProfile = std::vector<float>(24, 0.0)
-    );
+    KeyClassifier(const std::vector<double>& majorProfile, const std::vector<double>& minorProfile);
     ~KeyClassifier();
-    key_t classify(const std::vector<float>& chromaVector);
+    key_t classify(const std::vector<double>& chromaVector);
   private:
     ToneProfile* major;
     ToneProfile* minor;
     ToneProfile* silence;
-    similarity_measure_t similarityMeasure;
   };
 
 }

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,12 +22,11 @@
 #ifndef SPECTRUMANALYSER_H
 #define SPECTRUMANALYSER_H
 
-#include <boost/thread/mutex.hpp>
 #include "chromagram.h"
 #include "audiodata.h"
 #include "fftadapter.h"
 #include "chromatransformfactory.h"
-#include "parameters.h"
+#include "constants.h"
 #include "temporalwindowfactory.h"
 #include "windowfunctions.h"
 
@@ -35,22 +34,11 @@ namespace KeyFinder {
 
   class SpectrumAnalyser {
   public:
-    SpectrumAnalyser(
-      unsigned int frameRate,
-      const Parameters& params,
-      ChromaTransformFactory* ctFactory,
-      TemporalWindowFactory* twFactory
-    );
-    Chromagram* chromagramOfWholeFrames(
-      AudioData& audio,
-      FftAdapter* const fft
-    ) const;
+    SpectrumAnalyser(unsigned int frameRate, ChromaTransformFactory* ctFactory, TemporalWindowFactory* twFactory);
+    Chromagram* chromagramOfWholeFrames(AudioData& audio, FftAdapter* const fft) const;
   protected:
-    unsigned int octaves;
-    unsigned int bandsPerSemitone;
-    unsigned int hopSize;
-    const ChromaTransform* ct;
-    const std::vector<float>* tw;
+    const ChromaTransform* chromaTransform;
+    const std::vector<double>* tw;
   };
 
 }

@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2013 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
@@ -22,9 +22,7 @@
 #ifndef LOWPASSFILTER_H
 #define LOWPASSFILTER_H
 
-#include <cmath>
-#include <vector>
-
+#include "constants.h"
 #include "audiodata.h"
 #include "workspace.h"
 
@@ -34,17 +32,8 @@ namespace KeyFinder {
 
   class LowPassFilter {
   public:
-    LowPassFilter(
-      unsigned int order,
-      unsigned int frameRate,
-      float cornerFrequency,
-      unsigned int fftFrameSize
-    );
-    void filter(
-      AudioData& audio,
-      Workspace& workspace,
-      unsigned int shortcutFactor = 1
-    ) const;
+    LowPassFilter(unsigned int order, unsigned int frameRate, double cornerFrequency, unsigned int fftFrameSize);
+    void filter(AudioData& audio, Workspace& workspace, unsigned int shortcutFactor = 1) const;
     void const * getCoefficients() const; // for unit testing only
   protected:
     LowPassFilterPrivate* priv;
