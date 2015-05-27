@@ -1,6 +1,6 @@
 /*************************************************************************
 
-  Copyright 2011-2014 Ibrahim Sha'ath
+  Copyright 2011-2015 Ibrahim Sha'ath
 
   This file is part of LibKeyFinder.
 
