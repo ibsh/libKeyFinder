@@ -27,7 +27,7 @@ CONFIG -= qt
 TARGET = keyfinder
 TEMPLATE = lib
 
-VERSION = 2.0.0
+VERSION = 2.1.0
 
 CONFIG += c++11
 LIBS += -stdlib=libc++
