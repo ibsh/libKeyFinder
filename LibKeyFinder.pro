@@ -79,17 +79,25 @@ macx{
   QMAKE_MAC_SDK = macosx10.9
   CONFIG -= ppc ppc64 x86
   CONFIG += x86_64
-# installs
-  QMAKE_LFLAGS_SONAME  = -Wl,-install_name,/usr/local/lib/
+
+  # installation of headers and the shared object
+  target.path = /usr/local/lib
   headers.path = /usr/local/include/$$TARGET
-  headers.files = $$HEADERS
-  INSTALLS += headers
+  QMAKE_LFLAGS_SONAME = -Wl,-install_name,/usr/local/lib/
+}
+
+unix{
+  target.path = /usr/lib
+  headers.path = /usr/include/$$TARGET
 }
 
 unix|macx{
   INCLUDEPATH += /usr/local/include
   LIBS += -L/usr/local/lib/
   LIBS += -lfftw3
+
+  INSTALLS += target headers
+  headers.files = $$HEADERS
 }
 
 win32{
