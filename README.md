@@ -76,7 +76,7 @@ First, you will need to install `libKeyFinder`'s dependencies:
 
 * [Qt 5](http://www.qt.io/download-open-source/)
 
-  `libKeyFinder` uses [`qmake`](http://doc.qt.io/qt-5/qmake-manual.html) to generate `Makefile`s, which is distributed with Qt.
+  `libKeyFinder` uses [`qmake`](http://doc.qt.io/qt-5/qmake-manual.html), which is distributed with Qt, to generate `Makefile`s.
 
   OSX and homebrewx: `$ brew install qt5`
 
