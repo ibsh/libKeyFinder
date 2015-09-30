@@ -2,3 +2,8 @@
 *.pro.user*
 *.autosave
 googleTest-build/
+Makefile
+.qmake.cache
+.qmake.stash
+*.o
+*.dylib
