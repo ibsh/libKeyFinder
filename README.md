@@ -1,6 +1,10 @@
-libKeyFinder can be used to estimate the musical key of digital recordings.
+# `libKeyFinder`
+
+`libKeyFinder` can be used to estimate the musical key of digital recordings.
 
 It is the basis of the KeyFinder GUI app, which is available as a binary download for Mac OSX and Windows at www.ibrahimshaath.co.uk/keyfinder
+
+## Examples
 
 For the most basic use case, do something like this:
 
@@ -60,4 +64,26 @@ k.finalChromagram(w);
 KeyFinder::KeyDetectionResult r = k.keyOfChromagram(w);
 
 doSomethingWithFinalKeyEstimate(r.globalKeyEstimate);
+```
+
+## Installation
+
+First, you will need to install `libKeyFinder`'s dependencies:
+
+* [FFTW version 3](http://www.fftw.org/download.html)
+
+  OSX and homebrew: `$ brew install fft`
+
+* [Qt 5](http://www.qt.io/download-open-source/)
+
+  `libKeyFinder` uses [`qmake`](http://doc.qt.io/qt-5/qmake-manual.html) to generate `Makefile`s, which is distributed with Qt.
+
+  OSX and homebrewx: `$ brew install qt5`
+
+Once dependencies are installed, build `libKeyFinder`:
+
+```sh
+$ qmake
+$ make
+$ make install
 ```
