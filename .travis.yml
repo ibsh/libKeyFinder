@@ -1,0 +1,30 @@
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+before_install:
+  # Need to add this ppa for qt5 on Ubuntu 12.04. (Aside: stupid that adding a
+  # ppa takes --yes while installing takes --assume-yes...)
+  - sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa
+
+  # Ubuntu 12.04 has an old gcc without C++11 support. Add this ppa so we can
+  # update it.
+  - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+  
+  - sudo apt-get update --assume-yes
+
+  # Install newer gcc and g++.
+  - sudo apt-get install --assume-yes gcc-4.8 g++-4.8
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 20
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20
+  - sudo update-alternatives --config gcc
+  - sudo update-alternatives --config g++
+  
+  - sudo apt-get install --assume-yes build-essential
+  - sudo apt-get install --assume-yes qt5-default
+  - sudo apt-get install --assume-yes libboost-all-dev
+  - sudo apt-get install --assume-yes libfftw3-dev
+
+script: ./travis.sh

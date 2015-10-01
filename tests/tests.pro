@@ -27,8 +27,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 CONFIG += c++11
-LIBS += -stdlib=libc++
-QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
+QMAKE_CXXFLAGS += -std=c++11
 
 LIBS += -lkeyfinder
 
@@ -56,6 +55,8 @@ SOURCES += \
     workspacetest.cpp
 
 macx{
+  LIBS += -stdlib=libc++
+  QMAKE_CXXFLAGS += -stdlib=libc++
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
   QMAKE_MAC_SDK = macosx10.9
   DEPENDPATH += /usr/local/lib
