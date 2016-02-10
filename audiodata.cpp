@@ -179,16 +179,22 @@ namespace KeyFinder {
     }
     std::deque<double>::const_iterator readAt = samples.begin();
     std::deque<double>::iterator writeAt = samples.begin();
+
+    // Prevent std::advance out of iterator range problems
+    size_t numSamplesRemaining = samples.size();
+
     while (readAt < samples.end()) {
       double mean = 0.0;
-      if (shortcut) {
+      if (shortcut && numSamplesRemaining > factor) {
         mean = *readAt;
         std::advance(readAt, factor);
+        numSamplesRemaining -= factor;
       } else {
         for (unsigned int s = 0; s < factor; s++) {
           if (readAt < samples.end()) {
             mean += *readAt;
             std::advance(readAt, 1);
+            --numSamplesRemaining;
           }
           mean /= (double)factor;
         }
