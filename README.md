@@ -21,7 +21,7 @@ a.setChannels(yourAudioStream.channels);
 a.addToSampleCount(yourAudioStream.length);
 
 // Copy your audio into the object
-while (int i = 0; i < yourAudioStream.length; i++) {
+for (int i = 0; i < yourAudioStream.length; i++) {
   a.setSample(i, yourAudioStream[i]);
 }
 
@@ -47,7 +47,7 @@ KeyFinder::Workspace w;
 
 while (someType yourPacket = newAudioPacket()) {
 
-  while (int i = 0; i < yourPacket.length; i++) {
+  for (int i = 0; i < yourPacket.length; i++) {
     a.setSample(i, yourPacket[i]);
   }
   k.progressiveChromagram(a, w);
