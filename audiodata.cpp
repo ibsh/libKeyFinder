@@ -185,7 +185,7 @@ namespace KeyFinder {
 
     while (readAt < samples.end()) {
       double mean = 0.0;
-      if (shortcut && numSamplesRemaining > factor) {
+      if (shortcut && numSamplesRemaining >= factor) {
         mean = *readAt;
         std::advance(readAt, factor);
         numSamplesRemaining -= factor;
