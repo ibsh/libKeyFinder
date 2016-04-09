@@ -50,8 +50,7 @@ namespace KeyFinder {
   }
 
   LowPassFilter::~LowPassFilter() {
-    if (priv != nullptr)
-    {
+    if (priv != nullptr) {
       delete priv;
     }
   }
