@@ -89,3 +89,23 @@ $ qmake
 $ make
 $ make install
 ```
+
+## Testing
+
+After having successfully installed the library following the above instructions, run the following commands to build and run the tests:
+
+```sh
+$ cd tests/
+$ qmake
+$ make
+$ ./tests
+```
+
+If all goes well, you should see something like this:
+
+```
+===============================================================================
+All tests passed (1705510 assertions in 65 test cases)
+```
+
+Note that there is a known intermittent failure in the `FftAdapterTest/ForwardAndBackward` test. Try running the tests a handful of times to determine whether you are hitting the intermittent or have introduced a new bug.

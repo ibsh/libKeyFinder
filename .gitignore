@@ -7,3 +7,4 @@ Makefile
 .qmake.stash
 *.o
 *.dylib
+tests/tests
