@@ -194,7 +194,6 @@ TEST (LowPassFilterTest, WorksOnRepetitiveWaves) {
 TEST (LowPassFilterTest, DefaultFilterMatchesFisherCoefficients) {
   KeyFinder::LowPassFilter* lpf = new KeyFinder::LowPassFilter(160, 44100, 2000.0, 2048);
   std::vector<double>* myCoeffs = (std::vector<double>*)lpf->getCoefficients();
-  delete lpf;
 
   float fisherCoeffsFirstHalf[] = {
     -0.0022979864, -0.0014851155, -0.0005276345, +0.0005287637,
@@ -224,4 +223,5 @@ TEST (LowPassFilterTest, DefaultFilterMatchesFisherCoefficients) {
     ASSERT_FLOAT_EQ(fisherCoeffsFirstHalf[i], myCoeffs->at(i));
     ASSERT_FLOAT_EQ(myCoeffs->at(i), myCoeffs->at(160 - i));
   }
+  delete lpf;
 }
