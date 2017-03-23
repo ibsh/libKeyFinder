@@ -296,12 +296,12 @@ TEST_CASE ("AudioDataTest/DownsamplerResamplesNonintegralRelationship") {
   KeyFinder::AudioData a;
   a.setChannels(1);
   a.setFrameRate(100);
-  a.addToSampleCount(12);
+  a.addToSampleCount(15);
   for (unsigned int i = 0; i < 5; i++)
     a.setSample(i, 100.0);
   for (unsigned int i = 5; i < 10; i++)
     a.setSample(i, 500.0);
-  for (unsigned int i = 10; i < 12; i++)
+  for (unsigned int i = 10; i < 15; i++)
     a.setSample(i, 1000.0);
 
   a.downsample(5);
@@ -309,7 +309,6 @@ TEST_CASE ("AudioDataTest/DownsamplerResamplesNonintegralRelationship") {
   ASSERT_EQ(3, a.getSampleCount());
   ASSERT_FLOAT_EQ(100.0, a.getSample(0));
   ASSERT_FLOAT_EQ(500.0, a.getSample(1));
-  // this doesn't make total mathematical sense but I'm taking a shortcut for performance
   ASSERT_FLOAT_EQ(1000.0, a.getSample(2));
 }
 
