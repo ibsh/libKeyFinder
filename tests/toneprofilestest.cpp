@@ -21,11 +21,15 @@
 
 #include "_testhelpers.h"
 
+static void constructToneProfile(std::vector<double> &vec) {
+    KeyFinder::ToneProfile tp(vec);
+}
+
 TEST (ToneProfilesTest, ExceptionOnWrongCustomSize) {
   std::vector<double> vec(71, 0.0);
-  ASSERT_THROW(KeyFinder::ToneProfile tp(vec), KeyFinder::Exception);
+  ASSERT_THROW(constructToneProfile(vec), KeyFinder::Exception);
   std::vector<double> vec2(72, 0.0);
-  ASSERT_NO_THROW(KeyFinder::ToneProfile tp(vec2));
+  ASSERT_NO_THROW(constructToneProfile(vec2));
 }
 /*
 TEST (ToneProfilesTest, ExceptionOnWrongInputSize) {
