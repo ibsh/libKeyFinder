@@ -1,5 +1,7 @@
 # `libKeyFinder`
 
+[![Build Status](https://travis-ci.org/ibsh/libKeyFinder.svg?branch=master)](https://travis-ci.org/ibsh/libKeyFinder)
+
 `libKeyFinder` can be used to estimate the musical key of digital recordings.
 
 It is the basis of the KeyFinder GUI app, which is available as a binary download for Mac OSX and Windows at www.ibrahimshaath.co.uk/keyfinder

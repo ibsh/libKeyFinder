@@ -8,3 +8,4 @@ Makefile
 *.o
 *.dylib
 tests/tests
+/ci/alpine/.cache

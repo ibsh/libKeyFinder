@@ -1,0 +1,13 @@
+sudo: required
+
+services: docker
+language: generic
+
+cache:
+  directories:
+    - ci/alpine/.cache/
+
+before_cache:
+    - ./ci/alpine/clean-cache.sh
+
+script: ./ci/alpine.sh
