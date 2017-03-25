@@ -57,7 +57,7 @@ SOURCES += \
 
 macx{
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
-  QMAKE_MAC_SDK = macosx10.9
+  QMAKE_MAC_SDK = macosx10.12
   DEPENDPATH += /usr/local/lib
   INCLUDEPATH += /usr/local/include
   CONFIG -= ppc ppc64
