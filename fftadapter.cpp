@@ -23,6 +23,7 @@
 
 // Included here to allow substitution of a separate implementation .cpp
 #include <cmath>
+#include <cstring>
 #include <fftw3.h>
 
 namespace KeyFinder {
