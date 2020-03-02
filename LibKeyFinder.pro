@@ -76,7 +76,6 @@ macx{
   LIBS += -stdlib=libc++
   QMAKE_CXXFLAGS += -stdlib=libc++
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
-  QMAKE_MAC_SDK = macosx10.12
   CONFIG -= ppc ppc64 x86
   CONFIG += x86_64
 
