@@ -76,20 +76,12 @@ First, you will need to install `libKeyFinder`'s dependencies:
 
   OSX and homebrew: `$ brew install fftw`
 
-* [Qt 5](http://www.qt.io/download-open-source/)
-
-  `libKeyFinder` uses [`qmake`](http://doc.qt.io/qt-5/qmake-manual.html), which is distributed with Qt, to generate `Makefile`s.
-
-  OSX and homebrew: `$ brew install qt5`
-
-  *Note that the qt5 homebrew formula is [keg-only](https://github.com/Homebrew/homebrew/blob/master/share/doc/homebrew/FAQ.md#what-does-keg-only-mean), meaning that it is not linked into `/usr/local` automatically because it conflicts with earlier versions of qt which may already be installed. To link it forcefully so that it (along with qmake and others) can be used easily, run `brew link qt5 --force`.*
-
 Once dependencies are installed, build `libKeyFinder`:
 
 ```sh
-$ qmake
-$ make
-$ make install
+$ mkdir build
+$ cmake -DCMAKE_INSTALL_PREFIX /where/you/want/to/install/to -S . -B build
+$ cmake --build build --target install --parallel number-of-cpu-cores
 ```
 
 ## Testing
