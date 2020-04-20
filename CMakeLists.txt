@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(libkeyfinder VERSION 2.2.2)
+project(libkeyfinder)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -64,5 +64,10 @@ install(FILES
   workspace.h
   constants.h
   DESTINATION include/keyfinder)
+
+set(LIBKEYFINDER_VERSION 2.2.2)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libKeyFinder.pc.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/libKeyFinder.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libKeyFinder.pc DESTINATION lib/pkgconfig)
 
 add_subdirectory(tests)
