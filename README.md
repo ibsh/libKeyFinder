@@ -86,13 +86,10 @@ $ cmake --build build --target install --parallel number-of-cpu-cores
 
 ## Testing
 
-After having successfully installed the library following the above instructions, run the following commands to build and run the tests:
+The tests are built together with the library. Simply run the test executable from the build directory:
 
 ```sh
-$ cd tests/
-$ qmake
-$ make
-$ ./tests
+$ build/tests/test
 ```
 
 If all goes well, you should see something like this:

@@ -40,3 +40,5 @@ install(FILES
   workspace.h
   constants.h
   DESTINATION include/keyfinder)
+
+add_subdirectory(tests)
