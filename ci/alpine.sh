@@ -11,7 +11,7 @@ if [ -z "$CC" ]; then
 fi
 
 sudo docker run \
-    -e "HUID=$(id -u)" \
+    --rm \
     -e "CC=$CC" \
     -v "$(pwd -P)/..":/outside \
     alpine:edge \

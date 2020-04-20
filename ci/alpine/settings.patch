@@ -1,13 +1,15 @@
-diff -ur a/tests/tests.pro b/tests/tests.pro
---- a/tests/tests.pro	2017-03-23 16:47:17.280248215 +0100
-+++ b/tests/tests.pro	2017-03-23 16:48:28.386799769 +0100
+diff --git a/tests/tests.pro b/tests/tests.pro
+index f9c8663..eec4172 100644
+--- a/tests/tests.pro
++++ b/tests/tests.pro
 @@ -27,8 +27,8 @@ CONFIG -= app_bundle
  CONFIG -= qt
-
+ 
  CONFIG += c++11
 -LIBS += -stdlib=libc++
 -QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++
 +LIBS += -L..
 +QMAKE_CXXFLAGS += -std=c++11
-
+ 
  LIBS += -lkeyfinder
+ 

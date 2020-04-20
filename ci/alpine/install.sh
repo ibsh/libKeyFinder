@@ -13,4 +13,5 @@ apk add \
     alpine-sdk \
     valgrind \
     fftw-dev \
-    qt-dev
+    qtchooser \
+    qt5-qtbase-dev
