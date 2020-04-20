@@ -3,23 +3,47 @@ project(libkeyfinder VERSION 2.2.2)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_library(keyfinder SHARED
-  audiodata.cpp
-  chromagram.cpp
-  chromatransform.cpp
-  chromatransformfactory.cpp
-  fftadapter.cpp
-  keyclassifier.cpp
-  keyfinder.cpp
-  lowpassfilter.cpp
-  lowpassfilterfactory.cpp
-  spectrumanalyser.cpp
-  temporalwindowfactory.cpp
-  toneprofiles.cpp
-  windowfunctions.cpp
-  workspace.cpp
-  constants.cpp
-)
+if(BUILD_STATIC_LIBS)
+  message(STATUS "Building libKeyFinder as a static library")
+  add_library(keyfinder STATIC
+    audiodata.cpp
+    chromagram.cpp
+    chromatransform.cpp
+    chromatransformfactory.cpp
+    fftadapter.cpp
+    keyclassifier.cpp
+    keyfinder.cpp
+    lowpassfilter.cpp
+    lowpassfilterfactory.cpp
+    spectrumanalyser.cpp
+    temporalwindowfactory.cpp
+    toneprofiles.cpp
+    windowfunctions.cpp
+    workspace.cpp
+    constants.cpp
+  )
+else()
+  message(STATUS "Building libKeyFinder as a dynamic library")
+  add_library(keyfinder SHARED
+    audiodata.cpp
+    chromagram.cpp
+    chromatransform.cpp
+    chromatransformfactory.cpp
+    fftadapter.cpp
+    keyclassifier.cpp
+    keyfinder.cpp
+    lowpassfilter.cpp
+    lowpassfilterfactory.cpp
+    spectrumanalyser.cpp
+    temporalwindowfactory.cpp
+    toneprofiles.cpp
+    windowfunctions.cpp
+    workspace.cpp
+    constants.cpp
+  )
+endif()
+
+
 target_link_libraries(keyfinder fftw3)
 
 install(TARGETS keyfinder DESTINATION lib)
