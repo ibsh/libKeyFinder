@@ -84,6 +84,8 @@ $ cmake -DCMAKE_INSTALL_PREFIX /where/you/want/to/install/to -S . -B build
 $ cmake --build build --target install --parallel number-of-cpu-cores
 ```
 
+If you want to build libKeyFinder statically, add `-DBUILD_STATIC_LIBS` to the first call to `cmake` above.
+
 ## Testing
 
 The tests are built together with the library. Simply run the test executable from the build directory:
