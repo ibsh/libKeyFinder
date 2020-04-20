@@ -2,14 +2,10 @@
 set -e
 
 cd /outside
-patch -p1 < ci/alpine/settings.patch
-qmake
-make
-cd tests
-ln -s /outside keyfinder
-qmake
-make
-LD_LIBRARY_PATH=".." ./tests
+mkdir build
+cmake -S . -B build
+cmake --build build
+LD_LIBRARY_PATH=".." ./build/tests/test
 LD_LIBRARY_PATH=".." valgrind \
     --suppressions=/outside/ci/alpine/memcheck.supp \
-    --tool=memcheck ./tests
+    --tool=memcheck ./build/tests/test
