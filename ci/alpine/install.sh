@@ -10,6 +10,7 @@ EOF
 apk update
 apk upgrade
 apk add \
+    cmake \
     alpine-sdk \
     valgrind \
     fftw-dev

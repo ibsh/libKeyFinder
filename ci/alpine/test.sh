@@ -2,7 +2,8 @@
 set -e
 
 cd /outside
-mkdir build
+rm -rf build
+mkdir -p build
 cmake -S . -B build
 cmake --build build
 LD_LIBRARY_PATH=".." ./build/tests/test
