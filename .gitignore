@@ -9,3 +9,4 @@ Makefile
 *.dylib
 tests/tests
 /ci/alpine/.cache
+build

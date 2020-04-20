@@ -1,0 +1,21 @@
+add_executable(test
+    main.cpp
+    _testhelpers.cpp
+    audiodatatest.cpp
+    binodetest.cpp
+    chromagramtest.cpp
+    chromatransformtest.cpp
+    chromatransformfactorytest.cpp
+    constantstest.cpp
+    downsamplershortcuttest.cpp
+    fftadaptertest.cpp
+    keyclassifiertest.cpp
+    keyfindertest.cpp
+    lowpassfiltertest.cpp
+    lowpassfilterfactorytest.cpp
+    spectrumanalysertest.cpp
+    temporalwindowfactorytest.cpp
+    toneprofilestest.cpp
+    windowfunctiontest.cpp
+    workspacetest.cpp)
+target_link_libraries(test keyfinder)
