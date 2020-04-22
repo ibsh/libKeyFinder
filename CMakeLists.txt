@@ -63,6 +63,8 @@ install(FILES
   windowfunctions.h
   workspace.h
   constants.h
+  exception.h
+  binode.h
   DESTINATION include/keyfinder)
 
 set(LIBKEYFINDER_VERSION 2.2.2)
