@@ -78,11 +78,27 @@ First, you will need to install `libKeyFinder`'s dependencies:
 
 Once dependencies are installed, build `libKeyFinder`:
 
+For all OSs 
+
 ```sh
 $ mkdir build
 $ cmake -DCMAKE_INSTALL_PREFIX /where/you/want/to/install/to -S . -B build
 $ cmake --build build --target install --parallel number-of-cpu-cores
 ```
+
+For Linux: 
+
+```sh
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make 
+$ sudo make install 
+```
+
+it will use these install locations: 
+/usr/local/lib/libkeyfinder.so
+/usr/local/include/keyfinder
 
 If you want to build libKeyFinder statically, add `-DBUILD_STATIC_LIBS` to the first call to `cmake` above.
 
