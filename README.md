@@ -59,7 +59,9 @@ while (someType yourPacket = newAudioPacket()) {
   doSomethingWithMostRecentKeyEstimate(r.globalKeyEstimate);
 }
 
-// to squeeze every last bit of audio from the working buffer...
+// if you only want a single key estimate, or to squeeze
+// every last bit of audio from the working buffer after 
+// progressive estimates...
 k.finalChromagram(w);
 
 // and finally...
