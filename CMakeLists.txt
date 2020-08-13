@@ -43,8 +43,9 @@ else()
   )
 endif()
 
-
-target_link_libraries(keyfinder fftw3)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package(FFTW REQUIRED)
+target_link_libraries(keyfinder PUBLIC FFTW::FFTW)
 
 install(TARGETS keyfinder DESTINATION lib)
 install(FILES
