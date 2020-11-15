@@ -27,9 +27,13 @@ namespace KeyFinder {
     switch (windowType) {
       case WINDOW_BLACKMAN:
         return 0.42 - (0.5 * cos((2 * PI * n)/(N-1))) + (0.08 * cos((4 * PI * n)/(N-1)));
+      default:
+        // This should be unreachable code, but just in case fall back to hamming window.
+        // fall through
       case WINDOW_HAMMING:
         return 0.54 - (0.46 * cos((2 * PI * n)/(N-1)));
     }
+
   }
 
   double WindowFunction::gaussianWindow(int n, int N, double sigma) const {
