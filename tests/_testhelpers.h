@@ -24,7 +24,7 @@
 
 #include <cmath>
 #include "catch/catch.hpp"
-#include "keyfinder/keyfinder.h"
+#include "keyfinder.h"
 
 // all of this is a bit weak.
 #define ASSERT(expr) REQUIRE(expr)
