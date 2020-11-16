@@ -2,9 +2,11 @@
 
 [![Build Status](https://travis-ci.org/ibsh/libKeyFinder.svg?branch=master)](https://travis-ci.org/ibsh/libKeyFinder)
 
-`libKeyFinder` can be used to estimate the musical key of digital recordings.
+`libKeyFinder` is a small C++11 library for estimating the musical key of digital audio. It is published under the GNU General Public License version 3 or later.
 
-It is the basis of the KeyFinder GUI app, which is available as a binary download for Mac OSX and Windows at www.ibrahimshaath.co.uk/keyfinder
+It was written by [Ibrahim Shaath](http://ibrahimshaath.co.uk/keyfinder/) who wrote it in 2011 as part of a master's thesis in computer science. A [GUI application](https://github.com/ibsh/is_KeyFinder) to use it is available for [macOS](http://www.ibrahimshaath.co.uk/keyfinder/bins/KeyFinder-OSX-2-4.zip) and [Windows](http://www.ibrahimshaath.co.uk/keyfinder/bins/KeyFinder-WIN-1-25.zip), however that is no longer maintained and does not build on contemporary Linux distributions.
+
+In 2020, Ibrahim handed over maintenance of libKeyFinder to the [Mixxx DJ software](https://mixxx.org) team who incorporated it into Mixxx as of Mixxx 2.3. If you want to discuss anything related to libKeyFinder with us, please get in touch on the [Mixxx Zulip chat](https://mixxx.zulipchat.com/#narrow/stream/109171-development/topic/KeyFinder). Contributions are welcome by opening pull requests and issues on [GitHub](https://github.com/ibsh/libKeyFinder).
 
 ## Examples
 
@@ -104,3 +106,4 @@ All tests passed (1705510 assertions in 65 test cases)
 ```
 
 Note that there is a known intermittent failure in the `FftAdapterTest/ForwardAndBackward` test. Try running the tests a handful of times to determine whether you are hitting the intermittent or have introduced a new bug.
+
