@@ -46,6 +46,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(FFTW REQUIRED)
 target_link_libraries(keyfinder PUBLIC FFTW::FFTW)
+target_include_directories(keyfinder PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 install(TARGETS keyfinder DESTINATION lib)
 install(FILES
